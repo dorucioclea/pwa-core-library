@@ -1,2 +1,2 @@
 // Components
-export { TopBrandingBanner } from './components/Banners/TopBrandingBanner'
+export { BrandingBanner } from './components/Banners/BrandingBanner'
