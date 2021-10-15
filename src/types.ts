@@ -1,0 +1,13 @@
+export type AppSystemColor =
+  | 'primary'
+  | 'black'
+  | 'white'
+  | 'gray'
+  | 'red'
+  | 'yellow'
+  | 'green'
+  | 'teal'
+  | 'blue'
+  | 'indigo'
+  | 'purple'
+  | 'pink'
