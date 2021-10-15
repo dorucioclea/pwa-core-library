@@ -1,5 +1,5 @@
-// Components
-export { BrandingBanner } from './components/Banners/BrandingBanner'
+// features
+export { BrandingBanner } from './features/Banners/BrandingBanner'
 
 // services
 export type { IHttpService } from './services/http'

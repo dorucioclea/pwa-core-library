@@ -1,6 +1,6 @@
 import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { BrandingBanner } from '../../src/components/Banners/BrandingBanner'
+import { BrandingBanner } from '../../src/features/Banners/BrandingBanner'
 
 export default {
   title: 'Layout/Banners/TopBrandingBanner',
