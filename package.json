@@ -1,7 +1,7 @@
 {
-  "name": "core-pwa",
+  "name": "@superciety/pwa-core-library",
   "version": "0.1.0",
-  "description": "Core component library for Superciety DApps written in ReactJS",
+  "description": "Core library for Superciety DApps written in ReactJS",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Superciety/core-pwa.git"
+    "url": "git+https://github.com/superciety/core-pwa.git"
   },
   "keywords": [
     "superciety",
@@ -28,11 +28,11 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Superciety/core-pwa/issues"
+    "url": "https://github.com/superciety/core-pwa/issues"
   },
-  "homepage": "https://github.com/Superciety/core-pwa#readme",
+  "homepage": "https://github.com/superciety/core-pwa#readme",
   "peerDependencies": {
-    "@elrondnetwork/erdjs": "^8.0.1-alpha.7",
+    "@elrondnetwork/erdjs": "file:../elrond-sdk-erdjs",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
@@ -53,16 +53,16 @@
     "@storybook/addon-links": "^6.3.12",
     "@storybook/react": "^6.3.12",
     "@types/js-cookie": "^3.0.0",
-    "@types/react": "^17.0.27",
+    "@types/react": "^17.0.30",
     "@types/react-modal": "^3.13.1",
     "babel-loader": "^8.2.2",
     "postcss": "^8.3.9",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.1",
     "rollup-plugin-typescript2": "^0.30.0",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.4"
   },
   "files": [
     "/lib"
