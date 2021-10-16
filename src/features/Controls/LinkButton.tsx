@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react'
-import { EllipsisLoader } from '../..'
+import { EllipsisLoader } from '../Loaders/EllipsisLoader'
 import { AppSystemColor } from '../../types'
 import { getButtonBgColorClassName } from './helpers'
 
