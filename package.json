@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superciety/core-pwa.git"
+    "url": "git+https://github.com/superciety/pwa-core-library.git"
   },
   "keywords": [
     "superciety",
@@ -28,9 +28,9 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/superciety/core-pwa/issues"
+    "url": "https://github.com/superciety/pwa-core-library/issues"
   },
-  "homepage": "https://github.com/superciety/core-pwa#readme",
+  "homepage": "https://github.com/superciety/pwa-core-library#readme",
   "peerDependencies": {
     "@elrondnetwork/erdjs": "file:../elrond-sdk-erdjs",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
