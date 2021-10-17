@@ -1,0 +1,91 @@
+.modal-overlay {
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  background: linear-gradient(
+    124deg,
+    rgba(255, 36, 0, 0.2),
+    rgba(232, 29, 29, 0.2),
+    rgba(232, 183, 29, 0.2),
+    rgba(227, 232, 29, 0.2),
+    rgba(29, 232, 64, 0.2),
+    rgba(29, 221, 232, 0.2),
+    rgba(43, 29, 232, 0.2),
+    rgba(221, 0, 243, 0.2),
+    rgba(221, 0, 243, 0.2)
+  );
+  background-size: 1800% 1800%;
+  -webkit-animation: rainbow 18s ease infinite;
+  -z-animation: rainbow 18s ease infinite;
+  -o-animation: rainbow 18s ease infinite;
+  animation: rainbow 18s ease infinite;
+}
+
+@-webkit-keyframes rainbow {
+  0% {
+    background-position: 0% 82%;
+  }
+  50% {
+    background-position: 100% 19%;
+  }
+  100% {
+    background-position: 0% 82%;
+  }
+}
+@-moz-keyframes rainbow {
+  0% {
+    background-position: 0% 82%;
+  }
+  50% {
+    background-position: 100% 19%;
+  }
+  100% {
+    background-position: 0% 82%;
+  }
+}
+@-o-keyframes rainbow {
+  0% {
+    background-position: 0% 82%;
+  }
+  50% {
+    background-position: 100% 19%;
+  }
+  100% {
+    background-position: 0% 82%;
+  }
+}
+@keyframes rainbow {
+  0% {
+    background-position: 0% 82%;
+  }
+  50% {
+    background-position: 100% 19%;
+  }
+  100% {
+    background-position: 0% 82%;
+  }
+}
+
+.modal-container-sticky {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  box-shadow: 0 -1rem 50rem 75rem rgba(20, 150, 200, 0.1);
+}
+
+.modal-overlay-slide {
+  transition: all 800ms ease-out;
+  transform: translateY(100%);
+}
+.ReactModal__Overlay--after-open.modal-overlay-slide {
+  opacity: 1;
+  transform: translateY(0);
+}
+.ReactModal__Overlay--before-close.modal-overlay-slide {
+  opacity: 0;
+  transform: translateY(100%);
+}

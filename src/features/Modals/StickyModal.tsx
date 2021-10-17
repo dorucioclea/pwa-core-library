@@ -1,5 +1,6 @@
 import React from 'react'
 import BaseModal from 'react-modal'
+import './StickyModal.css'
 
 interface IProps {
   open: boolean
@@ -15,8 +16,8 @@ export const StickyModal = ({ open, onClose: handleClose, children }: IProps) =>
       isOpen={open}
       onRequestClose={handleClose}
       closeTimeoutMS={400}
-      className="fixed bottom-0 left-1/2 transform -translate-x-1/2 shadow-2xl bg-white pb-6 px-6 pt-2 focus:outline-none w-full max-w-3xl rounded-t-2xl"
-      overlayClassName="min-h-screen fixed left-0 top-0 w-full bg-black bg-opacity-20"
+      className="modal-container-sticky bg-white pb-6 px-6 pt-2 focus:outline-none w-full max-w-3xl rounded-t-2xl"
+      overlayClassName="modal-overlay modal-overlay-slide"
     >
       <button className="w-full h-8 focus:outline-none text-center relative" onClick={handleClose}>
         <span
