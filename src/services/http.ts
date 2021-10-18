@@ -12,7 +12,7 @@ export interface IHttpService {
   delete: <T>(url: string) => Promise<IAppResponse<T>>
 }
 
-interface IAppResponse<T> {
+export interface IAppResponse<T> {
   data: T
   meta?: any
   errors: any
@@ -24,12 +24,12 @@ interface IAppResponse<T> {
 
 export class HttpService implements IHttpService {
   baseUrl: string
-  onUnauthorized: (response: IAppResponse<any>) => void
-  onSuccessfulResponse: (response: IAppResponse<any>) => void
-  onMaintenanceMode: (response: IAppResponse<any>) => void
+  onUnauthorized: (response: IAppResponse<any>) => any
+  onSuccessfulResponse: (response: IAppResponse<any>) => any
+  onMaintenanceMode: (response: IAppResponse<any>) => any
 
-  constructor(baseUrl: string | undefined) {
-    this.baseUrl = baseUrl || ''
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl
     this.onSuccessfulResponse = () => {}
     this.onUnauthorized = () => {}
     this.onMaintenanceMode = () => {}
