@@ -6,5 +6,5 @@ export const getButtonBgColorClassName = (color?: AppSystemColor, disabled?: boo
   if (color === 'blue') return 'bg-blue-500'
   if (color === 'red') return 'bg-red-500'
   // add more colors as needed ...
-  return 'bg-primary-500'
+  return 'bg-primary-400'
 }

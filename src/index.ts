@@ -6,6 +6,7 @@ export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
 export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
 export { StickyModal } from './features/Modals/StickyModal'
+export { ConnectButton } from './features/Auth/ConnectButton'
 
 // services
 export type { IHttpService } from './services/http'

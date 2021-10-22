@@ -1,27 +1,36 @@
-import { IHttpService } from '../services/http'
-import { storeAuthRequest } from '../features/Auth/api'
-import { UserPrivate } from '../features/User/types'
-import { ICryptoService, ElrondCryptoService, ElrondWalletProvider } from './crypto'
+import { IDappProvider, ExtensionProvider } from '@elrondnetwork/erdjs'
 
-export interface IAuthService {
-  login: () => Promise<UserPrivate | null>
+export type AuthWalletProvider = 'extension'
+
+export type ProofableLogin = {
+  signature: string
+  signer: string
 }
 
-export class ElrondAuthService {
-  private http: IHttpService
-  private crypto: ICryptoService
+export interface IAuthService {
+  login: (proofableToken: string) => Promise<ProofableLogin>
+}
 
-  constructor(http: IHttpService, provider: ElrondWalletProvider) {
-    this.http = http
-    this.crypto = new ElrondCryptoService(provider)
+export class ElrondAuthService implements IAuthService {
+  private walletProvider: IDappProvider
+
+  constructor(provider: AuthWalletProvider) {
+    if (provider === 'extension') {
+      this.walletProvider = ExtensionProvider.getInstance()
+    } else {
+      this.walletProvider = ExtensionProvider.getInstance()
+    }
+
+    this.walletProvider.init()
   }
 
-  login = async () => {
-    const addressBech32 = await this.crypto.getProvider().login()
-    const signableProof = 'superciety-authentiation-proof'
-    const signedMessage = await this.crypto.signMessage(signableProof, addressBech32)
-    const authRes = await storeAuthRequest(this.http, signedMessage.message, signedMessage.signature, addressBech32)
+  login = async (proofableToken: string) => {
+    await this.walletProvider.login({ token: proofableToken })
 
-    return authRes.ok ? authRes.data : null
+    // so dirty, if not done by elrond, send a PR that unifies the account prop or getter method across providers
+    // - this currently only works for the extension provider, meh
+    const { signature, address } = (this.walletProvider as any).account
+
+    return { signature, signer: address }
   }
 }
