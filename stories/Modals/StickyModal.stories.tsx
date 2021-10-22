@@ -12,6 +12,7 @@ const Template: ComponentStory<typeof StickyModal> = (args) => {
 
   return (
     <div className="w-full min-h-screen">
+      <button onClick={() => setIsOpen(true)}>Open</button>
       <StickyModal {...args} open={isOpen} onClose={() => setIsOpen(false)}>
         <h2>Some content</h2>
         <p>Some more content!</p>
