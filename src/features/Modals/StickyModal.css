@@ -7,21 +7,18 @@
   z-index: 100;
   background: linear-gradient(
     124deg,
-    rgba(255, 36, 0, 0.2),
-    rgba(232, 29, 29, 0.3),
-    rgba(232, 183, 29, 0.4),
-    rgba(227, 232, 29, 0.5),
-    rgba(29, 232, 64, 0.6),
-    rgba(29, 221, 232, 0.5),
-    rgba(43, 29, 232, 0.4),
-    rgba(221, 0, 243, 0.3),
-    rgba(221, 0, 243, 0.2)
+    /* white */ rgba(255, 255, 255, 0.9),
+    /* teal */ rgba(79, 209, 197, 0.8),
+    /* blue */ rgba(59, 130, 246, 0.7),
+    /* indigo */ rgba(99, 102, 241, 0.8),
+    /* black */ rgba(0, 0, 0, 0.9),
+    /* black */ rgba(0, 0, 0, 0.95)
   );
   background-size: 1800% 1800%;
-  -webkit-animation: rainbow 18s ease infinite;
-  -z-animation: rainbow 18s ease infinite;
-  -o-animation: rainbow 18s ease infinite;
-  animation: rainbow 18s ease infinite;
+  -webkit-animation: rainbow 10s ease infinite;
+  -z-animation: rainbow 10s ease infinite;
+  -o-animation: rainbow 10s ease infinite;
+  animation: rainbow 10s ease infinite;
 }
 
 @-webkit-keyframes rainbow {
