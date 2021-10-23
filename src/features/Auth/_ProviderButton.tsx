@@ -4,7 +4,7 @@ import React from 'react'
 
 type Props = {
   onClick: () => void
-  children: string
+  children: any
   gradientClassName: [string, string]
 }
 

@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import _ProviderButton from './_ProviderButton'
 import { faBolt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
-import { StickyModal } from '../..'
+import { MaiarLogo } from '../Logos/MaiarLogo'
+import { ElrondLogo } from '../Logos/ElrondLogo'
+import { LedgerLogo } from '../Logos/LedgerLogo'
+import { StickyModal } from '../Modals/StickyModal'
 import { Button } from '../Controls/Button'
 import { AuthWalletProvider, ElrondAuthService, ProofableLogin } from '../../services/auth'
+
+const ElrondWalletSetupLinkUrl = 'https://testnet-wallet.elrond.com/create'
 
 type Props = {
   onTokenRequest: () => Promise<string>
@@ -37,18 +41,28 @@ export const ConnectButton = (props: Props) => {
         Connect
       </Button>
       <StickyModal open={isOpen} onClose={() => setIsOpen(false)}>
-        <_ProviderButton gradientClassName={['from-blue-400', 'to-blue-600']} onClick={() => handleLogin('extension')}>
+        <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-600']} onClick={() => handleLogin('extension')}>
+          <MaiarLogo white className="w-6 h-6 mr-4" />
           Maiar App
         </_ProviderButton>
-        <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-400']} onClick={() => handleLogin('extension')}>
+        <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-300']} onClick={() => handleLogin('extension')}>
+          <MaiarLogo white className="w-6 h-6 mr-4" />
           Maiar Browser
         </_ProviderButton>
-        <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-800']} onClick={() => handleLogin('extension')}>
+        <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-900']} onClick={() => handleLogin('extension')}>
+          <LedgerLogo white className="w-6 h-6 mr-4" />
           Ledger
         </_ProviderButton>
         <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-500']} onClick={() => handleLogin('extension')}>
+          <ElrondLogo white className="w-6 h-6 mr-4" />
           Web Wallet
         </_ProviderButton>
+        <p className="text-xl text-gray-500 text-center leading-tight mt-8">
+          <strong className="block">New to Elrond Blockchain?</strong>
+          <a href={ElrondWalletSetupLinkUrl} target="_blank" className="text-base">
+            Learn How to setup a wallet
+          </a>
+        </p>
       </StickyModal>
     </>
   )
