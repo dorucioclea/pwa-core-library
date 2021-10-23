@@ -6,6 +6,7 @@ export type { AppSystemColor } from './types'
 
 // auth
 export { ConnectButton } from './features/Auth/ConnectButton'
+export { DisconnectButton } from './features/Auth/DisconnectButton'
 
 // banners
 export { BrandingBanner } from './features/Banners/BrandingBanner'
