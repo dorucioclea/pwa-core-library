@@ -1,14 +1,15 @@
-import React, { SVGProps, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 type Props = {
   white?: boolean
+  className?: string
 }
 
-export const MaiarLogo = (props: SVGProps<SVGSVGElement> & Props) => {
+export const MaiarLogo = (props: Props) => {
   const scopedPrefixId = useMemo(() => Math.floor(Math.random() * 1000).toString(), [])
 
   return props.white ? (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" {...props} className={props.className || 'w-10 h-10'}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" className={props.className || 'w-10 h-10'}>
       <defs>
         <linearGradient x1="25.065%" x2="50%" y1="50%" y2="62.5%" id={`prefix__a-${scopedPrefixId}`}>
           <stop stopColor="#FFF" offset="0%" />
@@ -26,7 +27,7 @@ export const MaiarLogo = (props: SVGProps<SVGSVGElement> & Props) => {
       </g>
     </svg>
   ) : (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" {...props} className={props.className || 'w-10 h-10'}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" className={props.className || 'w-10 h-10'}>
       <defs>
         <linearGradient id={`prefix__a-${scopedPrefixId}`} x1="25.065%" x2="50%" y1="50%" y2="62.5%">
           <stop offset="0%" stopColor="#1A45C2" />
