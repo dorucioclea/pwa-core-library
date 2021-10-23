@@ -15,6 +15,10 @@ export { BrandingBanner } from './features/Banners/BrandingBanner'
 export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
 
+// layout
+export { Navigation } from './features/Layout/Navigation'
+export type { NavigationItem } from './features/Layout/_NavigationItem'
+
 // loaders
 export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
 
