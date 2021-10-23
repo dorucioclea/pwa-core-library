@@ -1,13 +1,32 @@
 export type { AppSystemColor } from './types'
 
-// features
-export { BrandingBanner } from './features/Banners/BrandingBanner'
-export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
-export { Button } from './features/Controls/Button'
-export { LinkButton } from './features/Controls/LinkButton'
-export { StickyModal } from './features/Modals/StickyModal'
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// F E A T U R E S
+// * * * * * * * *
+
+// auth
 export { ConnectButton } from './features/Auth/ConnectButton'
 
-// services
+// banners
+export { BrandingBanner } from './features/Banners/BrandingBanner'
+
+// controls
+export { Button } from './features/Controls/Button'
+export { LinkButton } from './features/Controls/LinkButton'
+
+// loaders
+export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
+
+// logos
+export { ElrondLogo } from './features/Logos/ElrondLogo'
+export { LedgerLogo } from './features/Logos/LedgerLogo'
+export { MaiarLogo } from './features/Logos/MaiarLogo'
+
+// modals
+export { StickyModal } from './features/Modals/StickyModal'
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// S E R V I C E S
+// * * * * * * * *
 export type { IHttpService } from './services/http'
 export { HttpService, handleAppResponse } from './services/http'
