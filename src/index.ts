@@ -35,3 +35,4 @@ export { StickyModal } from './features/Modals/StickyModal'
 // * * * * * * * *
 export type { IHttpService } from './services/http'
 export { HttpService, handleAppResponse } from './services/http'
+export type { ProofableLogin } from './services/auth'
