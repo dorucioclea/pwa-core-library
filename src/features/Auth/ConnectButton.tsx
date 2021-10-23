@@ -20,17 +20,18 @@ export const ConnectButton = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [proofableToken, setProofableToken] = useState<string | null>(null)
 
-  const init = async () => setProofableToken(await props.onTokenRequest())
-
   useEffect(() => {
     if (!isOpen) return
     init()
   }, [isOpen])
 
+  const init = async () => setProofableToken(await props.onTokenRequest())
+
   const handleLogin = async (provider: AuthWalletProvider) => {
     if (!proofableToken) return
     const authService = new ElrondAuthService(provider)
     const proofableLogin = await authService.login(proofableToken)
+    setIsOpen(false)
     props.onLocalLogin(proofableLogin)
   }
 
