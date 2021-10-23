@@ -1,14 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
+import { NavigationItem } from './types'
 
-export type NavigationItem = {
-  text: string
-  href: string
-  as?: string
-  icon?: any
-}
-
-export const _NavigationLink = (props: NavigationItem) => {
+export const _NavigationItem = (props: NavigationItem) => {
   const className =
     'items-center flex-col pt-4 md:justify-center md:pt-0 md:flex text-gray-500 text-xl hover:text-primary-500 hover:no-underline'
   const style = { transition: 'all .2s ease-in' }

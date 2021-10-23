@@ -16,8 +16,9 @@ export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
 
 // layout
+export type { NavigationItem } from './features/Layout/types'
 export { Navigation } from './features/Layout/Navigation'
-export type { NavigationItem } from './features/Layout/_NavigationItem'
+export { NavigationMobile } from './features/Layout/NavigationMobile'
 
 // loaders
 export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
