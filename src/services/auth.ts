@@ -4,7 +4,7 @@ export type AuthWalletProvider = 'extension'
 
 export type ProofableLogin = {
   signature: string
-  signer: string
+  address: string
 }
 
 export interface IAuthService {
@@ -31,6 +31,6 @@ export class ElrondAuthService implements IAuthService {
     // - this currently only works for the extension provider, meh
     const { signature, address } = (this.walletProvider as any).account
 
-    return { signature, signer: address }
+    return { signature, address }
   }
 }
