@@ -13,4 +13,6 @@ const Template: ComponentStory<typeof MaiarLogo> = (args) => (
 )
 
 export const Default = Template.bind({})
-Default.args = {}
+Default.args = {
+  white: false,
+}
