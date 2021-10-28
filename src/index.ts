@@ -15,6 +15,11 @@ export { BrandingBanner } from './features/Banners/BrandingBanner'
 export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
 
+// front
+export { FrontHero } from './features/Front/FrontHero'
+export { FrontQuote } from './features/Front/FrontQuote'
+export { FrontSection } from './features/Front/FrontSection'
+
 // layout
 export type { NavigationItem } from './features/Layout/types'
 export { Navigation } from './features/Layout/Navigation'
