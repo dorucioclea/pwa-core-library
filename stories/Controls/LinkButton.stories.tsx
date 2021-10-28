@@ -11,4 +11,5 @@ const Template: ComponentStory<typeof LinkButton> = (args) => <LinkButton {...ar
 export const Default = Template.bind({})
 Default.args = {
   color: 'blue',
+  href: 'https://freeiam.com',
 }
