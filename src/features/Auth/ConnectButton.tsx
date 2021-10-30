@@ -34,7 +34,7 @@ export const ConnectButton = (props: Props) => {
     const authService = new WalletService(provider, props.walletConfig)
     const proofableLogin = await authService.login(proofableToken)
     setIsOpen(false)
-    props.onLocalLogin(proofableLogin)
+    if (proofableLogin) props.onLocalLogin(proofableLogin)
   }
 
   return (
