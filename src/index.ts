@@ -43,4 +43,5 @@ export { StickyModal } from './features/Modals/StickyModal'
 // * * * * * * * *
 export type { IHttpService } from './services/http'
 export { HttpService, handleAppResponse } from './services/http'
-export type { ProofableLogin } from './services/auth'
+export type { ProofableLogin, WalletProviderId, WalletServiceConfig } from './services/wallet'
+export { WalletService } from './services/wallet'
