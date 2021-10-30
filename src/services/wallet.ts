@@ -33,7 +33,7 @@ export interface IWalletService {
   login: (proofableToken: string) => Promise<ProofableLogin | null>
   logout: () => Promise<void>
   isLoggedIn: () => boolean
-  signAndSend: (transaction: Transaction) => Promise<Transaction>
+  sendTransaction: (transaction: Transaction) => Promise<Transaction>
   getAddress: () => string
 }
 
@@ -43,7 +43,7 @@ export class WalletService implements IWalletService {
   private proxy: IProvider | null // Proxy in Erdjs will be deprecated soon in favor or API
   private address: string | null = null
 
-  constructor(providerId: WalletProviderId, config: WalletServiceConfig) {
+  constructor(providerId: WalletProviderId | null, config: WalletServiceConfig) {
     const storedWallet = this.loadFromStorage()
     const isLoggedIn = !!storedWallet
     const finalProviderId = providerId || storedWallet?.providerId || 'empty'
@@ -88,7 +88,7 @@ export class WalletService implements IWalletService {
 
   isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
 
-  signAndSend = async (transaction: Transaction) => {
+  sendTransaction = async (transaction: Transaction) => {
     this.assertLoggedIn()
     this.assertConfiguredProxy()
 
@@ -99,10 +99,8 @@ export class WalletService implements IWalletService {
     account.incrementNonce()
     transaction.setNonce(account.nonce)
 
-    const signed = await this.provider.signTransaction(transaction)
-    console.log('before send')
-    const sent = await this.provider.sendTransaction(signed)
-    console.log('just sent this:', sent)
+    const sent = await this.provider.sendTransaction(transaction)
+
     return sent
   }
 
