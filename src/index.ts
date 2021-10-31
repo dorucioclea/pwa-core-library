@@ -14,6 +14,7 @@ export { BrandingBanner } from './features/Banners/BrandingBanner'
 // controls
 export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
+export { Input } from './features/Controls/Input'
 
 // front
 export { FrontHero } from './features/Front/FrontHero'
