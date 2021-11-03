@@ -1,3 +1,4 @@
+import platform from 'platform'
 import {
   IDappProvider,
   ExtensionProvider,
@@ -8,6 +9,8 @@ import {
   Account,
   SignableMessage,
   WalletProvider as WebWalletProvider,
+  WalletConnectProvider,
+  HWProvider,
 } from '@elrondnetwork/erdjs'
 
 const WalletAuthStorageKey = 'wallet_user'
@@ -17,6 +20,7 @@ export type WalletProviderId = 'maiar_app' | 'maiar_extension' | 'hardware' | 'w
 export type WalletServiceConfig = {
   GatewayAddress: string
   WebWalletUrl: string
+  WalletConnectBridge: string
 }
 
 export type ProofableLogin = {
@@ -30,60 +34,84 @@ type SerializableProviderStorage = {
 }
 
 export interface IWalletService {
-  login: (proofableToken: string) => Promise<ProofableLogin | null>
+  onLogin?: (proofableLogin: ProofableLogin) => void
+  onLogout?: () => void
+  login: (proofableToken: string) => Promise<{ walletConnectLoginUri?: string }>
   logout: () => Promise<void>
   isLoggedIn: () => boolean
   sendTransaction: (transaction: Transaction) => Promise<Transaction>
   getAddress: () => string
+  isMobile: () => boolean
 }
 
 export class WalletService implements IWalletService {
+  public onLogin: (proofableLogin: ProofableLogin) => any
+  public onLogout: () => any
   private providerId: WalletProviderId
   private provider: IDappProvider
-  private proxy: IProvider | null // Proxy in Erdjs will be deprecated soon in favor or API
-  private address: string | null = null
+  private proxy: IProvider | null
+  private address: string | null
 
   constructor(providerId: WalletProviderId | null, config: WalletServiceConfig) {
     const storedWallet = this.loadFromStorage()
     const isLoggedIn = !!storedWallet
-    const finalProviderId = providerId || storedWallet?.providerId || 'empty'
+    const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
 
-    if (finalProviderId === 'maiar_extension') {
+    providerId = providerId || storedWallet?.providerId || 'empty'
+
+    if (providerId === 'maiar_app') {
+      this.provider = new WalletConnectProvider(proxy, config.WalletConnectBridge, {
+        onClientLogin: async () =>
+          this.finalizeLogin({
+            signature: await (this.provider as WalletConnectProvider).getSignature(),
+            address: await (this.provider as WalletConnectProvider).getAddress(),
+          }),
+        onClientLogout: async () => this.logout(),
+      })
+    } else if (providerId === 'maiar_extension') {
       this.provider = isLoggedIn ? ExtensionProvider.getInstance().setAddress(storedWallet.address) : ExtensionProvider.getInstance()
-    } else if (finalProviderId === 'web') {
+    } else if (providerId === 'hardware') {
+      this.provider = new HWProvider(proxy)
+    } else if (providerId === 'web') {
       this.provider = new WebWalletProvider(config?.WebWalletUrl)
     } else {
       this.provider = new EmptyProvider()
     }
 
-    this.providerId = finalProviderId
-    this.provider.init()
-    this.proxy = !!config ? new ProxyProvider(config.GatewayAddress, { timeout: 10000 }) : null
+    this.onLogin = (_) => {}
+    this.onLogout = () => {}
+    this.providerId = providerId
+    this.proxy = proxy
+    this.address = isLoggedIn ? storedWallet.address : null
 
-    if (isLoggedIn) {
-      this.address = storedWallet.address
-    }
+    this.provider.init()
   }
 
+  // depending on the provider, login might be a 2-step process that ends by calling finalizeLogin()
   login = async (proofableToken: string) => {
-    await this.provider.login({ token: proofableToken })
-
-    // the web wallet provider redirects to a web wallet hook,
-    // and therefore exits the above login function
-    if (this.providerId === 'web') {
-      return null
+    if (this.providerId === 'maiar_app') {
+      const loginUri = await (this.provider as WalletConnectProvider).login()
+      return { walletConnectLoginUri: loginUri + `&token=${proofableToken}` }
     }
 
-    const { signature, address } = (this.provider as any).account
+    if (this.providerId === 'maiar_extension') {
+      await this.provider.login({ token: proofableToken })
+      const extensionAccount = (this.provider as ExtensionProvider).account
+      this.finalizeLogin({ signature: extensionAccount.signature || '', address: extensionAccount.address })
+    }
 
-    this.persistLoginInStorage(address)
+    if (this.providerId === 'hardware') {
+      const login = await (this.provider as HWProvider).tokenLogin({ token: Buffer.from(`${proofableToken}{}`), addressIndex: 0 })
+      this.finalizeLogin({ signature: login.signature.hex(), address: login.address })
+    }
 
-    return { signature, address }
+    return {}
   }
 
   logout = async () => {
     await this.provider.logout()
     this.clearStorage()
+    this.onLogout()
   }
 
   isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
@@ -109,12 +137,18 @@ export class WalletService implements IWalletService {
     return this.address as string
   }
 
+  isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
+
+  private finalizeLogin = (proofableLogin: ProofableLogin) => {
+    this.persistLoginInStorage(proofableLogin.address)
+    this.onLogin(proofableLogin)
+  }
+
   private persistLoginInStorage = (address: string) => {
     const serializableStorage: SerializableProviderStorage = {
       providerId: this.providerId,
       address: address,
     }
-
     window.localStorage.setItem(WalletAuthStorageKey, JSON.stringify(serializableStorage))
   }
 
@@ -124,6 +158,20 @@ export class WalletService implements IWalletService {
   }
 
   private clearStorage = () => window.localStorage.removeItem(WalletAuthStorageKey)
+
+  public walletConnectHeartbeat = () => {
+    if (this.providerId === 'maiar_app') return
+
+    const wc = this.provider as WalletConnectProvider
+    const isSafari = wc.walletConnector?.peerMeta?.description.match(/(iPad|iPhone|iPod)/g)
+
+    if (!wc.walletConnector?.connected || isSafari) return
+
+    wc.sendCustomMessage({ method: 'heartbeat', params: {} }).catch(async (e: any) => {
+      console.error('wallet connect: connection lost', e)
+      await this.logout()
+    })
+  }
 
   private assertLoggedIn = () => {
     if (!this.address) {

@@ -1,16 +1,13 @@
-import type { WalletProviderId, WalletServiceConfig } from '../../services/wallet'
 import React, { useEffect, useState } from 'react'
-import _ProviderButton from './_ProviderButton'
+import type { IWalletService, WalletProviderId, WalletServiceConfig } from '../../services/wallet'
+import { _ProviderButton } from './_ProviderButton'
 import { faBolt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MaiarLogo } from '../Logos/MaiarLogo'
-import { ElrondLogo } from '../Logos/ElrondLogo'
-import { LedgerLogo } from '../Logos/LedgerLogo'
 import { StickyModal } from '../Modals/StickyModal'
 import { Button } from '../Controls/Button'
 import { WalletService, ProofableLogin } from '../../services/wallet'
-
-const ElrondWalletSetupLinkUrl = 'https://testnet-wallet.elrond.com/create'
+import { _ProviderSelector } from './_ProviderSelector'
+import { _ProviderConnector } from './_ProviderConnector'
 
 type Props = {
   walletConfig: WalletServiceConfig
@@ -20,7 +17,9 @@ type Props = {
 
 export const ConnectButton = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [wallet, setWallet] = useState<WalletService | null>(null)
   const [proofableToken, setProofableToken] = useState<string | null>(null)
+  const [activeConnector, setActiveConnector] = useState<WalletProviderId | null>(null)
 
   useEffect(() => {
     if (!isOpen) return
@@ -29,12 +28,22 @@ export const ConnectButton = (props: Props) => {
 
   const init = async () => setProofableToken(await props.onTokenRequest())
 
-  const handleLogin = async (provider: WalletProviderId) => {
-    if (!proofableToken) return
-    const authService = new WalletService(provider, props.walletConfig)
-    const proofableLogin = await authService.login(proofableToken)
+  const handleLoginRequest = (provider: WalletProviderId) => {
+    const walletService = new WalletService(provider, props.walletConfig)
+    walletService.onLogin = (proof) => props.onLocalLogin(proof)
+    setWallet(walletService)
+
+    if (provider === 'maiar_app') setActiveConnector(provider)
+    if (provider === 'maiar_extension') handleLogin(walletService)
+    if (provider === 'hardware') handleLogin(walletService)
+    if (provider === 'web') handleLogin(walletService)
+  }
+
+  const handleLogin = async (ws: IWalletService) => {
+    if (!proofableToken || !wallet) return
+    await ws.login(proofableToken)
     setIsOpen(false)
-    if (proofableLogin) props.onLocalLogin(proofableLogin)
+    setActiveConnector(null)
   }
 
   return (
@@ -44,28 +53,16 @@ export const ConnectButton = (props: Props) => {
         Connect
       </Button>
       <StickyModal open={isOpen} onClose={() => setIsOpen(false)}>
-        <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-600']} onClick={() => handleLogin('maiar_app')}>
-          <MaiarLogo white className="w-6 h-6 mr-4" />
-          Maiar App
-        </_ProviderButton>
-        <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-300']} onClick={() => handleLogin('maiar_extension')}>
-          <MaiarLogo white className="w-6 h-6 mr-4" />
-          Maiar Browser
-        </_ProviderButton>
-        <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-900']} onClick={() => handleLogin('hardware')}>
-          <LedgerLogo white className="w-6 h-6 mr-4" />
-          Ledger
-        </_ProviderButton>
-        <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-500']} onClick={() => handleLogin('web')}>
-          <ElrondLogo white className="w-6 h-6 mr-4" />
-          Web Wallet
-        </_ProviderButton>
-        <p className="text-xl text-gray-500 text-center leading-tight mt-8">
-          <strong className="block">New to Elrond Blockchain?</strong>
-          <a href={ElrondWalletSetupLinkUrl} target="_blank" className="text-base">
-            Learn How to setup a wallet
-          </a>
-        </p>
+        {!!activeConnector && wallet && proofableToken ? (
+          <_ProviderConnector
+            provider={activeConnector}
+            wallet={wallet}
+            proofableToken={proofableToken}
+            onCloseRequest={() => setActiveConnector(null)}
+          />
+        ) : (
+          <_ProviderSelector onLoginRequest={handleLoginRequest} />
+        )}
       </StickyModal>
     </>
   )

@@ -8,7 +8,7 @@ type Props = {
   gradientClassName: [string, string]
 }
 
-const _ProviderButton = (props: Props) => {
+export const _ProviderButton = (props: Props) => {
   const colorClassNames = `bg-gradient-to-br ${props.gradientClassName[0]} ${props.gradientClassName[1]} text-white`
 
   return (
@@ -18,5 +18,3 @@ const _ProviderButton = (props: Props) => {
     </button>
   )
 }
-
-export default _ProviderButton
