@@ -21,6 +21,7 @@ export type WalletServiceConfig = {
   GatewayAddress: string
   WebWalletUrl: string
   WalletConnectBridge: string
+  WalletConnectDeepLink: string
 }
 
 export type ProofableLogin = {
@@ -34,6 +35,7 @@ type SerializableProviderStorage = {
 }
 
 export interface IWalletService {
+  getConfig: () => WalletServiceConfig
   onLogin?: (proofableLogin: ProofableLogin) => void
   onLogout?: () => void
   login: (proofableToken: string) => Promise<{ walletConnectLoginUri?: string }>
@@ -47,6 +49,7 @@ export interface IWalletService {
 export class WalletService implements IWalletService {
   public onLogin: (proofableLogin: ProofableLogin) => any
   public onLogout: () => any
+  private config: WalletServiceConfig
   private providerId: WalletProviderId
   private provider: IDappProvider
   private proxy: IProvider | null
@@ -78,6 +81,7 @@ export class WalletService implements IWalletService {
       this.provider = new EmptyProvider()
     }
 
+    this.config = config
     this.onLogin = (_) => {}
     this.onLogout = () => {}
     this.providerId = providerId
@@ -86,6 +90,8 @@ export class WalletService implements IWalletService {
 
     this.provider.init()
   }
+
+  getConfig = () => this.config
 
   // depending on the provider, login might be a 2-step process that ends by calling finalizeLogin()
   login = async (proofableToken: string) => {
