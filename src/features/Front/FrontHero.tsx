@@ -15,6 +15,7 @@ type Props = {
   titleGradientClassName?: [string, string]
   imageClassName?: string
   imageContainerClassName?: string
+  reduceHeightBy?: number
 }
 
 export const FrontHero = (props: Props) => {
@@ -25,7 +26,7 @@ export const FrontHero = (props: Props) => {
   return (
     <section
       className={`relative flex flex-col ${!!props.children ? 'justify-around' : 'pt-8 md:pt-20 lg:pt-32'} ${props.className || ''}`}
-      style={{ height: 'calc(100vh - 100px)' }}
+      style={{ height: props.reduceHeightBy ? `calc(100vh - 100px - ${props.reduceHeightBy}px)` : 'calc(100vh - 100px)' }}
     >
       <div className="max-w-3xl">
         <h1 className={`text-8xl mb-4 ${titleColorClassNames}`}>{props.title}</h1>
