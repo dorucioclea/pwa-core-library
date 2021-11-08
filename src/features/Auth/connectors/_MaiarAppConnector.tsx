@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import QrCode from 'qrcode'
-import { WalletService } from '../../../services/wallet'
+import { IWalletService } from '../../../services/wallet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 
 type Props = {
   proofableToken: string
-  wallet: WalletService
+  wallet: IWalletService
 }
 
 export const _MaiarAppConnector = (props: Props) => {

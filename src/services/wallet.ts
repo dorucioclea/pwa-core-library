@@ -46,6 +46,7 @@ export interface IWalletService {
   sendTransaction: (transaction: Transaction) => Promise<Transaction>
   getAddress: () => string
   isMobile: () => boolean
+  getHardwareAccounts: () => Promise<string[]>
 }
 
 export class WalletService implements IWalletService {
@@ -146,6 +147,11 @@ export class WalletService implements IWalletService {
   }
 
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
+
+  getHardwareAccounts = async () => {
+    if (this.providerId !== 'hardware') return []
+    return await (this.provider as HWProvider).getAccounts()
+  }
 
   private finalizeLogin = (proofableLogin: ProofableLogin, addressIndex?: number) => {
     this.persistLoginInStorage(proofableLogin.address, addressIndex)

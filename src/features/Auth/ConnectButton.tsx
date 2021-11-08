@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
 import type { IWalletService, WalletProviderId, WalletServiceConfig } from '../../services/wallet'
+import React, { useEffect, useState } from 'react'
 import { _ProviderButton } from './_ProviderButton'
 import { faBolt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,6 +8,8 @@ import { Button } from '../Controls/Button'
 import { WalletService, ProofableLogin } from '../../services/wallet'
 import { _ProviderSelector } from './_ProviderSelector'
 import { _ProviderConnector } from './_ProviderConnector'
+
+let StaticWalletService: IWalletService | null = null
 
 type Props = {
   walletConfig: WalletServiceConfig
@@ -18,7 +20,6 @@ type Props = {
 
 export const ConnectButton = (props: Props) => {
   const [isOpen, setIsOpen] = useState(props.forceOpen || false)
-  const [wallet, setWallet] = useState<WalletService | null>(null)
   const [proofableToken, setProofableToken] = useState<string | null>(null)
   const [activeConnector, setActiveConnector] = useState<WalletProviderId | null>(null)
 
@@ -30,22 +31,22 @@ export const ConnectButton = (props: Props) => {
   const init = async () => setProofableToken(await props.onTokenRequest())
 
   const handleLoginRequest = async (provider: WalletProviderId) => {
-    const walletService = new WalletService(provider, props.walletConfig)
-    walletService.onLogin = (proof) => props.onLocalLogin(proof)
+    if (!StaticWalletService) {
+      StaticWalletService = new WalletService(provider, props.walletConfig)
+      StaticWalletService.onLogin = (proof) => props.onLocalLogin(proof)
+    }
 
-    await walletService.init()
-
-    setWallet(walletService)
+    console.log(await StaticWalletService.init())
 
     if (provider === 'maiar_app') setActiveConnector(provider)
-    if (provider === 'maiar_extension') handleLogin(walletService)
-    if (provider === 'hardware') handleLogin(walletService)
-    if (provider === 'web') handleLogin(walletService)
+    if (provider === 'maiar_extension') handleLogin()
+    if (provider === 'hardware') setActiveConnector(provider)
+    if (provider === 'web') handleLogin()
   }
 
-  const handleLogin = async (ws: IWalletService) => {
-    if (!proofableToken || !wallet) return
-    await ws.login(proofableToken)
+  const handleLogin = async () => {
+    if (!proofableToken || !StaticWalletService) return
+    await StaticWalletService.login(proofableToken)
     setIsOpen(false)
     setActiveConnector(null)
   }
@@ -57,10 +58,10 @@ export const ConnectButton = (props: Props) => {
         Connect
       </Button>
       <StickyModal open={isOpen} onClose={() => setIsOpen(false)}>
-        {!!activeConnector && wallet && proofableToken ? (
+        {!!activeConnector && StaticWalletService && proofableToken ? (
           <_ProviderConnector
             provider={activeConnector}
-            wallet={wallet}
+            wallet={StaticWalletService}
             proofableToken={proofableToken}
             onCloseRequest={() => setActiveConnector(null)}
           />

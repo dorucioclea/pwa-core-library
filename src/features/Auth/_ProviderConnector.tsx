@@ -1,5 +1,5 @@
 import React from 'react'
-import { WalletService } from '../../services/wallet'
+import { IWalletService } from '../../services/wallet'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { WalletProviderId } from '../../services/wallet'
@@ -8,7 +8,7 @@ import { _MaiarAppConnector } from './connectors/_MaiarAppConnector'
 
 type Props = {
   provider: WalletProviderId
-  wallet: WalletService
+  wallet: IWalletService
   proofableToken: string
   onCloseRequest: () => void
 }
@@ -16,7 +16,7 @@ type Props = {
 export const _ProviderConnector = (props: Props) => {
   const ConnectorContent = () => {
     if (props.provider === 'maiar_app') return <_MaiarAppConnector wallet={props.wallet} proofableToken={props.proofableToken} />
-    if (props.provider === 'hardware') return <_HardwareConnector />
+    if (props.provider === 'hardware') return <_HardwareConnector wallet={props.wallet} proofableToken={props.proofableToken} />
     return null
   }
 

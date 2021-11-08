@@ -1,5 +1,5 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react'
 import type { WalletServiceConfig } from '../../src/index'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 import { ConnectButton } from '../../src/index'
 
 const FakeWalletConfig: WalletServiceConfig = {
@@ -9,7 +9,7 @@ const FakeWalletConfig: WalletServiceConfig = {
   WalletConnectDeepLink: 'https://maiar.page.link/?apn=com.elrond.maiar.wallet&isi=1519405832&ibi=com.elrond.maiar.wallet&link=https://maiar.com/',
 }
 
-const RequestFakeToken = () => new Promise<string>((resolve) => resolve('some-token'))
+const RequestFakeToken = () => Promise.resolve('sometoken')
 
 export default {
   title: 'Auth/ConnectButton',
@@ -17,7 +17,7 @@ export default {
 } as ComponentMeta<typeof ConnectButton>
 
 const Template: ComponentStory<typeof ConnectButton> = (args) => (
-  <ConnectButton walletConfig={FakeWalletConfig} onTokenRequest={RequestFakeToken} {...args} />
+  <ConnectButton {...args} walletConfig={FakeWalletConfig} onTokenRequest={RequestFakeToken} />
 )
 
 export const Default = Template.bind({})
