@@ -12,7 +12,8 @@
     "build-storybook": "build-storybook",
     "lint": "tsc --noEmit",
     "prepare": "npm run build",
-    "preversion": "npm run lint && npm run build"
+    "preversion": "npm run lint && npm run build",
+    "secure-proxy": "local-ssl-proxy --source 6007 --target 6006"
   },
   "repository": {
     "type": "git",
