@@ -13,10 +13,11 @@ type Props = {
   walletConfig: WalletServiceConfig
   onTokenRequest: () => Promise<string>
   onLocalLogin: (proofable: ProofableLogin) => void
+  forceOpen?: boolean
 }
 
 export const ConnectButton = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(props.forceOpen || false)
   const [wallet, setWallet] = useState<WalletService | null>(null)
   const [proofableToken, setProofableToken] = useState<string | null>(null)
   const [activeConnector, setActiveConnector] = useState<WalletProviderId | null>(null)
