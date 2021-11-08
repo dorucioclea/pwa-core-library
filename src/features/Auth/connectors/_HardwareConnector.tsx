@@ -80,7 +80,7 @@ export const _HardwareConnector = (props: Props) => {
         Unlock your device & <span className="highlight">open the Elrond App</span>.
       </p>
       <Button color="gray" onClick={handleAccountSelectionRequest}>
-        <span className="inline-block mr-2">Connect to waiting Ledger</span>
+        <span className="inline-block mr-2">Connect to Ledger</span>
         <FontAwesomeIcon icon={faAngleRight} className="text-gray-400" />
       </Button>
       {activeErrorText && <span className="block text-red-500 my-4">{activeErrorText}</span>}
