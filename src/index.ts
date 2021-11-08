@@ -1,4 +1,5 @@
 export type { AppSystemColor } from './types'
+export { trimHash } from './helpers'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // F E A T U R E S
