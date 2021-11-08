@@ -32,13 +32,15 @@ export type ProofableLogin = {
 type SerializableProviderStorage = {
   providerId: WalletProviderId
   address: string
+  addressIndex?: number
 }
 
 export interface IWalletService {
+  init: () => Promise<boolean>
   getConfig: () => WalletServiceConfig
   onLogin?: (proofableLogin: ProofableLogin) => void
   onLogout?: () => void
-  login: (proofableToken: string) => Promise<{ walletConnectLoginUri?: string }>
+  login: (proofableToken: string, addressIndex?: number) => Promise<{ walletConnectLoginUri?: string }>
   logout: () => Promise<void>
   isLoggedIn: () => boolean
   sendTransaction: (transaction: Transaction) => Promise<Transaction>
@@ -87,14 +89,14 @@ export class WalletService implements IWalletService {
     this.providerId = providerId
     this.proxy = proxy
     this.address = isLoggedIn ? storedWallet.address : null
-
-    this.provider.init()
   }
+
+  init = async () => await this.provider.init()
 
   getConfig = () => this.config
 
   // depending on the provider, login might be a 2-step process that ends by calling finalizeLogin()
-  login = async (proofableToken: string) => {
+  login = async (proofableToken: string, addressIndex?: number) => {
     if (this.providerId === 'maiar_app') {
       const loginUri = await (this.provider as WalletConnectProvider).login()
       return { walletConnectLoginUri: loginUri + `&token=${proofableToken}` }
@@ -107,8 +109,8 @@ export class WalletService implements IWalletService {
     }
 
     if (this.providerId === 'hardware') {
-      const login = await (this.provider as HWProvider).tokenLogin({ token: Buffer.from(`${proofableToken}{}`), addressIndex: 0 })
-      this.finalizeLogin({ signature: login.signature.hex(), address: login.address })
+      const login = await (this.provider as HWProvider).tokenLogin({ token: Buffer.from(`${proofableToken}{}`), addressIndex: addressIndex })
+      this.finalizeLogin({ signature: login.signature.hex(), address: login.address }, addressIndex)
     }
 
     return {}
@@ -145,15 +147,16 @@ export class WalletService implements IWalletService {
 
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
 
-  private finalizeLogin = (proofableLogin: ProofableLogin) => {
-    this.persistLoginInStorage(proofableLogin.address)
+  private finalizeLogin = (proofableLogin: ProofableLogin, addressIndex?: number) => {
+    this.persistLoginInStorage(proofableLogin.address, addressIndex)
     this.onLogin(proofableLogin)
   }
 
-  private persistLoginInStorage = (address: string) => {
+  private persistLoginInStorage = (address: string, addressIndex?: number) => {
     const serializableStorage: SerializableProviderStorage = {
       providerId: this.providerId,
       address: address,
+      addressIndex: addressIndex,
     }
     window.localStorage.setItem(WalletAuthStorageKey, JSON.stringify(serializableStorage))
   }

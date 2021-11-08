@@ -29,9 +29,12 @@ export const ConnectButton = (props: Props) => {
 
   const init = async () => setProofableToken(await props.onTokenRequest())
 
-  const handleLoginRequest = (provider: WalletProviderId) => {
+  const handleLoginRequest = async (provider: WalletProviderId) => {
     const walletService = new WalletService(provider, props.walletConfig)
     walletService.onLogin = (proof) => props.onLocalLogin(proof)
+
+    await walletService.init()
+
     setWallet(walletService)
 
     if (provider === 'maiar_app') setActiveConnector(provider)
