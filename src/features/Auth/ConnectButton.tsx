@@ -34,9 +34,8 @@ export const ConnectButton = (props: Props) => {
     if (!StaticWalletService) {
       StaticWalletService = new WalletService(provider, props.walletConfig)
       StaticWalletService.onLogin = (proof) => props.onLocalLogin(proof)
+      await StaticWalletService.init()
     }
-
-    await StaticWalletService.init()
 
     if (provider === 'maiar_app') setActiveConnector(provider)
     if (provider === 'maiar_extension') handleLogin()
