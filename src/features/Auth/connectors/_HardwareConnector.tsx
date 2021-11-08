@@ -63,7 +63,7 @@ export const _HardwareConnector = (props: Props) => {
             >
               <span className="font-head text-gray-800">{index + 1 + '. '}</span>
               <span>{trimHash(address, 20)}</span>
-              <FontAwesomeIcon icon={faAngleRight} className="text-gray-300" />
+              <FontAwesomeIcon icon={faAngleRight} className="text-gray-400" />
             </button>
           </li>
         ))}
@@ -76,7 +76,7 @@ export const _HardwareConnector = (props: Props) => {
         {isLoading && <EllipsisLoader className="w-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}
       </div>
       <h2 className="text-transparent bg-clip-text bg-gradient-to-br from-gray-400 to-gray-900 mb-2">Ledger Login</h2>
-      <p className="text-xl text-gray-600 mb-4">
+      <p className="text-xl text-gray-600 mb-8">
         Unlock your device & <span className="highlight">open the Elrond App</span>.
       </p>
       <Button color="gray" onClick={handleAccountSelectionRequest}>
