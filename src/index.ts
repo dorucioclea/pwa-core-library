@@ -39,6 +39,10 @@ export { MaiarLogo } from './features/Logos/MaiarLogo'
 // modals
 export { StickyModal } from './features/Modals/StickyModal'
 
+// superciety
+export type { Identity } from './features/Superciety/types'
+export { getIdentityRequest } from './features/Superciety/api'
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // S E R V I C E S
 // * * * * * * * *
