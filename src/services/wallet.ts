@@ -45,6 +45,7 @@ export interface IWalletService {
   logout: () => Promise<void>
   isLoggedIn: () => boolean
   sendTransaction: (transaction: Transaction) => Promise<Transaction>
+  heartbeat: () => Promise<void>
   getAddress: () => string
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
@@ -142,6 +143,24 @@ export class WalletService implements IWalletService {
     return sent
   }
 
+  heartbeat = async () => {
+    if (this.providerId === 'maiar_app') {
+      const wc = this.provider as WalletConnectProvider
+      const isSafari = wc.walletConnector?.peerMeta?.description.match(/(iPad|iPhone|iPod)/g)
+
+      if (!wc.walletConnector?.connected || isSafari) return
+
+      try {
+        await wc.sendCustomMessage({ method: 'heartbeat', params: {} })
+      } catch (e) {
+        console.error('wallet connect: connection lost', e)
+        await this.logout()
+      }
+    }
+
+    // ... space for other provider's heartbeats
+  }
+
   getAddress = () => {
     this.assertLoggedIn()
     return this.address as string
@@ -174,20 +193,6 @@ export class WalletService implements IWalletService {
   }
 
   private clearStorage = () => window.localStorage.removeItem(WalletAuthStorageKey)
-
-  public walletConnectHeartbeat = () => {
-    if (this.providerId === 'maiar_app') return
-
-    const wc = this.provider as WalletConnectProvider
-    const isSafari = wc.walletConnector?.peerMeta?.description.match(/(iPad|iPhone|iPod)/g)
-
-    if (!wc.walletConnector?.connected || isSafari) return
-
-    wc.sendCustomMessage({ method: 'heartbeat', params: {} }).catch(async (e: any) => {
-      console.error('wallet connect: connection lost', e)
-      await this.logout()
-    })
-  }
 
   private assertLoggedIn = () => {
     if (!this.address) {
