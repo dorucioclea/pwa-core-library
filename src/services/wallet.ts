@@ -36,6 +36,7 @@ type SerializableProviderStorage = {
 }
 
 export interface IWalletService {
+  readonly providerId: WalletProviderId
   init: () => Promise<boolean>
   getConfig: () => WalletServiceConfig
   onLogin?: (proofableLogin: ProofableLogin) => void
@@ -52,8 +53,8 @@ export interface IWalletService {
 export class WalletService implements IWalletService {
   public onLogin: (proofableLogin: ProofableLogin) => any
   public onLogout: () => any
+  public readonly providerId: WalletProviderId
   private config: WalletServiceConfig
-  private providerId: WalletProviderId
   private provider: IDappProvider
   private proxy: IProvider | null
   private address: string | null
