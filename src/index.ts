@@ -44,6 +44,9 @@ export { StickyModal } from './features/Modals/StickyModal'
 export type { Identity } from './features/Superciety/types'
 export { getIdentityRequest } from './features/Superciety/api'
 
+// tokens
+export type { CollectionTokenIdentifier, TokenIdentifier, Nft, NftCollection, NftCollectionList } from './features/Tokens/types'
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // S E R V I C E S
 // * * * * * * * *
