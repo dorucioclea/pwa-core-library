@@ -41,8 +41,8 @@ export { MaiarLogo } from './features/Logos/MaiarLogo'
 export { StickyModal } from './features/Modals/StickyModal'
 
 // superciety
-export type { Identity } from './features/Superciety/types'
-export { getIdentityRequest } from './features/Superciety/api'
+export type { SCY_Identity } from './features/Superciety/types'
+export { getScyIdentityRequest, getScyNftsRequest } from './features/Superciety/api'
 
 // tokens
 export type { CollectionTokenIdentifier, TokenIdentifier, Nft, NftCollection, NftCollectionList } from './features/Tokens/types'

@@ -1,4 +1,4 @@
-export type Identity = {
+export type SCY_Identity = {
   known: boolean
   url: string
   address: string | null
