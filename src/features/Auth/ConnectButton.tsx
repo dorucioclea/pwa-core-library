@@ -31,14 +31,14 @@ export const ConnectButton = (props: Props) => {
   const init = async () => setProofableToken(await props.onTokenRequest())
 
   const handleLoginRequest = async (provider: WalletProviderId) => {
-    if (!StaticWalletService) {
+    if (!StaticWalletService || StaticWalletService.providerId !== provider) {
       StaticWalletService = new WalletService(provider, props.walletConfig)
       StaticWalletService.onLogin = (proof) => props.onLocalLogin(proof)
       await StaticWalletService.init()
     }
 
     if (provider === 'maiar_app') setActiveConnector(provider)
-    if (provider === 'maiar_extension') handleLogin()
+    if (provider === 'maiar_extension') await handleLogin()
     if (provider === 'hardware') setActiveConnector(provider)
     if (provider === 'web') handleLogin()
   }
