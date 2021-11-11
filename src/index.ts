@@ -48,7 +48,7 @@ export { getScyIdentityRequest, getScyNftsByUserRequest, getScyNftRequest, getSc
 export type { CollectionTokenIdentifier, TokenIdentifier, Nft, NftCollection, NftCollectionList } from './features/Tokens/types'
 
 // transactions
-export type { Transaction } from './features/Transactions/types'
+export type { Transaction, TransactionType } from './features/Transactions/types'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // S E R V I C E S

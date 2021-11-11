@@ -1,4 +1,7 @@
+export type TransactionType = 'nft_create' | 'nft_transfer'
+
 export type Transaction = {
+  type: TransactionType
   hash: string
   gasLimit: number | null
   gasPrice: number | null
@@ -10,7 +13,7 @@ export type Transaction = {
   sender: string
   senderShard: string | null
   signature: string | null
-  status: string
+  status: 'success' | 'pending' | 'fail'
   value: string
   fee: string | null
   timestamp: number | null
