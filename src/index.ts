@@ -42,7 +42,7 @@ export { StickyModal } from './features/Modals/StickyModal'
 
 // superciety
 export type { ScyIdentity } from './features/Superciety/types'
-export { getScyIdentityRequest, getScyNftsByUserRequest, getScyNftRequest } from './features/Superciety/api'
+export { getScyIdentityRequest, getScyNftsByUserRequest, getScyNftRequest, getScyTokenTransactions } from './features/Superciety/api'
 
 // tokens
 export type { CollectionTokenIdentifier, TokenIdentifier, Nft, NftCollection, NftCollectionList } from './features/Tokens/types'
