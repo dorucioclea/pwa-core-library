@@ -17,6 +17,7 @@ export type Transaction = {
   value: string
   fee: string | null
   timestamp: number | null
+  time: string | null
   data: string | null
   tokenIdentifier: string | null
   tokenValue: string | null
