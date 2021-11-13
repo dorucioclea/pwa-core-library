@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-unfetch'
 import cookie from 'js-cookie'
+import { showToast } from '../features/Feedback/Toast'
 
 export interface IHttpService {
   readonly baseUrl: string
@@ -102,7 +103,7 @@ export const handleAppResponse = async <T>(
   const res = await appResponsePromise
 
   if (!res.ok) {
-    // TODO: show error message to user
+    showFirstResponseErrorToast(res)
 
     if (handleError) handleError(res.paymentRequired, res.original.status)
 
@@ -110,4 +111,19 @@ export const handleAppResponse = async <T>(
   }
 
   setTimeout(() => handleSuccess(res.data, res.meta), timeoutInMilliseconds)
+}
+
+const showFirstResponseErrorToast = (res: IAppResponse<any>) => {
+  if (!res.errors || res.errors.length < 1) return
+
+  // what da fuk
+  const firstError = Object.values(res.errors as string[][])[0]
+
+  if (!firstError) return
+
+  const firstErrorMessage = firstError[0]
+
+  if (!firstErrorMessage) return
+
+  showToast(firstErrorMessage, 'error')
 }

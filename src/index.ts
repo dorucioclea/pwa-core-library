@@ -17,6 +17,9 @@ export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
 export { Input } from './features/Controls/Input'
 
+// feedback
+export { ScyToastRoot, showToast } from './features/Feedback/Toast'
+
 // front
 export { FrontHero } from './features/Front/FrontHero'
 export { FrontQuote } from './features/Front/FrontQuote'
