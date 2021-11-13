@@ -2,13 +2,13 @@ import React from 'react'
 import BaseModal from 'react-modal'
 import './StickyModal.css'
 
-interface IProps {
+type Props = {
   open: boolean
   onClose: () => void
   children: any
 }
 
-export const StickyModal = ({ open, onClose: handleClose, children }: IProps) => {
+export const StickyModal = ({ open, onClose: handleClose, children }: Props) => {
   BaseModal.setAppElement('body')
 
   return (
