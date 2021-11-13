@@ -16,6 +16,8 @@ export { BrandingBanner } from './features/Banners/BrandingBanner'
 export { Button } from './features/Controls/Button'
 export { LinkButton } from './features/Controls/LinkButton'
 export { Input } from './features/Controls/Input'
+export type { SelectOption } from './features/Controls/Select'
+export { Select } from './features/Controls/Select'
 
 // feedback
 export { ScyToastRoot, showToast } from './features/Feedback/Toast'
