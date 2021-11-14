@@ -8,7 +8,7 @@ const DefaultClassNames =
 
 export type SelectOption = {
   name: string
-  value: string
+  value?: string
 }
 
 type Props = {
