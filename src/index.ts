@@ -45,6 +45,9 @@ export { MaiarLogo } from './features/Logos/MaiarLogo'
 // modals
 export { StickyModal } from './features/Modals/StickyModal'
 
+// stats
+export { StatsTile } from './features/Stats/StatsTile'
+
 // superciety
 export type { ScyIdentity } from './features/Superciety/types'
 export { getScyIdentityRequest } from './features/Superciety/api'
