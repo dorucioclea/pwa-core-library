@@ -1,4 +1,5 @@
 import type { IWalletService, WalletProviderId, WalletServiceConfig } from '../../services/wallet'
+import type { AppSystemColor } from '../../types'
 import React, { useEffect, useState } from 'react'
 import { _ProviderButton } from './_ProviderButton'
 import { faBolt } from '@fortawesome/free-solid-svg-icons'
@@ -16,6 +17,8 @@ type Props = {
   onTokenRequest: () => Promise<string>
   onLocalLogin: (proofable: ProofableLogin) => void
   forceOpen?: boolean
+  children?: any
+  color?: AppSystemColor
 }
 
 export const ConnectButton = (props: Props) => {
@@ -52,9 +55,13 @@ export const ConnectButton = (props: Props) => {
 
   return (
     <>
-      <Button color="blue" onClick={() => setIsOpen(true)}>
-        <FontAwesomeIcon icon={faBolt} className="inline-block mr-2 text-white opacity-75" />
-        Connect
+      <Button color={props.color || 'blue'} onClick={() => setIsOpen(true)}>
+        {props.children || (
+          <>
+            <FontAwesomeIcon icon={faBolt} className="inline-block mr-2 text-white opacity-75" />
+            Connect
+          </>
+        )}
       </Button>
       <StickyModal open={isOpen} onClose={() => setIsOpen(false)}>
         {!!activeConnector && StaticWalletService && proofableToken ? (
