@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const SupercietyWebUrl = 'https://superciety.com'
 
 export const BrandingBanner = () => (
-  <div className="bg-black flex justify-center p-2 text-xl text-white">
+  <div className="bg-black flex justify-center p-2 text-lg md:text-xl text-white">
     <a href={SupercietyWebUrl} target="_blank" className="space-x-2" style={{ borderWidth: 0 }}>
       <span>A service by</span>
       <strong>Superciety</strong>
@@ -19,7 +19,7 @@ export const BrandingBanner = () => (
 )
 
 const SupercietyLogoWhite = () => (
-  <svg viewBox="0 0 402 402" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block w-6">
+  <svg viewBox="0 0 402 402" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block w-5 md:w-6">
     <circle cx={260.215} cy={82.023} r={16} transform="rotate(-45 260.215 82.023)" fill="#fff" />
     <circle cx={379.009} cy={200.817} r={16} transform="rotate(-45 379.009 200.817)" fill="#fff" />
     <circle cx={141.421} cy={200.817} r={16} transform="rotate(-45 141.421 200.817)" fill="#fff" />
