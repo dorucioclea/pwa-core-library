@@ -12,6 +12,7 @@ export type SelectOption = {
 }
 
 type Props = {
+  value?: string
   options: SelectOption[]
   onSelect: (value: string) => void
   className?: string
@@ -22,7 +23,11 @@ export const Select = (props: IntersectProps<InputHTMLAttributes<HTMLSelectEleme
     <span className="flex justify-center items-center w-12">
       <FontAwesomeIcon icon={faAngleDown} className="text-gray-800" />
     </span>
-    <select onChange={(e) => props.onSelect(e.target.value)} className="block h-12 bg-transparent appearance-none w-full focus:outline-none">
+    <select
+      value={props.value}
+      onChange={(e) => props.onSelect(e.target.value)}
+      className="block h-12 bg-transparent appearance-none w-full focus:outline-none"
+    >
       {props.options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.name}
