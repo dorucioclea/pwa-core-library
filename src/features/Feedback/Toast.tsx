@@ -32,4 +32,4 @@ export const showToast = (text: string, type?: 'success' | 'info' | 'warning' | 
   })
 }
 
-export const ScyToastRoot = () => <ToastContainer position="top-center" pauseOnFocusLoss transition={Flip} />
+export const ScyToastRoot = () => <ToastContainer position="top-center" transition={Flip} limit={5} />
