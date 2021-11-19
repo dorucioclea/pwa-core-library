@@ -18,6 +18,7 @@ export { LinkButton } from './features/Controls/LinkButton'
 export { Input } from './features/Controls/Input'
 export type { SelectOption } from './features/Controls/Select'
 export { Select } from './features/Controls/Select'
+export { Switch } from './features/Controls/Switch'
 
 // feedback
 export { ScyToastRoot, showToast } from './features/Feedback/Toast'
