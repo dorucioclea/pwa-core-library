@@ -1,11 +1,11 @@
-import React, { CSSProperties } from 'react'
+import React, { CSSProperties, SyntheticEvent } from 'react'
 import { AppSystemColor } from '../../types'
 import { EllipsisLoader } from '../Loaders/EllipsisLoader'
 import { getButtonBgColorClassName } from './helpers'
 
 type Props = {
   children: any
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+  onClick?: (e: SyntheticEvent) => void
   color?: AppSystemColor
   disabled?: boolean
   submit?: boolean

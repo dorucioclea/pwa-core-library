@@ -23,7 +23,6 @@ export const Switch = (props: IProps) => (
       activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
       height={20}
       width={48}
-      className="switch"
     />
   </div>
 )
