@@ -1,5 +1,5 @@
 export type { AppSystemColor } from './types'
-export { trimHash } from './helpers'
+export { trimHash, classNames } from './helpers'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // H O O K S
