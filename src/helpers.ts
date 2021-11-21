@@ -3,3 +3,5 @@ export const trimHash = (hash: string, keep = 10) => {
   const end = hash.substring(hash.length - keep)
   return `${start}...${end}`
 }
+
+export const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ')
