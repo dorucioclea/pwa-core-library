@@ -2,6 +2,11 @@ export type { AppSystemColor } from './types'
 export { trimHash } from './helpers'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// H O O K S
+// * * * * * * * *
+export { useDidMountEffect } from './hooks/did-mount'
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // F E A T U R E S
 // * * * * * * * *
 
