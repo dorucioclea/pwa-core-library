@@ -1,4 +1,4 @@
 import { IHttpService } from '../../services/http'
-import { ScyIdentity } from './types'
+import { Identity } from './types'
 
-export const getScyIdentityRequest = async (http: IHttpService, id: string) => await http.get<ScyIdentity>(`identity/${id}`)
+export const getIdentityRequest = async (http: IHttpService, id: string) => await http.get<Identity>(`identity/${id}`)

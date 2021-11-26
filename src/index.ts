@@ -56,8 +56,8 @@ export { StickyModal } from './features/Modals/StickyModal'
 export { StatsTile } from './features/Stats/StatsTile'
 
 // superciety
-export type { ScyIdentity } from './features/Superciety/types'
-export { getScyIdentityRequest } from './features/Superciety/api'
+export type { Identity, SocialAccount, SocialAccountPlatform, SocialAccountProvider } from './features/Superciety/types'
+export { getIdentityRequest } from './features/Superciety/api'
 
 // tokens
 export type { CollectionTokenIdentifier, TokenIdentifier, Nft, NftCollection, NftCollectionList } from './features/Tokens/types'
