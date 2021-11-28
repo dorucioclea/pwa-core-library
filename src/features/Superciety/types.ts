@@ -14,7 +14,6 @@ export type Identity = {
 }
 
 export type SocialAccount = {
-  platform: string
   username: string
   link: string
 }
