@@ -52,6 +52,9 @@ export { MaiarLogo } from './features/Logos/MaiarLogo'
 // modals
 export { StickyModal } from './features/Modals/StickyModal'
 
+// progress
+export { Steps } from './features/Progress/Steps'
+
 // stats
 export { StatsTile } from './features/Stats/StatsTile'
 

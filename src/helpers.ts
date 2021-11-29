@@ -4,4 +4,4 @@ export const trimHash = (hash: string, keep = 10) => {
   return `${start}...${end}`
 }
 
-export const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ')
+export const classNames = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ')
