@@ -55,6 +55,9 @@ export { StickyModal } from './features/Modals/StickyModal'
 // progress
 export { Steps } from './features/Progress/Steps'
 
+// smart contracts
+export type { SmartContractConfig } from './features/SmartContracts/types'
+
 // stats
 export { StatsTile } from './features/Stats/StatsTile'
 
