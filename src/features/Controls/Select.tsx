@@ -28,8 +28,8 @@ export const Select = (props: IntersectProps<InputHTMLAttributes<HTMLSelectEleme
       onChange={(e) => props.onSelect(e.target.value)}
       className="block h-12 bg-transparent appearance-none w-full focus:outline-none"
     >
-      {props.options.map((option) => (
-        <option key={option.value} value={option.value}>
+      {props.options.map((option, index) => (
+        <option key={index} value={option.value}>
           {option.name}
         </option>
       ))}
