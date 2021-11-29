@@ -60,10 +60,13 @@ export type { Identity, SocialAccount, SocialAccountPlatform, SocialAccountProvi
 export { getIdentityRequest } from './features/Superciety/api'
 
 // tokens
-export type { CollectionTokenIdentifier, TokenIdentifier, Nft, NftCollection, NftCollectionList } from './features/Tokens/types'
+export type { Nft, NftCollection, NftCollectionList, NftCollectionAccount } from './features/Tokens/types'
 
 // transactions
 export type { Transaction, TransactionType } from './features/Transactions/types'
+
+// user
+export type { UserPrivate } from './features/User/types'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // S E R V I C E S
