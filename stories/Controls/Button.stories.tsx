@@ -12,3 +12,9 @@ export const Default = Template.bind({})
 Default.args = {
   color: 'blue',
 }
+
+export const Large = Template.bind({})
+Large.args = {
+  color: 'blue',
+  large: true,
+}

@@ -19,6 +19,7 @@ type Props = {
   forceOpen?: boolean
   children?: any
   color?: AppSystemColor
+  large?: boolean
 }
 
 export const ConnectButton = (props: Props) => {
@@ -55,7 +56,7 @@ export const ConnectButton = (props: Props) => {
 
   return (
     <>
-      <Button color={props.color || 'blue'} onClick={() => setIsOpen(true)}>
+      <Button color={props.color || 'blue'} onClick={() => setIsOpen(true)} large={props.large}>
         {props.children || (
           <>
             <FontAwesomeIcon icon={faBolt} className="inline-block mr-2 text-white opacity-75" />
