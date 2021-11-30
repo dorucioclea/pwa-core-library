@@ -36,6 +36,7 @@ type SerializableProviderStorage = {
 }
 
 export interface IWalletService {
+  readonly provider: IDappProvider
   readonly providerId: WalletProviderId
   init: () => Promise<boolean>
   getConfig: () => WalletServiceConfig
@@ -52,12 +53,12 @@ export interface IWalletService {
 }
 
 export class WalletService implements IWalletService {
+  public readonly provider: IDappProvider
   public onLogin: (proofableLogin: ProofableLogin) => any
   public onLogout: () => any
   public readonly providerId: WalletProviderId
   private config: WalletServiceConfig
-  private provider: IDappProvider
-  private proxy: IProvider | null
+  private proxy: IProvider
   private address: string | null
 
   constructor(providerId: WalletProviderId | null, config: WalletServiceConfig) {
@@ -106,8 +107,9 @@ export class WalletService implements IWalletService {
     }
 
     if (this.providerId === 'maiar_extension') {
-      await this.provider.login({ token: proofableToken })
-      const extensionAccount = (this.provider as ExtensionProvider).account
+      const extensionProvider = this.provider as ExtensionProvider
+      await extensionProvider.login({ token: proofableToken })
+      const extensionAccount = extensionProvider.account
       this.finalizeLogin({ signature: extensionAccount.signature || '', address: extensionAccount.address })
     }
 
@@ -128,19 +130,25 @@ export class WalletService implements IWalletService {
   isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
 
   sendTransaction = async (transaction: Transaction) => {
-    this.assertLoggedIn()
-    this.assertConfiguredProxy()
+    this.ensureLoggedIn()
+    this.ensureConfiguredProxy()
 
     const address = new Address(this.getAddress())
     const account = new Account(address)
 
-    account.getAsOnNetwork(this.proxy as IProvider)
+    await account.sync(this.proxy)
     account.incrementNonce()
     transaction.setNonce(account.nonce)
 
-    const sent = await this.provider.sendTransaction(transaction)
+    if (this.providerId === 'maiar_extension') {
+      // workaround! in the current state, the extension window stays open until the transaction is fully executed
+      // - IF we send it directly using sendTransaction() like below
+      const signedTx = await this.provider.signTransaction(transaction) // extension closes after signing... yay!
+      await signedTx.send(this.proxy)
+      return await signedTx.awaitExecuted(this.proxy)
+    }
 
-    return sent
+    return await this.provider.sendTransaction(transaction)
   }
 
   heartbeat = async () => {
@@ -162,7 +170,7 @@ export class WalletService implements IWalletService {
   }
 
   getAddress = () => {
-    this.assertLoggedIn()
+    this.ensureLoggedIn()
     return this.address as string
   }
 
@@ -194,13 +202,13 @@ export class WalletService implements IWalletService {
 
   private clearStorage = () => window.localStorage.removeItem(WalletAuthStorageKey)
 
-  private assertLoggedIn = () => {
+  private ensureLoggedIn = () => {
     if (!this.address) {
       throw new Error('wallet: user needs to login before')
     }
   }
 
-  private assertConfiguredProxy = () => {
+  private ensureConfiguredProxy = () => {
     if (!this.proxy) {
       throw new Error('wallet: proxy needs configuration')
     }
