@@ -137,7 +137,6 @@ export class WalletService implements IWalletService {
     const account = new Account(address)
 
     await account.sync(this.proxy)
-    account.incrementNonce()
     transaction.setNonce(account.nonce)
 
     if (this.providerId === 'maiar_extension') {
@@ -145,7 +144,8 @@ export class WalletService implements IWalletService {
       // - IF we send it directly using sendTransaction() like below
       const signedTx = await this.provider.signTransaction(transaction) // extension closes after signing... yay!
       await signedTx.send(this.proxy)
-      return await signedTx.awaitExecuted(this.proxy)
+      await signedTx.awaitExecuted(this.proxy)
+      return signedTx
     }
 
     return await this.provider.sendTransaction(transaction)
