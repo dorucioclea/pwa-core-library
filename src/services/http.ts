@@ -24,7 +24,8 @@ export interface IAppResponse<T> {
 }
 
 interface IRequestOptions {
-  headers: { [name: string]: string }
+  isJson?: boolean
+  headers?: { [name: string]: string }
 }
 
 export class HttpService implements IHttpService {
@@ -86,17 +87,25 @@ export class HttpService implements IHttpService {
     }
   }
 
-  private getRequestInfo = (httpMethod: string = 'GET', data?: any, options?: IRequestOptions) => ({
-    method: httpMethod,
-    credentials: 'include' as RequestCredentials,
-    headers: {
-      'X-XSRF-TOKEN': decodeURIComponent(cookie.get('XSRF-TOKEN') || ''),
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      ...(options?.headers || {}),
-    },
-    body: httpMethod !== 'GET' ? JSON.stringify(data || {}) : undefined,
-  })
+  private getRequestInfo = (httpMethod: string = 'GET', data?: any, options?: IRequestOptions) => {
+    const isJson = !options || options.isJson
+    const situationalHeaders = options?.headers || {}
+
+    if (isJson) {
+      situationalHeaders['Content-Type'] = 'application/json'
+    }
+
+    return {
+      method: httpMethod,
+      credentials: 'include' as RequestCredentials,
+      headers: {
+        'X-XSRF-TOKEN': decodeURIComponent(cookie.get('XSRF-TOKEN') || ''),
+        Accept: 'application/json',
+        ...situationalHeaders,
+      },
+      body: httpMethod !== 'GET' ? (isJson ? JSON.stringify(data || {}) : data) : undefined,
+    }
+  }
 }
 
 export const handleAppResponse = async <T>(
