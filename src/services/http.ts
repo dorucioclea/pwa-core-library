@@ -7,10 +7,10 @@ export interface IHttpService {
   onUnauthorized: (response: IAppResponse<any>) => void
   onSuccessfulResponse: (response: IAppResponse<any>) => void
   onMaintenanceMode: (response: IAppResponse<any>) => void
-  get: <T>(url: string) => Promise<IAppResponse<T>>
-  post: <T>(url: string, data?: any) => Promise<IAppResponse<T>>
-  put: <T>(url: string, data?: any) => Promise<IAppResponse<T>>
-  delete: <T>(url: string) => Promise<IAppResponse<T>>
+  get: <T>(url: string, options?: IRequestOptions) => Promise<IAppResponse<T>>
+  post: <T>(url: string, data?: any, options?: IRequestOptions) => Promise<IAppResponse<T>>
+  put: <T>(url: string, data?: any, options?: IRequestOptions) => Promise<IAppResponse<T>>
+  delete: <T>(url: string, options?: IRequestOptions) => Promise<IAppResponse<T>>
 }
 
 export interface IAppResponse<T> {
@@ -21,6 +21,10 @@ export interface IAppResponse<T> {
   paymentRequired: boolean
   noContent: boolean
   original: Response
+}
+
+interface IRequestOptions {
+  headers: { [name: string]: string }
 }
 
 export class HttpService implements IHttpService {
@@ -36,17 +40,17 @@ export class HttpService implements IHttpService {
     this.onMaintenanceMode = () => {}
   }
 
-  public get = async <T>(url: string) => await this.request<T>('GET', url, undefined)
+  public get = async <T>(url: string, options?: IRequestOptions) => await this.request<T>('GET', url, undefined, options)
 
-  public post = async <T>(url: string, data?: any) => await this.request<T>('POST', url, data)
+  public post = async <T>(url: string, data?: any, options?: IRequestOptions) => await this.request<T>('POST', url, data, options)
 
-  public put = async <T>(url: string, data?: any) => await this.request<T>('PUT', url, data)
+  public put = async <T>(url: string, data?: any, options?: IRequestOptions) => await this.request<T>('PUT', url, data, options)
 
-  public delete = async <T>(url: string) => await this.request<T>('DELETE', url, undefined)
+  public delete = async <T>(url: string, options?: IRequestOptions) => await this.request<T>('DELETE', url, undefined, options)
 
-  private request = async <T>(httpMethod: string, url: string, data: any) => {
+  private request = async <T>(httpMethod: string, url: string, data: any, options?: IRequestOptions) => {
     const requestUrl = this.baseUrl + '/' + url
-    const requestInfo = this.getRequestInfo(httpMethod, data)
+    const requestInfo = this.getRequestInfo(httpMethod, data, options)
     const response = await this.convertResponse<T>(fetch(requestUrl, requestInfo))
 
     if (response.original.status === 401) this.onUnauthorized(response)
@@ -82,13 +86,14 @@ export class HttpService implements IHttpService {
     }
   }
 
-  private getRequestInfo = (httpMethod: string = 'GET', data?: any) => ({
+  private getRequestInfo = (httpMethod: string = 'GET', data?: any, options?: IRequestOptions) => ({
     method: httpMethod,
     credentials: 'include' as RequestCredentials,
     headers: {
       'X-XSRF-TOKEN': decodeURIComponent(cookie.get('XSRF-TOKEN') || ''),
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      ...(options?.headers || {}),
     },
     body: httpMethod !== 'GET' ? JSON.stringify(data || {}) : undefined,
   })
