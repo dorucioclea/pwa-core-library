@@ -49,7 +49,7 @@ export class HttpService implements IHttpService {
   public delete = async <T>(url: string, options?: IRequestOptions) => await this.request<T>('DELETE', url, undefined, options)
 
   private request = async <T>(httpMethod: string, url: string, data: any, options?: IRequestOptions) => {
-    const requestUrl = this.baseUrl + '/' + url
+    const requestUrl = url.startsWith('http') ? url : `${this.baseUrl}/${url}`
     const requestInfo = this.getRequestInfo(httpMethod, data, options)
     const response = await this.convertResponse<T>(fetch(requestUrl, requestInfo))
 
