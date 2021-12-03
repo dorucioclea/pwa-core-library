@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, useState } from 'react'
-import _NftMinterTagSelector from './_NftMinterTagSelector'
-import { faAngleLeft, faPercentage } from '@fortawesome/free-solid-svg-icons'
+import _NftMinterTagAdder from './_NftMinterTagAdder'
+import { faAngleLeft, faPercentage, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MintableNft, NftCollectionAccount } from './types'
 import { FileSelector } from '../Controls/FileSelector'
@@ -55,29 +55,53 @@ const _NftMinter = (props: Props) => {
       <label htmlFor="description" className="pl-1 text-xl mb-2 text-gray-800">
         Description
       </label>
-      <Input id="description" value={description} onChange={(val) => setDescription(val)} className="mb-4" />
-      <label htmlFor="royalties" className="pl-1 text-xl mb-2 text-gray-800">
-        Royalties
-      </label>
-      <Input
-        id="royalties"
-        icon={faPercentage}
-        value={royalties}
-        placeholder="10"
-        onChange={(val) => setRoyalties((previous) => sanitizeRoyaltiesInput(val, previous))}
-        type="number"
-        min={0}
-        max={100}
-        required
-        className="mb-1"
-      />
-      <small className="block pl-2 text-gray-600 text-lg mb-4">Your will receive {royalties}% of any transaction involving this NFT.</small>
-      <_NftMinterTagSelector tags={tags} onUpdate={(tags) => setTags(tags)} />
+      <Input id="description" value={description} onChange={(val) => setDescription(val)} className="mb-6" />
+      <div className="flex space-x-4 mb-4">
+        <div className="w-1/2 bg-gray-50 p-4 rounded-xl">
+          <label htmlFor="royalties" className="pl-1 text-xl mb-2 text-gray-800">
+            Royalties
+          </label>
+          <Input
+            id="royalties"
+            icon={faPercentage}
+            value={royalties}
+            placeholder="10"
+            onChange={(val) => setRoyalties((previous) => sanitizeRoyaltiesInput(val, previous))}
+            type="number"
+            min={0}
+            max={100}
+            required
+            className="mb-1"
+          />
+        </div>
+        <div className="w-1/2 bg-gray-50 p-4 rounded-xl">
+          <_NftMinterTagAdder tags={tags} onUpdate={(tags) => setTags(tags)} />
+        </div>
+      </div>
+      <div className="mb-4">
+        <small className="block pl-1 text-gray-600 text-lg mb-2">
+          Your will receive <strong>{royalties}%</strong> of any transaction involving this NFT.
+        </small>
+        {tags.length > 0 && (
+          <div className="flex flex-wrap items-center">
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setTags((current) => current.filter((t) => t !== tag))}
+                className="flex items-center px-4 py-1 rounded-md font-medium bg-gray-200 text-gray-800 text-lg mr-2 mb-2"
+              >
+                {tag}
+                <FontAwesomeIcon icon={faTimes} size="sm" className="inline-block ml-2 text-gray-800 opacity-75" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       <FileSelector
         onSelect={(file) => setMedia(file)}
         onReset={() => setMedia(null)}
         allowedFilesDescription="PNG, JPG, GIF up to 10MB"
-        className="my-8"
+        className="mb-6"
       />
       <div className="flex items-center">
         <button onClick={() => props.onGoBackRequest()} className="w-1/2 text-xl text-center text-gray-500">

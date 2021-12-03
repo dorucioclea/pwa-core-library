@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, useState } from 'react'
-import { faHashtag, faPlusSquare, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faHashtag, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
@@ -11,22 +11,24 @@ type Props = {
   className?: string
 }
 
-const _NftMinterTagSelector = (props: Props) => {
+const _NftMinterTagAdder = (props: Props) => {
   const [tagInput, setTagInput] = useState('')
 
   const handleKeydownOrAdd = (event?: KeyboardEvent<HTMLInputElement>) => {
     if (tagInput.length < 1) return
     if (event && event.code !== 'Enter') return
     if (event) event.preventDefault()
+    if (props.tags.length >= 10) {
+      showToast('You can have a max. of 10 tags', 'error')
+      return
+    }
     if (props.tags.includes(tagInput)) {
-      showToast('You have already added this tag!', 'error')
+      showToast('You have already added this tag', 'error')
       return
     }
     props.onUpdate([...props.tags, tagInput])
     setTagInput('')
   }
-
-  const handleRemove = (tag: string) => props.onUpdate(props.tags.filter((t) => t !== tag))
 
   return (
     <div className={props.className}>
@@ -49,20 +51,8 @@ const _NftMinterTagSelector = (props: Props) => {
           <span className="sr-only">Add</span>
         </Button>
       </div>
-      <div className="flex flex-wrap items-center">
-        {props.tags.map((tag) => (
-          <button
-            key={tag}
-            onClick={() => handleRemove(tag)}
-            className="flex items-center px-4 py-1 rounded-md font-medium bg-gray-200 text-gray-800 text-lg mr-2 mb-2"
-          >
-            {tag}
-            <FontAwesomeIcon icon={faTimes} size="sm" className="inline-block ml-2 text-gray-800 opacity-75" />
-          </button>
-        ))}
-      </div>
     </div>
   )
 }
 
-export default _NftMinterTagSelector
+export default _NftMinterTagAdder

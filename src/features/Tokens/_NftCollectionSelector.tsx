@@ -48,7 +48,7 @@ const _NftCollectionSelector = (props: Props) => {
   return (
     <div>
       <h2 className="mb-4">
-        <span className="highlight">Select</span> an NFT collection
+        <span className="highlight">Select</span> a collection
       </h2>
       <div className="h-32">
         <Select
