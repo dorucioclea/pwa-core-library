@@ -71,6 +71,7 @@ export type { Nft, NftCollection, NftCollectionList, NftCollectionAccount } from
 
 // transactions
 export type { Transaction, TransactionType } from './features/Transactions/types'
+export { TxProcessingIndicator } from './features/Transactions/TxProcessingIndicator'
 
 // user
 export type { UserPrivate } from './features/User/types'
