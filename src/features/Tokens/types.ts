@@ -27,3 +27,25 @@ export type NftCollectionAccount = {
   canCreate: boolean
   canBurn: boolean
 }
+
+export type IssuableCollection = {
+  type: 'nft' | 'sft' | 'meta'
+  name: string
+  ticker: string
+  properties: string[]
+}
+
+export type SettableCollectionRoles = {
+  collection: string
+  address: string
+  roles: string[]
+}
+
+export type MintableNft = {
+  collection: string
+  name: string
+  description: string
+  royalties: number
+  tags: string[]
+  media: File
+}

@@ -67,7 +67,16 @@ export type { Identity, SocialAccount, SocialAccountPlatform, SocialAccountProvi
 export { getIdentityRequest } from './features/Superciety/api'
 
 // tokens
-export type { Nft, NftCollection, NftCollectionList, NftCollectionAccount } from './features/Tokens/types'
+export type {
+  Nft,
+  NftCollection,
+  NftCollectionList,
+  NftCollectionAccount,
+  IssuableCollection,
+  SettableCollectionRoles,
+  MintableNft,
+} from './features/Tokens/types'
+export { NftCreator } from './features/Tokens/NftCreator'
 
 // transactions
 export type { Transaction, TransactionType } from './features/Transactions/types'
