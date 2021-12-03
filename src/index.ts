@@ -10,6 +10,9 @@ export { useDidMountEffect } from './hooks/did-mount'
 // F E A T U R E S
 // * * * * * * * *
 
+// alerts
+export { SuperTokenGuardNotice } from './features/Alerts/SuperTokenGuardNotice'
+
 // auth
 export { ConnectButton } from './features/Auth/ConnectButton'
 export { DisconnectButton } from './features/Auth/DisconnectButton'
