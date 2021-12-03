@@ -14,6 +14,7 @@ type Props = {
   onCollectionSetRolesRequest: (settableCollectionRoles: SettableCollectionRoles) => void
   onNftCreateRequest: (mintableNft: MintableNft) => void
   onResetRequest: () => void
+  mintingNotice?: any
   processing: boolean
 }
 
@@ -29,7 +30,12 @@ export const NftCreator = (props: Props) => (
       <Steps total={3} active={props.collection ? 2 : 1} />
     </header>
     {props.collection && props.collection.canCreate ? (
-      <_NftMinter collection={props.collection} onCreateRequest={props.onNftCreateRequest} onGoBackRequest={() => props.onCollectionSelected(null)} />
+      <_NftMinter
+        collection={props.collection}
+        onCreateRequest={props.onNftCreateRequest}
+        onGoBackRequest={() => props.onCollectionSelected(null)}
+        notice={props.mintingNotice}
+      />
     ) : (
       <_NftCollectionSelector
         address={props.address}

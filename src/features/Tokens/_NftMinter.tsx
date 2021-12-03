@@ -14,6 +14,7 @@ type Props = {
   collection: NftCollectionAccount
   onCreateRequest: (mintableNft: MintableNft) => void
   onGoBackRequest: () => void
+  notice: any
 }
 
 const _NftMinter = (props: Props) => {
@@ -46,6 +47,7 @@ const _NftMinter = (props: Props) => {
       <h2 className="mb-4">
         <span className="highlight">Create</span> an NFT
       </h2>
+      {props.notice && <div className="mb-2">{props.notice}</div>}
       <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
         Name
       </label>
