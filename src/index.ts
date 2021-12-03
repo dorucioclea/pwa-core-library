@@ -49,6 +49,7 @@ export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
 export { ElrondLogo } from './features/Logos/ElrondLogo'
 export { LedgerLogo } from './features/Logos/LedgerLogo'
 export { MaiarLogo } from './features/Logos/MaiarLogo'
+export { SuperTokenLogo } from './features/Logos/SuperTokenLogo'
 
 // modals
 export { StickyModal } from './features/Modals/StickyModal'
