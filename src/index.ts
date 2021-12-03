@@ -19,6 +19,7 @@ export { BrandingBanner } from './features/Banners/BrandingBanner'
 
 // controls
 export { Button } from './features/Controls/Button'
+export { FileSelector } from './features/Controls/FileSelector'
 export { LinkButton } from './features/Controls/LinkButton'
 export { Input } from './features/Controls/Input'
 export { Pagination } from './features/Controls/Pagination'
