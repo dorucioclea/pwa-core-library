@@ -45,10 +45,7 @@ export const FileSelector = (props: Props) => {
             <p className="text-xl md:text-2xl text-blue-400 font-head font-bold">Drop it like it's hot! :)</p>
           ) : (
             <div className="flex text-sm text-gray-600">
-              <label
-                htmlFor="file-upload"
-                className="relative cursor-pointer rounded-xl font-medium text-xl text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-              >
+              <span className="relative cursor-pointer rounded-xl font-medium text-xl text-primary-600 hover:text-primary-500">
                 <span>Upload a file</span>
                 <input
                   id="file-upload"
@@ -58,7 +55,7 @@ export const FileSelector = (props: Props) => {
                   className="sr-only"
                   {...getInputProps()}
                 />
-              </label>
+              </span>
               <p className="pl-1 text-xl">or drag and drop</p>
             </div>
           )}
