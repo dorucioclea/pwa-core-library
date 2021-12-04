@@ -6,6 +6,7 @@ import { NftCollectionRoleSetter } from './_NftCollectionRoleSetter'
 import { IssuableCollection, NftCollectionAccount, SettableCollectionRoles } from './types'
 import { Select, SelectOption } from '../Controls/Select'
 import { Button } from '../Controls/Button'
+import { getTokenTypeDisplayName } from './helper'
 
 type Props = {
   address: string
@@ -26,7 +27,7 @@ const _NftCollectionSelector = (props: Props) => {
   }
 
   const toSelectOptions = (col: NftCollectionAccount[]) =>
-    col.map((c) => ({ name: `(${c.type}) ${c.name} (${c.ticker})`, value: c.ticker } as SelectOption))
+    col.map((c) => ({ name: `(${getTokenTypeDisplayName(c.type)}) ${c.name} (${c.ticker})`, value: c.ticker } as SelectOption))
 
   const findCollectionBy = (ticker: string) => props.availableCollections.find((c) => c.ticker === ticker)!
 
