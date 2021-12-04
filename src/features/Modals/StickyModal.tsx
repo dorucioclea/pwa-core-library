@@ -4,7 +4,7 @@ import './StickyModal.css'
 
 type Props = {
   open: boolean
-  onClose: () => void
+  onClose?: () => void
   children: any
 }
 
