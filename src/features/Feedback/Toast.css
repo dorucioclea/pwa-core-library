@@ -3,14 +3,14 @@
   -webkit-transform: translate3d(0, 0, 9999px);
   position: fixed;
   padding: 4px;
-  width: 320px;
+  width: 360px;
   box-sizing: border-box;
   color: #fff;
 }
 .Toastify__toast-container--top-center {
   top: 1em;
   left: 50%;
-  margin-left: -160px;
+  margin-left: -180px;
 }
 
 @media only screen and (max-width: 480px) {

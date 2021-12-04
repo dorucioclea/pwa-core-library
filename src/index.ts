@@ -1,3 +1,4 @@
+export { ScyRoot } from './ScyRoot'
 export type { AppSystemColor } from './types'
 export { trimHash, classNames } from './helpers'
 
@@ -31,7 +32,7 @@ export { Select } from './features/Controls/Select'
 export { Switch } from './features/Controls/Switch'
 
 // feedback
-export { ScyToastRoot, showToast } from './features/Feedback/Toast'
+export { showToast } from './features/Feedback/Toast'
 
 // front
 export { FrontHero } from './features/Front/FrontHero'
