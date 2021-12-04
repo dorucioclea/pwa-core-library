@@ -22,3 +22,12 @@ export type Transaction = {
   tokenIdentifier: string | null
   tokenValue: string | null
 }
+
+export type PreparedTx = {
+  sender: string
+  receiver: string
+  value: string
+  data: string
+  gasLimit: number
+  chainID: string
+}

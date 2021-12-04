@@ -85,8 +85,9 @@ export { NftCreator } from './features/Tokens/NftCreator'
 export { getTokenTypeDisplayName } from './features/Tokens/helper'
 
 // transactions
-export type { Transaction, TransactionType } from './features/Transactions/types'
+export type { Transaction, TransactionType, PreparedTx } from './features/Transactions/types'
 export { TxProcessingIndicator } from './features/Transactions/TxProcessingIndicator'
+export { callSmartContract, sendPreparedTx } from './features/Transactions/helpers'
 
 // user
 export type { UserPrivate } from './features/User/types'
