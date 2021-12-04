@@ -67,7 +67,6 @@ const _NftMinter = (props: Props) => {
             value={royalties}
             placeholder="10"
             onChange={(val) => setRoyalties((previous) => sanitizeRoyaltiesInput(val, previous))}
-            type="number"
             min={0}
             max={100}
             required
