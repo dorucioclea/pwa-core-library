@@ -54,8 +54,8 @@ export interface IWalletService {
 
 export class WalletService implements IWalletService {
   public readonly provider: IDappProvider
-  public onLogin: (proofableLogin: ProofableLogin) => any
-  public onLogout: () => any
+  public onLogin?: (proofableLogin: ProofableLogin) => any
+  public onLogout?: () => any
   public readonly providerId: WalletProviderId
   private config: WalletServiceConfig
   private proxy: IProvider
@@ -88,8 +88,6 @@ export class WalletService implements IWalletService {
     }
 
     this.config = config
-    this.onLogin = (_) => {}
-    this.onLogout = () => {}
     this.providerId = providerId
     this.proxy = proxy
     this.address = isLoggedIn ? storedWallet.address : null
@@ -124,12 +122,12 @@ export class WalletService implements IWalletService {
   logout = async () => {
     await this.provider.logout()
     this.clearStorage()
-    this.onLogout()
+    if (this.onLogout) this.onLogout()
   }
 
   isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
 
-  sendTransaction = async (transaction: Transaction) => {
+  sendTransaction = async (tx: Transaction) => {
     this.ensureLoggedIn()
     this.ensureConfiguredProxy()
 
@@ -137,18 +135,12 @@ export class WalletService implements IWalletService {
     const account = new Account(address)
 
     await account.sync(this.proxy)
-    transaction.setNonce(account.nonce)
+    tx.setNonce(account.nonce)
 
-    if (this.providerId === 'maiar_extension') {
-      // workaround! in the current state, the extension window stays open until the transaction is fully executed
-      // - IF we send it directly using sendTransaction() like below
-      const signedTx = await this.provider.signTransaction(transaction) // extension closes after signing... yay!
-      await signedTx.send(this.proxy)
-      await signedTx.awaitExecuted(this.proxy)
-      return signedTx
-    }
+    const signedTx = await this.provider.signTransaction(tx)
+    await signedTx.send(this.proxy)
 
-    return await this.provider.sendTransaction(transaction)
+    return signedTx
   }
 
   heartbeat = async () => {
@@ -183,7 +175,7 @@ export class WalletService implements IWalletService {
 
   private finalizeLogin = (proofableLogin: ProofableLogin, addressIndex?: number) => {
     this.persistLoginInStorage(proofableLogin.address, addressIndex)
-    this.onLogin(proofableLogin)
+    if (this.onLogin) this.onLogin(proofableLogin)
   }
 
   private persistLoginInStorage = (address: string, addressIndex?: number) => {
