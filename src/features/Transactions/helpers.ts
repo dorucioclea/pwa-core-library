@@ -23,18 +23,15 @@ type TxHooks = {
 
 export const callSmartContract = async (
   walletService: IWalletService,
-  contractAddress: string,
+  address: string,
   func: string,
   args: TypedValue[],
   gasLimit: number,
-  hooks?: TxHooks
+  hooks?: TxHooks,
+  value?: Balance
 ) => {
-  const sc = new SmartContract({ address: new Address(contractAddress) })
-  const tx = sc.call({
-    func: new ContractFunction(func),
-    gasLimit: new GasLimit(gasLimit),
-    args: args,
-  })
+  const sc = new SmartContract({ address: new Address(address) })
+  const tx = sc.call({ func: new ContractFunction(func), gasLimit: new GasLimit(gasLimit), value, args })
 
   await sendTx(walletService, tx, hooks)
 }
