@@ -32,7 +32,7 @@ const _NftMinterTagAdder = (props: Props) => {
 
   return (
     <div className={props.className}>
-      <label htmlFor="tags" className="pl-1 text-xl mb-2 text-gray-800">
+      <label htmlFor="tags" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
         Tags (Currently: <strong>{props.tags.length}</strong>)
       </label>
       <div className="flex mb-2">

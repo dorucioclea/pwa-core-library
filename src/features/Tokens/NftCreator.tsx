@@ -26,28 +26,26 @@ export const NftCreator = (props: Props) => (
         <p className="text-gray-800 text-2xl animate-pulse">Processing your transaction on the blockchain ...</p>
       </div>
     )}
-    <header className="flex justify-center">
+    <header className="absolute md:relative flex justify-end md:justify-center w-full">
       <Steps total={3} active={props.collection ? 2 : 1} />
     </header>
-    <div className="-mt-4">
-      {props.collection && props.collection.canCreate ? (
-        <_NftMinter
-          collection={props.collection}
-          onCreateRequest={props.onNftCreateRequest}
-          onGoBackRequest={() => props.onCollectionSelected(null)}
-          notice={props.mintingNotice}
-        />
-      ) : (
-        <_NftCollectionSelector
-          address={props.address}
-          collection={props.collection}
-          availableCollections={props.availableCollections}
-          onSelected={(c) => props.onCollectionSelected(c)}
-          onCreateRequest={props.onCollectionCreateRequest}
-          onSetRolesRequest={props.onCollectionSetRolesRequest}
-          onResetRequest={props.onResetRequest}
-        />
-      )}
-    </div>
+    {props.collection && props.collection.canCreate ? (
+      <_NftMinter
+        collection={props.collection}
+        onCreateRequest={props.onNftCreateRequest}
+        onGoBackRequest={() => props.onCollectionSelected(null)}
+        notice={props.mintingNotice}
+      />
+    ) : (
+      <_NftCollectionSelector
+        address={props.address}
+        collection={props.collection}
+        availableCollections={props.availableCollections}
+        onSelected={(c) => props.onCollectionSelected(c)}
+        onCreateRequest={props.onCollectionCreateRequest}
+        onSetRolesRequest={props.onCollectionSetRolesRequest}
+        onResetRequest={props.onResetRequest}
+      />
+    )}
   </div>
 )

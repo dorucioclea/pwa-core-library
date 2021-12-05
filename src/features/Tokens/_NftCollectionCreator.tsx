@@ -50,7 +50,7 @@ const _NftCollectionCreator = (props: Props) => {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="mb-4">
-        <span className="highlight">Create</span> an NFT collection
+        <span className="highlight">Create</span> a collection
       </h2>
       <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
         Name
@@ -83,7 +83,7 @@ const _NftCollectionCreator = (props: Props) => {
               <label htmlFor={property.id} className="font-medium text-gray-700 text-lg">
                 {property.name} ({property.id})
               </label>
-              <p id={property.id + '-description'} className="text-gray-500">
+              <p id={property.id + '-description'} className="text-sm md:text-base text-gray-500">
                 {property.description}
               </p>
             </div>
@@ -91,11 +91,11 @@ const _NftCollectionCreator = (props: Props) => {
         ))}
       </div>
       <div className="flex items-center">
-        <button onClick={() => props.onGoBackRequest()} className="w-1/2 text-xl text-center text-gray-500">
+        <button onClick={() => props.onGoBackRequest()} className="w-1/3 md:w-1/2 text-lg md:text-xl text-center text-gray-500">
           <FontAwesomeIcon icon={faAngleLeft} className="text-gray-500 opacity-75 inline-block mr-2" />
           Go Back
         </button>
-        <Button color="blue" className="w-1/2" submit>
+        <Button color="blue" className="w-2/3 md:w-1/2" submit>
           Create Collection
         </Button>
       </div>

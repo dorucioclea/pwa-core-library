@@ -44,21 +44,21 @@ const _NftMinter = (props: Props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 className="mb-4">
+      <h2 className="mb-2 md:mb-4">
         <span className="highlight">Create</span> an NFT
       </h2>
       {props.notice && <div className="mb-2">{props.notice}</div>}
-      <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
+      <label htmlFor="name" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
         Name
       </label>
-      <Input id="name" value={name} onChange={(val) => setName(val)} className="mb-4" required />
-      <label htmlFor="description" className="pl-1 text-xl mb-2 text-gray-800">
+      <Input id="name" value={name} onChange={(val) => setName(val)} className="mb-2 md:mb-4" required />
+      <label htmlFor="description" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
         Description
       </label>
-      <Input id="description" value={description} onChange={(val) => setDescription(val)} className="mb-6" />
-      <div className="flex space-x-4 mb-4">
-        <div className="w-1/2 bg-gray-50 p-4 rounded-xl">
-          <label htmlFor="royalties" className="pl-1 text-xl mb-2 text-gray-800">
+      <Input id="description" value={description} onChange={(val) => setDescription(val)} className="mb-2 md:mb-4" />
+      <div className="flex flex-wrap md:flex-nowrap md:space-x-4 mb-2 md:mb-4">
+        <div className="w-full md:w-1/2 md:bg-gray-50 md:p-4 rounded-xl mb-2 md:mb-0">
+          <label htmlFor="royalties" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
             Royalties
           </label>
           <Input
@@ -73,12 +73,12 @@ const _NftMinter = (props: Props) => {
             className="mb-1"
           />
         </div>
-        <div className="w-1/2 bg-gray-50 p-4 rounded-xl">
+        <div className="w-full md:w-1/2 md:bg-gray-50 md:p-4 rounded-xl">
           <_NftMinterTagAdder tags={tags} onUpdate={(tags) => setTags(tags)} />
         </div>
       </div>
-      <div className="mb-4">
-        <small className="block pl-1 text-gray-600 text-lg mb-2">
+      <div className="mb-4 md:mb-6">
+        <small className="block pl-1 text-gray-600 text-base md:text-lg mb-2">
           Your will receive <strong>{royalties}%</strong> of any transaction involving this NFT.
         </small>
         {tags.length > 0 && (
@@ -100,7 +100,7 @@ const _NftMinter = (props: Props) => {
         onSelect={(file) => setMedia(file)}
         onReset={() => setMedia(null)}
         allowedFilesDescription="PNG, JPG, GIF up to 10MB"
-        className="mb-6"
+        className="mb-4 md:mb-6"
       />
       <div className="flex items-center">
         <button onClick={() => props.onGoBackRequest()} className="w-1/2 text-xl text-center text-gray-500">
