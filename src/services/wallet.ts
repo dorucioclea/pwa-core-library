@@ -89,7 +89,7 @@ export class WalletService implements IWalletService {
   }
 
   init = async (config: WalletServiceConfig, providerId?: WalletProviderId) => {
-    if (this.providerId !== 'empty') return true
+    if (this.providerId === providerId) return true
     const storedWallet = this.loadFromStorage()
     const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
     providerId = providerId || storedWallet?.providerId || 'empty'
