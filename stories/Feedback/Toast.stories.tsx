@@ -1,11 +1,11 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { ScyToastRoot, showToast } from '../../src/index'
+import { showToast, ScyRoot } from '../../src/index'
 
 const ButtonClassNames = 'bg-gray-100 rounded-lg m-2 px-2 py-1'
 
 const MockComponent = () => (
   <div className="block w-full h-screen">
-    <ScyToastRoot />
+    <ScyRoot />
     <button className={ButtonClassNames} onClick={() => showToast('this is a success - like you!', 'success')}>
       Success
     </button>
@@ -17,6 +17,9 @@ const MockComponent = () => (
     </button>
     <button className={ButtonClassNames} onClick={() => showToast('this is an error - like you!', 'error')}>
       Error
+    </button>
+    <button className={ButtonClassNames} onClick={() => showToast("here we're vibin - like you!", 'vibe')}>
+      Lets vibe 🙌
     </button>
   </div>
 )
