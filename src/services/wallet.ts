@@ -156,7 +156,7 @@ export class WalletService implements IWalletService {
     if (this.onLogout) this.onLogout()
   }
 
-  isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
+  isLoggedIn = () => !!window && !!window.localStorage.getItem(WalletAuthStorageKey)
 
   signTransaction = async (tx: Transaction) => {
     this.ensureLoggedIn()
@@ -230,6 +230,7 @@ export class WalletService implements IWalletService {
   }
 
   private loadFromStorage = () => {
+    if (!window) return null
     const serialized = window.localStorage.getItem(WalletAuthStorageKey)
     return !!serialized ? (JSON.parse(serialized) as SerializableProviderStorage) : null
   }
