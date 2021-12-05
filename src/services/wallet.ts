@@ -154,10 +154,7 @@ export class WalletService implements IWalletService {
     if (this.onLogout) this.onLogout()
   }
 
-  isLoggedIn = () => {
-    this.ensureInitialized()
-    return !!window.localStorage.getItem(WalletAuthStorageKey)
-  }
+  isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
 
   signTransaction = async (tx: Transaction) => {
     this.ensureLoggedIn()
