@@ -58,7 +58,7 @@ const _NftCollectionSelector = (props: Props) => {
           className="mb-8"
         />
       </div>
-      <div className="flex flex-wrap items-center">
+      <div className="flex flex-wrap md:flex-nowrap items-center">
         <span className="block font-head text-2xl md:text-right mr-8 w-full md:w-1/2 mb-4 md:mb-0">or create a </span>
         <Button color="blue" onClick={() => setIsCreating(true)} className="w-full md:w-1/2">
           New Collection
