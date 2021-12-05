@@ -97,5 +97,5 @@ export type { UserPrivate } from './features/User/types'
 // * * * * * * * *
 export type { IHttpService } from './services/http'
 export { HttpService, handleAppResponse } from './services/http'
-export type { ProofableLogin, WalletProviderId, WalletServiceConfig } from './services/wallet'
+export type { ProofableLogin, WalletProviderId, WalletServiceConfig, IWalletService } from './services/wallet'
 export { WalletService } from './services/wallet'

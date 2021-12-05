@@ -36,36 +36,61 @@ type SerializableProviderStorage = {
 }
 
 export interface IWalletService {
-  readonly provider: IDappProvider
-  readonly providerId: WalletProviderId
-  init: () => Promise<boolean>
+  init: (config: WalletServiceConfig, providerId?: WalletProviderId) => Promise<boolean>
   getConfig: () => WalletServiceConfig
   onLogin?: (proofableLogin: ProofableLogin) => void
   onLogout?: () => void
   login: (proofableToken: string, addressIndex?: number) => Promise<{ walletConnectLoginUri?: string }>
   logout: () => Promise<void>
   isLoggedIn: () => boolean
+  signTransaction: (transaction: Transaction) => Promise<Transaction>
   sendTransaction: (transaction: Transaction) => Promise<Transaction>
   heartbeat: () => Promise<void>
   getAddress: () => string
+  getProvider: () => IDappProvider
+  getProviderId: () => WalletProviderId
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
 }
 
+class EmptyProvider implements IDappProvider {
+  constructor() {}
+  init = () => new Promise<boolean>((resolve) => resolve(true))
+  login = () => new Promise<string>((resolve) => resolve(''))
+  logout = () => new Promise<boolean>((resolve) => resolve(true))
+  getAddress = () => new Promise<string>((resolve) => resolve(''))
+  isInitialized = () => true
+  isConnected = () => new Promise<boolean>((resolve) => resolve(true))
+  sendTransaction = () => new Promise<Transaction>((resolve) => resolve(new Transaction({ receiver: new Address('erd1Empty') })))
+  signTransaction = () => new Promise<Transaction>((resolve) => resolve(new Transaction({ receiver: new Address('erd1Empty') })))
+  signTransactions = () => new Promise<Array<Transaction>>((resolve) => resolve([new Transaction({ receiver: new Address('erd1Empty') })]))
+  signMessage = () => new Promise<SignableMessage>((resolve) => resolve(new SignableMessage({})))
+}
+
 export class WalletService implements IWalletService {
-  public readonly provider: IDappProvider
   public onLogin?: (proofableLogin: ProofableLogin) => any
   public onLogout?: () => any
-  public readonly providerId: WalletProviderId
-  private config: WalletServiceConfig
-  private proxy: IProvider
-  private address: string | null
+  private static _instance: WalletService = new WalletService()
+  private provider: IDappProvider = new EmptyProvider()
+  private providerId: WalletProviderId = 'empty'
+  private config: WalletServiceConfig | null = null
+  private proxy: IProvider | null = null
+  private address: string | null = null
 
-  constructor(providerId: WalletProviderId | null, config: WalletServiceConfig) {
+  constructor() {
+    if (WalletService._instance) {
+      throw new Error('use getInstance() for construction of wallet service')
+    }
+    WalletService._instance = this
+  }
+
+  public static getInstance(): WalletService {
+    return WalletService._instance
+  }
+
+  init = async (config: WalletServiceConfig, providerId?: WalletProviderId) => {
     const storedWallet = this.loadFromStorage()
-    const isLoggedIn = !!storedWallet
     const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
-
     providerId = providerId || storedWallet?.providerId || 'empty'
 
     if (providerId === 'maiar_app') {
@@ -78,27 +103,30 @@ export class WalletService implements IWalletService {
         onClientLogout: async () => this.logout(),
       })
     } else if (providerId === 'maiar_extension') {
-      this.provider = isLoggedIn ? ExtensionProvider.getInstance().setAddress(storedWallet.address) : ExtensionProvider.getInstance()
+      this.provider = !!storedWallet ? ExtensionProvider.getInstance().setAddress(storedWallet.address) : ExtensionProvider.getInstance()
     } else if (providerId === 'hardware') {
       this.provider = new HWProvider(proxy)
     } else if (providerId === 'web') {
       this.provider = new WebWalletProvider(config?.WebWalletUrl)
-    } else {
-      this.provider = new EmptyProvider()
     }
 
     this.config = config
     this.providerId = providerId
     this.proxy = proxy
-    this.address = isLoggedIn ? storedWallet.address : null
+    this.address = !!storedWallet ? storedWallet.address : null
+
+    return await this.provider.init()
   }
 
-  init = async () => await this.provider.init()
-
-  getConfig = () => this.config
+  getConfig = () => {
+    this.ensureInitialized()
+    return this.config!
+  }
 
   // depending on the provider, login might be a 2-step process that ends by calling finalizeLogin()
   login = async (proofableToken: string, addressIndex?: number) => {
+    this.ensureInitialized()
+
     if (this.providerId === 'maiar_app') {
       const loginUri = await (this.provider as WalletConnectProvider).login()
       return { walletConnectLoginUri: loginUri + `&token=${proofableToken}` }
@@ -120,27 +148,38 @@ export class WalletService implements IWalletService {
   }
 
   logout = async () => {
+    this.ensureInitialized()
     await this.provider.logout()
     this.clearStorage()
     if (this.onLogout) this.onLogout()
   }
 
-  isLoggedIn = () => !!window.localStorage.getItem(WalletAuthStorageKey)
+  isLoggedIn = () => {
+    this.ensureInitialized()
+    return !!window.localStorage.getItem(WalletAuthStorageKey)
+  }
 
-  sendTransaction = async (tx: Transaction) => {
+  signTransaction = async (tx: Transaction) => {
     this.ensureLoggedIn()
-    this.ensureConfiguredProxy()
+    this.ensureInitialized()
 
     const address = new Address(this.getAddress())
     const account = new Account(address)
-
-    await account.sync(this.proxy)
+    await account.sync(this.proxy!)
     tx.setNonce(account.nonce)
 
-    const signedTx = await this.provider.signTransaction(tx)
-    await signedTx.send(this.proxy)
+    return await this.provider.signTransaction(tx)
+  }
 
-    return signedTx
+  sendTransaction = async (tx: Transaction) => {
+    this.ensureLoggedIn()
+    this.ensureInitialized()
+    tx.getSignature() // tx does not expose a way to check if sig is applied, so using it as a guard
+
+    await tx.send(this.proxy!)
+    await tx.awaitExecuted(this.proxy!)
+
+    return tx
   }
 
   heartbeat = async () => {
@@ -165,6 +204,10 @@ export class WalletService implements IWalletService {
     this.ensureLoggedIn()
     return this.address as string
   }
+
+  getProvider = () => this.provider
+
+  getProviderId = () => this.providerId
 
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
 
@@ -196,26 +239,16 @@ export class WalletService implements IWalletService {
 
   private ensureLoggedIn = () => {
     if (!this.address) {
-      throw new Error('wallet: user needs to login before')
+      throw new Error('wallet user needs to login before')
     }
   }
 
-  private ensureConfiguredProxy = () => {
+  private ensureInitialized = () => {
+    if (this.providerId === 'empty') {
+      throw new Error('wallet not initialized. call init() first')
+    }
     if (!this.proxy) {
-      throw new Error('wallet: proxy needs configuration')
+      throw new Error('wallet >proxy< needs configuration')
     }
   }
-}
-
-class EmptyProvider implements IDappProvider {
-  init = () => new Promise<boolean>((resolve) => resolve(true))
-  login = () => new Promise<string>((resolve) => resolve(''))
-  logout = () => new Promise<boolean>((resolve) => resolve(true))
-  getAddress = () => new Promise<string>((resolve) => resolve(''))
-  isInitialized = () => true
-  isConnected = () => new Promise<boolean>((resolve) => resolve(true))
-  sendTransaction = () => new Promise<Transaction>((resolve) => resolve(new Transaction({ receiver: new Address('erd1Empty') })))
-  signTransaction = () => new Promise<Transaction>((resolve) => resolve(new Transaction({ receiver: new Address('erd1Empty') })))
-  signTransactions = () => new Promise<Array<Transaction>>((resolve) => resolve([new Transaction({ receiver: new Address('erd1Empty') })]))
-  signMessage = () => new Promise<SignableMessage>((resolve) => resolve(new SignableMessage({})))
 }

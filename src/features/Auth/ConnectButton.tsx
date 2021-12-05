@@ -1,4 +1,4 @@
-import type { IWalletService, WalletProviderId, WalletServiceConfig } from '../../services/wallet'
+import type { IWalletService, WalletProviderId } from '../../services/wallet'
 import type { AppSystemColor } from '../../types'
 import React, { useEffect, useState } from 'react'
 import { _ProviderButton } from './_ProviderButton'
@@ -6,14 +6,12 @@ import { faBolt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { StickyModal } from '../Modals/StickyModal'
 import { Button } from '../Controls/Button'
-import { WalletService, ProofableLogin } from '../../services/wallet'
+import { ProofableLogin } from '../../services/wallet'
 import { _ProviderSelector } from './_ProviderSelector'
 import { _ProviderConnector } from './_ProviderConnector'
 
-let StaticWalletService: IWalletService | null = null
-
 type Props = {
-  walletConfig: WalletServiceConfig
+  walletService: IWalletService
   onTokenRequest: () => Promise<string>
   onLocalLogin: (proofable: ProofableLogin) => void
   forceOpen?: boolean
@@ -35,11 +33,10 @@ export const ConnectButton = (props: Props) => {
   const init = async () => setProofableToken(await props.onTokenRequest())
 
   const handleLoginRequest = async (provider: WalletProviderId) => {
-    if (!StaticWalletService || StaticWalletService.providerId !== provider) {
-      StaticWalletService = new WalletService(provider, props.walletConfig)
-      StaticWalletService.onLogin = (proof) => props.onLocalLogin(proof)
-      await StaticWalletService.init()
-    }
+    const walletConfig = props.walletService.getConfig()
+    await props.walletService.init(walletConfig, provider)
+
+    props.walletService.onLogin = (proof) => props.onLocalLogin(proof)
 
     if (provider === 'maiar_app') setActiveConnector(provider)
     if (provider === 'maiar_extension') await handleLogin()
@@ -48,8 +45,8 @@ export const ConnectButton = (props: Props) => {
   }
 
   const handleLogin = async () => {
-    if (!proofableToken || !StaticWalletService) return
-    await StaticWalletService.login(proofableToken)
+    if (!proofableToken) return
+    await props.walletService.login(proofableToken)
     setIsOpen(false)
     setActiveConnector(null)
   }
@@ -65,10 +62,10 @@ export const ConnectButton = (props: Props) => {
         )}
       </Button>
       <StickyModal open={isOpen} onClose={() => setIsOpen(false)}>
-        {!!activeConnector && StaticWalletService && proofableToken ? (
+        {!!activeConnector && proofableToken ? (
           <_ProviderConnector
             provider={activeConnector}
-            wallet={StaticWalletService}
+            wallet={props.walletService}
             proofableToken={proofableToken}
             onCloseRequest={() => setActiveConnector(null)}
           />

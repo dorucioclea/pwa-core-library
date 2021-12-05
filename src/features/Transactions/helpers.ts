@@ -1,4 +1,4 @@
-import { faHourglassHalf } from '@fortawesome/free-solid-svg-icons'
+import { faHourglassEnd, faHourglassHalf, faHourglassStart } from '@fortawesome/free-solid-svg-icons'
 import { IWalletService } from '../../services/wallet'
 import { showToast } from '../Feedback/Toast'
 import { PreparedTx } from './types'
@@ -53,22 +53,38 @@ export const sendPreparedTx = async (walletService: IWalletService, prepared: Pr
 }
 
 const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: TxHooks) => {
-  if (walletService.providerId === 'maiar_extension') {
-    showToast('Please confirm on Maiar Extension', 'vibe', faHourglassHalf)
-  } else if (walletService.providerId === 'maiar_app') {
-    showToast('Please confirm on Maiar', 'vibe', faHourglassHalf)
-  } else if (walletService.providerId === 'hardware') {
-    showToast('Please confirm on Ledger', 'vibe', faHourglassHalf)
+  if (walletService.getProviderId() === 'maiar_extension') {
+    showToast('Please confirm on Maiar Extension', 'vibe', faHourglassStart)
+  } else if (walletService.getProviderId() === 'maiar_app') {
+    showToast('Please confirm on Maiar', 'vibe', faHourglassStart)
+  } else if (walletService.getProviderId() === 'hardware') {
+    showToast('Please confirm on Ledger', 'vibe', faHourglassStart)
   }
 
-  tx.onSigned.on(({ transaction }) => hooks?.onSigned && hooks.onSigned(transaction))
-  tx.onSent.on(({ transaction }) => hooks?.onSent && hooks.onSent(transaction))
-  tx.onStatusChanged.on(({ transaction }) => hooks?.onSuccess && transaction.getStatus().isSuccessful() && hooks.onSuccess(transaction))
-  tx.onStatusChanged.on(({ transaction }) => hooks?.onFailed && transaction.getStatus().isFailed() && hooks.onFailed(transaction))
+  const handleSignedEvent = (transaction: Transaction) => hooks?.onSigned && hooks.onSigned(transaction)
+
+  const handleSentEvent = (transaction: Transaction) => {
+    hooks?.onSent && hooks.onSent(transaction)
+    showToast('Transaction sent ...', 'success', faHourglassHalf)
+  }
+
+  const handleSuccessEvent = (transaction: Transaction) =>
+    hooks?.onSuccess ? hooks.onSuccess(transaction) : showToast('Transaction executed', 'success', faHourglassEnd)
+
+  const handleErrorEvent = (transaction: Transaction) =>
+    hooks?.onFailed ? hooks.onFailed(transaction) : showToast('Transaction failed', 'error', faHourglassEnd)
 
   try {
-    await walletService.sendTransaction(tx)
+    const signedTx = await walletService.signTransaction(tx) // providers might manipulate (remove) registered listeners, so register them after signing
+
+    signedTx.onSigned.on(({ transaction }) => handleSignedEvent(transaction))
+    signedTx.onSent.on(({ transaction }) => handleSentEvent(transaction))
+    signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isSuccessful() && handleSuccessEvent(transaction))
+    signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isFailed() && handleErrorEvent(transaction))
+
+    await walletService.sendTransaction(signedTx)
   } catch (e) {
+    console.error(e)
     showToast(e as string, 'error')
   }
 }
