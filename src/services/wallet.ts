@@ -89,19 +89,19 @@ export class WalletService implements IWalletService {
   }
 
   init = async (config: WalletServiceConfig, providerId?: WalletProviderId) => {
-    if (this.providerId === providerId) return true
-    console.log(`initializing ${providerId} ...`)
+    if (this.providerId !== 'empty' && !providerId) return true // prevent empty init if already set provider
+    if (this.providerId === providerId) return true // prevent double-init for same provider
+
     const storedWallet = this.loadFromStorage()
     const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
     providerId = providerId || storedWallet?.providerId || 'empty'
 
     if (providerId === 'maiar_app') {
       this.provider = new WalletConnectProvider(proxy, config.WalletConnectBridge, {
-        onClientLogin: async () =>
-          this.finalizeLogin({
-            signature: await (this.provider as WalletConnectProvider).getSignature(),
-            address: await (this.provider as WalletConnectProvider).getAddress(),
-          }),
+        onClientLogin: async () => {
+          const castedProvider = this.provider as WalletConnectProvider
+          this.finalizeLogin({ signature: await castedProvider.getSignature(), address: await castedProvider.getAddress() })
+        },
         onClientLogout: async () => this.logout(),
       })
     } else if (providerId === 'maiar_extension') {
