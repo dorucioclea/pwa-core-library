@@ -89,6 +89,7 @@ export class WalletService implements IWalletService {
   }
 
   init = async (config: WalletServiceConfig, providerId?: WalletProviderId) => {
+    if (this.providerId !== 'empty') return true
     const storedWallet = this.loadFromStorage()
     const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
     providerId = providerId || storedWallet?.providerId || 'empty'
@@ -110,8 +111,8 @@ export class WalletService implements IWalletService {
       this.provider = new WebWalletProvider(config?.WebWalletUrl)
     }
 
-    this.config = config
     this.providerId = providerId
+    this.config = config
     this.proxy = proxy
     this.address = !!storedWallet ? storedWallet.address : null
 
