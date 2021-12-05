@@ -58,7 +58,7 @@ export const NftCollectionRoleSetter = (props: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="mt-8">
       <h2 className="mb-1">
         Permissions for
         <span className="inline-block ml-2 text-blue-500">{props.collection.ticker.split('-')[0]}</span>
