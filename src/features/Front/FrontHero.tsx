@@ -26,7 +26,7 @@ export const FrontHero = (props: Props) => {
   return (
     <section
       className={`relative flex flex-col ${!!props.children ? 'justify-around' : 'pt-8 md:pt-20 lg:pt-32'} ${props.className || ''}`}
-      style={{ height: props.reduceHeightBy ? `calc(100vh - 100px - ${props.reduceHeightBy}px)` : 'calc(100vh - 100px)' }}
+      style={{ minHeight: props.reduceHeightBy ? `calc(100vh - 100px - ${props.reduceHeightBy}px)` : 'calc(100vh - 100px)' }}
     >
       <div className="max-w-3xl">
         <h1 className={`text-8xl mb-4 ${titleColorClassNames}`}>{props.title}</h1>
@@ -42,7 +42,9 @@ export const FrontHero = (props: Props) => {
         <img src={props.image} className={props.imageClassName} />
       </div>
       {props.children && <div className="flex justify-center items-center text-3xl text-gray-600">{props.children}</div>}
-      <footer className="absolute bottom-0 left-0 right-0 h-12 flex justify-center items-center">{props.footerContent}</footer>
+      <footer className="absolute bottom-0 left-0 right-0 h-12 flex justify-center items-center mt-40 sm:mt-32 md:mt-16 lg:mt-0">
+        {props.footerContent}
+      </footer>
     </section>
   )
 }
