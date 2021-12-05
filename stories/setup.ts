@@ -11,7 +11,7 @@ export const getHttpService = () => {
   return httpService
 }
 
-const WalletConfig: WalletServiceConfig = {
+export const WalletConfig: WalletServiceConfig = {
   GatewayAddress: 'https://testnet-gateway.elrond.com',
   WebWalletUrl: 'https://testnet-wallet.elrond.com/dapp/init',
   WalletConnectBridge: 'https://bridge.walletconnect.org',

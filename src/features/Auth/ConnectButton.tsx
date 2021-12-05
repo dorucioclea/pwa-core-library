@@ -1,4 +1,4 @@
-import type { IWalletService, WalletProviderId } from '../../services/wallet'
+import type { IWalletService, WalletProviderId, WalletServiceConfig } from '../../services/wallet'
 import type { AppSystemColor } from '../../types'
 import React, { useEffect, useState } from 'react'
 import { _ProviderButton } from './_ProviderButton'
@@ -11,6 +11,7 @@ import { _ProviderSelector } from './_ProviderSelector'
 import { _ProviderConnector } from './_ProviderConnector'
 
 type Props = {
+  walletConfig: WalletServiceConfig
   walletService: IWalletService
   onTokenRequest: () => Promise<string>
   onLocalLogin: (proofable: ProofableLogin) => void
@@ -33,9 +34,7 @@ export const ConnectButton = (props: Props) => {
   const init = async () => setProofableToken(await props.onTokenRequest())
 
   const handleLoginRequest = async (provider: WalletProviderId) => {
-    const walletConfig = props.walletService.getConfig()
-    await props.walletService.init(walletConfig, provider)
-
+    await props.walletService.init(props.walletConfig, provider)
     props.walletService.onLogin = (proof) => props.onLocalLogin(proof)
 
     if (provider === 'maiar_app') setActiveConnector(provider)

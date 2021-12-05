@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import { ConnectButton } from '../../src/index'
-import { getWalletService } from '../setup'
+import { getWalletService, WalletConfig } from '../setup'
 
 const RequestFakeToken = () => Promise.resolve('sometoken')
 
@@ -10,7 +10,7 @@ export default {
 } as ComponentMeta<typeof ConnectButton>
 
 const Template: ComponentStory<typeof ConnectButton> = (args) => (
-  <ConnectButton {...args} walletService={getWalletService()} onTokenRequest={RequestFakeToken} />
+  <ConnectButton {...args} walletConfig={WalletConfig} walletService={getWalletService()} onTokenRequest={RequestFakeToken} />
 )
 
 export const Default = Template.bind({})
