@@ -72,9 +72,10 @@ const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: Tx
     hooks?.onFailed ? hooks.onFailed(transaction) : showToast('Transaction failed', 'error', faHourglassEnd)
 
   try {
-    const signedTx = await walletService.signTransaction(tx) // providers might manipulate (remove) registered listeners, so register them after signing
+    tx.onSigned.on(({ transaction }) => handleSignedEvent(transaction))
 
-    signedTx.onSigned.on(({ transaction }) => handleSignedEvent(transaction))
+    const signedTx = await walletService.signTransaction(tx)
+
     signedTx.onSent.on(({ transaction }) => handleSentEvent(transaction))
     signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isSuccessful() && handleSuccessEvent(transaction))
     signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isFailed() && handleErrorEvent(transaction))
