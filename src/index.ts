@@ -20,6 +20,7 @@ export { DisconnectButton } from './features/Auth/DisconnectButton'
 
 // banners
 export { BrandingBanner } from './features/Banners/BrandingBanner'
+export { DevModeBanner } from './features/Banners/DevModeBanner'
 
 // controls
 export { Button } from './features/Controls/Button'
