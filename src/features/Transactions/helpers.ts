@@ -27,11 +27,11 @@ export const callSmartContract = async (
   func: string,
   args: TypedValue[],
   gasLimit: number,
-  hooks?: TxHooks,
-  value?: Balance
+  value?: Balance,
+  hooks?: TxHooks
 ) => {
   const sc = new SmartContract({ address: new Address(address) })
-  const tx = sc.call({ func: new ContractFunction(func), gasLimit: new GasLimit(gasLimit), value, args })
+  const tx = sc.call({ func: new ContractFunction(func), gasLimit: new GasLimit(gasLimit), value: value || Balance.egld(0), args })
 
   await sendTx(walletService, tx, hooks)
 }
