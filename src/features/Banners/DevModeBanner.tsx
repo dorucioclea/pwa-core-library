@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const DevModeBanner = () => {
-  if (!window) return null
+  if (typeof window === 'undefined') return null
   const hostname = window.location.hostname
   const fragments = hostname.match(/^(?:.*?\.)?([a-zA-Z0-9\-_]{3,}\.(?:\w{2,8}|\w{2,4}\.\w{2,4}))$/)
   const domain = !!fragments ? fragments[1] : null
