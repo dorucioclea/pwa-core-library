@@ -2,11 +2,14 @@ type CollectionTokenIdentifier = string
 type TokenIdentifier = string
 
 export type Nft = {
-  collection: string
-  type: string
   identifier: TokenIdentifier
+  collection: string
+  nonce: number
+  type: string
   name: string
   creator: string
+  ticker: string
+  royalties: number | null
   url: string
   thumbnailUrl: string
   tags: string[]
