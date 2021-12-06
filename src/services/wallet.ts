@@ -217,6 +217,7 @@ export class WalletService implements IWalletService {
 
   private finalizeLogin = (proofableLogin: ProofableLogin, addressIndex?: number) => {
     this.persistLoginInStorage(proofableLogin.address, addressIndex)
+    this.address = proofableLogin.address
     if (this.onLogin) this.onLogin(proofableLogin)
   }
 
