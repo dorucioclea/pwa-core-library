@@ -72,9 +72,9 @@ const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: Tx
     hooks?.onFailed ? hooks.onFailed(transaction) : showToast('Transaction failed', 'error', faHourglassEnd)
 
   try {
-    tx.onSigned.on(({ transaction }) => handleSignedEvent(transaction))
-
     const signedTx = await walletService.signTransaction(tx)
+
+    handleSignedEvent(signedTx)
 
     signedTx.onSent.on(({ transaction }) => handleSentEvent(transaction))
     signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isSuccessful() && handleSuccessEvent(transaction))
