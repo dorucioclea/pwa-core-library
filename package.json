@@ -92,6 +92,7 @@
     "react-dropzone": "^11.4.2",
     "react-modal": "^3.14.3",
     "react-paginate": "^8.0.0",
-    "react-toastify": "^6.1.0"
+    "react-toastify": "^6.1.0",
+    "use-clipboard-copy": "^0.2.0"
   }
 }
