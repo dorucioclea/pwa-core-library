@@ -13,6 +13,8 @@ export type Nft = {
   url: string
   thumbnailUrl: string
   tags: string[]
+  owner: string
+  supply: number
 }
 
 export type NftCollection = Nft[]
