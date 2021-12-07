@@ -12,4 +12,5 @@ export const Default = Template.bind({})
 Default.args = {
   total: 4,
   active: 2,
+  type: 'hold',
 }
