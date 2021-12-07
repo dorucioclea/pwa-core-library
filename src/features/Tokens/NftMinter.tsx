@@ -45,7 +45,7 @@ export const NftMinter = (props: Props) => {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="mb-2 md:mb-4">
-        <span className="highlight">Create</span> an NFT
+        <span className="highlight">Mint</span> an NFT
       </h2>
       {props.notice && <div className="mb-2">{props.notice}</div>}
       <label htmlFor="name" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
@@ -108,7 +108,7 @@ export const NftMinter = (props: Props) => {
           Go Back
         </button>
         <Button color="blue" className="w-1/2" loading={isLoading} submit>
-          Create NFT
+          Mint NFT
         </Button>
       </div>
     </form>
