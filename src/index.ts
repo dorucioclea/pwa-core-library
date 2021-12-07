@@ -83,6 +83,7 @@ export type {
   MintableNft,
 } from './features/Tokens/types'
 export { NftCreator } from './features/Tokens/NftCreator'
+export { NftMinter } from './features/Tokens/NftMinter'
 export { getTokenTypeDisplayName } from './features/Tokens/helper'
 
 // transactions

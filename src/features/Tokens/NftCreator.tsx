@@ -1,6 +1,6 @@
 import React from 'react'
 import _NftCollectionSelector from './_NftCollectionSelector'
-import _NftMinter from './_NftMinter'
+import { NftMinter } from './NftMinter'
 import { TxProcessingIndicator } from '../Transactions/TxProcessingIndicator'
 import { IssuableCollection, MintableNft, NftCollectionAccount, SettableCollectionRoles } from './types'
 import { Steps } from '../Progress/Steps'
@@ -30,7 +30,7 @@ export const NftCreator = (props: Props) => (
       <Steps total={3} active={props.collection ? 2 : 1} />
     </header>
     {props.collection && props.collection.canCreate ? (
-      <_NftMinter
+      <NftMinter
         collection={props.collection}
         onCreateRequest={props.onNftCreateRequest}
         onGoBackRequest={() => props.onCollectionSelected(null)}

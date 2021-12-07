@@ -17,7 +17,7 @@ type Props = {
   notice: any
 }
 
-const _NftMinter = (props: Props) => {
+export const NftMinter = (props: Props) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [royalties, setRoyalties] = useState<string>(RoyaltiesDefaultPercent.toString())
@@ -114,5 +114,3 @@ const _NftMinter = (props: Props) => {
     </form>
   )
 }
-
-export default _NftMinter
