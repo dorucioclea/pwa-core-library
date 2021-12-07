@@ -8,7 +8,7 @@ import { showToast } from '../Feedback/Toast'
 import { classNames } from '../../helpers'
 
 type Props = {
-  address: string
+  children: string
   chain?: 'mainnet' | 'testnet' | 'devnet'
   className?: string
 }
@@ -26,11 +26,11 @@ export const Address = (props: Props) => {
 
   return (
     <div className={classNames('flex', props.className || 'mb-4')}>
-      <a href={`${explorerBaseUrl}/accounts/${props.address}`} target="_blank" className="block text-gray-400">
-        <span className="sm:hidden">{trimHash(props.address || '', 18)}</span>
-        <span className="hidden sm:inline">{props.address}</span>
+      <a href={`${explorerBaseUrl}/accounts/${props.children}`} target="_blank" className="block text-gray-400">
+        <span className="sm:hidden">{trimHash(props.children || '', 18)}</span>
+        <span className="hidden sm:inline">{props.children}</span>
       </a>
-      <button onClick={() => clipboard.copy(props.address)}>
+      <button onClick={() => clipboard.copy(props.children)}>
         <FontAwesomeIcon icon={faCopy} className="inline-block ml-2 text-gray-400 opacity-80" />
       </button>
     </div>

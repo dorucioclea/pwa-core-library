@@ -16,5 +16,5 @@ const Template: ComponentStory<typeof Address> = (args) => (
 
 export const Default = Template.bind({})
 Default.args = {
-  address: 'erd1xxxYourxxxAddressxxx',
+  children: 'erd1xxxYourxxxAddressxxx',
 }
