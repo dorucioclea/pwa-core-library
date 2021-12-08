@@ -21,12 +21,12 @@ export const SuperTokenGuardNotice = (props: Props) => {
         <p className="text-base sm:text-lg xl:text-xl text-indigo-700">
           {props.type === 'hold' && (
             <span>
-              You must <strong>hold</strong> at least <strong>{props.amount} $SUPER</strong> for this action.
+              You must <strong>hold</strong> at least <strong>{props.amount} SUPER</strong> tokens to perform this action.
             </span>
           )}
           {props.type === 'cost' && (
             <span>
-              This action costs <strong>{props.amount} $SUPER</strong>.
+              This action costs <strong>{props.amount} SUPER</strong> tokens.
             </span>
           )}
         </p>
@@ -38,13 +38,17 @@ export const SuperTokenGuardNotice = (props: Props) => {
     <a
       href={props.buyLinkUrl}
       target="_blank"
-      className={classNames('flex items-center rounded-xl bg-indigo-100 px-4 py-2 md:py-3', props.buyLinkUrl ? '' : 'cursor-default')}
+      className={classNames(
+        'flex items-center rounded-xl bg-indigo-100 px-4 py-2 md:py-3',
+        props.buyLinkUrl ? '' : 'cursor-default',
+        props.className
+      )}
     >
       <Content className="flex-grow" />
       <FontAwesomeIcon icon={faExternalLinkAlt} size="lg" className="text-indigo-500" />
     </a>
   ) : (
-    <div className="rounded-xl bg-indigo-100 px-4 py-2 md:py-3">
+    <div className={classNames('rounded-xl bg-indigo-100 px-4 py-2 md:py-3', props.className)}>
       <Content />
     </div>
   )
