@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { EllipsisLoader } from '../Loaders/EllipsisLoader'
 import { AppSystemColor } from '../../types'
 import { getButtonBgColorClassName } from './helpers'
+import { classNames } from '../../helpers'
 
 type Props = {
   children: any
@@ -19,7 +20,7 @@ type Props = {
 export const LinkButton = (props: Props) => {
   const baseClassNames = 'relative inline-flex justify-center items-center py-2 px-6 rounded-xl shadow text-xl text-white transition duration-300'
   const stateClassNames = 'hover:shadow-lg focus:outline-none focus:shadow-outline focus:shadow-none'
-  const className = `${baseClassNames} ${getButtonBgColorClassName(props.color, props.disabled)} ${stateClassNames}`
+  const className = classNames(baseClassNames, getButtonBgColorClassName(props.color, props.disabled), stateClassNames, props.className)
 
   const Content = () => (
     <>
