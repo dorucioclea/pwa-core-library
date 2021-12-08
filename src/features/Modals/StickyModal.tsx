@@ -26,7 +26,7 @@ export const StickyModal = ({ open, onClose: handleClose, children }: Props) => 
         />
         <span className="sr-only">Close</span>
       </button>
-      {children}
+      <div className="relative">{children}</div>
     </BaseModal>
   )
 }
