@@ -1,8 +1,8 @@
 import React from 'react'
 import _NftCollectionSelector from './_NftCollectionSelector'
 import { NftMinter } from './NftMinter'
-import { TxProcessingIndicator } from '../Transactions/TxProcessingIndicator'
 import { IssuableCollection, MintableNft, NftCollectionAccount, SettableCollectionRoles } from './types'
+import { TxProcessingIndicatorOverlay } from '../Transactions/TxProcessingIndicatorOverlay'
 import { Steps } from '../Progress/Steps'
 
 type Props = {
@@ -20,12 +20,7 @@ type Props = {
 
 export const NftCreator = (props: Props) => (
   <div className="relative">
-    {props.processing && (
-      <div className="absolute z-50 inset-0 bg-white bg-opacity-90 flex flex-col justify-center items-center -mt-2">
-        <TxProcessingIndicator className="mb-8" />
-        <p className="text-gray-800 text-2xl animate-pulse">Processing your transaction on the blockchain ...</p>
-      </div>
-    )}
+    {props.processing && <TxProcessingIndicatorOverlay />}
     <header className="absolute md:relative flex justify-end md:justify-center w-full">
       <Steps total={3} active={props.collection ? 2 : 1} />
     </header>
