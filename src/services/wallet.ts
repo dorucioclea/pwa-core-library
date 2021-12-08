@@ -231,7 +231,7 @@ export class WalletService implements IWalletService {
   }
 
   private loadFromStorage = () => {
-    if (!window) return null
+    if (typeof window === 'undefined') return null
     const serialized = window.localStorage.getItem(WalletAuthStorageKey)
     return !!serialized ? (JSON.parse(serialized) as SerializableProviderStorage) : null
   }
