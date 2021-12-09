@@ -67,7 +67,7 @@ export class HttpService implements IHttpService {
       const body = await response.json()
 
       return {
-        data: body.data || body,
+        data: body.data || null,
         meta: body.meta,
         errors: body.errors || [],
         ok: response.ok && !(body.errors && body.errors.length > 0),
