@@ -1,16 +1,16 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export type Identity = {
-  known: boolean
   url: string
-  address: string | null
+  address: string
   username: string | null
   name: string | null
   bio: string | null
-  profileImageUrl: string | null
+  profileImageUrl: string
   timezone: string | null
   rank: string
   connections: Record<SocialAccountPlatform, SocialAccount>
+  balances: Record<'egld' | 'super', string>
 }
 
 export type SocialAccount = {
