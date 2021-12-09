@@ -9,6 +9,8 @@ export type Identity = {
   profileImageUrl: string
   timezone: string | null
   rank: string
+  shard: number
+  txs: string
   connections: Record<SocialAccountPlatform, SocialAccount>
   balances: Record<'egld' | 'super', string>
 }
