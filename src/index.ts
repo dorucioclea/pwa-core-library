@@ -1,6 +1,6 @@
+export type { AppSystemColor, BlockchainNetwork } from './types'
 export { ScyRoot } from './ScyRoot'
-export type { AppSystemColor } from './types'
-export { trimHash, classNames } from './helpers'
+export { trimHash, classNames, getBlockchainNetworkFromId } from './helpers'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // H O O K S
@@ -81,7 +81,7 @@ export type {
 } from './features/Tokens/types'
 export { NftCreator } from './features/Tokens/NftCreator'
 export { NftMinter } from './features/Tokens/NftMinter'
-export { getTokenTypeDisplayName } from './features/Tokens/helper'
+export { getTokenTypeDisplayName, getSuperToken } from './features/Tokens/helper'
 
 // transactions
 export type { Transaction, TransactionType, PreparedTx } from './features/Transactions/types'
