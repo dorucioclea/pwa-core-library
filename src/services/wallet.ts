@@ -1,4 +1,5 @@
 import platform from 'platform'
+import { BlockchainNetwork } from '../types'
 import {
   IDappProvider,
   ExtensionProvider,
@@ -11,6 +12,7 @@ import {
   WalletProvider as WebWalletProvider,
   WalletConnectProvider,
   HWProvider,
+  ChainID,
 } from '@elrondnetwork/erdjs'
 
 const WalletAuthStorageKey = 'wallet_user'
@@ -22,6 +24,7 @@ export type WalletServiceConfig = {
   WebWalletUrl: string
   WalletConnectBridge: string
   WalletConnectDeepLink: string
+  ChainId: BlockchainNetwork
 }
 
 export type ProofableLogin = {
@@ -49,6 +52,7 @@ export interface IWalletService {
   getAddress: () => string
   getProvider: () => IDappProvider
   getProviderId: () => WalletProviderId
+  getChainId: () => ChainID
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
 }
@@ -207,6 +211,13 @@ export class WalletService implements IWalletService {
   getProvider = () => this.provider
 
   getProviderId = () => this.providerId
+
+  getChainId = () => {
+    this.ensureInitialized()
+    if (this.config!.ChainId === 'devnet') return new ChainID('D')
+    if (this.config!.ChainId === 'testnet') return new ChainID('T')
+    return new ChainID('1')
+  }
 
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
 
