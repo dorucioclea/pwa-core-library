@@ -1,7 +1,9 @@
 import { faHourglassEnd, faHourglassHalf, faHourglassStart } from '@fortawesome/free-solid-svg-icons'
+import { handleAppResponse, IHttpService } from '../../services/http'
 import { IWalletService } from '../../services/wallet'
 import { showToast } from '../Feedback/Toast'
 import { PreparedTx } from './types'
+import { getPreparedTxRequest } from './api'
 import {
   Address,
   ContractFunction,
@@ -49,7 +51,15 @@ export const sendPreparedTx = async (walletService: IWalletService, prepared: Pr
   await sendTx(walletService, tx, hooks)
 }
 
-const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: TxHooks) => {
+export const fetchAndSendPreparedTx = async (
+  http: IHttpService,
+  wallet: IWalletService,
+  preparedTxName: string,
+  args: Record<string, any>,
+  hooks: any
+) => handleAppResponse(getPreparedTxRequest(http, preparedTxName, args), async (tx) => await sendPreparedTx(wallet, tx, hooks))
+
+export const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: TxHooks) => {
   if (walletService.getProviderId() === 'maiar_extension') {
     showToast('Please confirm on Maiar Extension', 'vibe', faHourglassStart)
   } else if (walletService.getProviderId() === 'maiar_app') {
