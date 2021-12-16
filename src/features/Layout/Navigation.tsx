@@ -12,7 +12,7 @@ export const Navigation = (props: Navigation) => (
     <ul className="flex justify-center h-full list-none">
       {props.items.map((item, index) => (
         <li key={index} className="flex items-center justify-center mx-4">
-          <_NavigationItem href={item.href} as={item.as} text={item.text} />
+          <_NavigationItem {...item} />
         </li>
       ))}
     </ul>

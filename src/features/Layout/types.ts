@@ -5,4 +5,5 @@ export type NavigationItem = {
   href: string
   as?: string
   icon?: IconDefinition
+  soon?: boolean
 }
