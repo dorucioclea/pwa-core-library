@@ -93,6 +93,7 @@
     "react-modal": "^3.14.3",
     "react-paginate": "^8.0.0",
     "react-toastify": "^6.1.0",
+    "react-tooltip": "^4.2.21",
     "use-clipboard-copy": "^0.2.0"
   }
 }
