@@ -1,7 +1,8 @@
 import React from 'react'
 import { _ProviderButton } from './_ProviderButton'
-import { MaiarLogo } from '../Logos/MaiarLogo'
-import { ElrondLogo } from '../Logos/ElrondLogo'
+import { ElrondWebWalletLogo } from '../Logos/ElrondWebWalletLogo'
+import { MaiarAppWalletLogo } from '../Logos/MaiarAppWalletLogo'
+import { MaiarDefiWalletLogo } from '../Logos/MaiarDefiWalletLogo'
 import { LedgerLogo } from '../Logos/LedgerLogo'
 import { WalletProviderId } from '../../services/wallet'
 
@@ -13,21 +14,21 @@ type Props = {
 
 export const _ProviderSelector = (props: Props) => (
   <div>
-    <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-600']} onClick={() => props.onLoginRequest('maiar_app')}>
-      <MaiarLogo white className="w-6 h-6 mr-4" />
-      Maiar App
-    </_ProviderButton>
     <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-300']} onClick={() => props.onLoginRequest('maiar_extension')}>
-      <MaiarLogo white className="w-6 h-6 mr-4" />
-      Maiar Browser
+      <MaiarDefiWalletLogo white className="h-6 mr-4" />
+      Maiar DeFi Wallet
+    </_ProviderButton>
+    <_ProviderButton gradientClassName={['from-blue-500', 'to-blue-600']} onClick={() => props.onLoginRequest('maiar_app')}>
+      <MaiarAppWalletLogo white className="w-6 h-6 mr-4" />
+      Maiar App
     </_ProviderButton>
     <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-900']} onClick={() => props.onLoginRequest('hardware')}>
       <LedgerLogo white className="w-6 h-6 mr-4" />
       Ledger
     </_ProviderButton>
     <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-500']} onClick={() => props.onLoginRequest('web')}>
-      <ElrondLogo white className="w-6 h-6 mr-4" />
-      Web Wallet
+      <ElrondWebWalletLogo white className="w-6 h-6 mr-4" />
+      Elrond Web Wallet
     </_ProviderButton>
     <p className="text-xl text-gray-500 text-center leading-tight mt-8">
       <strong className="block">New to Elrond Blockchain?</strong>

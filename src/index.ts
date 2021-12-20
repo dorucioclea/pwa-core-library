@@ -52,8 +52,11 @@ export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
 
 // logos
 export { ElrondLogo } from './features/Logos/ElrondLogo'
+export { ElrondWebWalletLogo } from './features/Logos/ElrondWebWalletLogo'
 export { LedgerLogo } from './features/Logos/LedgerLogo'
 export { MaiarLogo } from './features/Logos/MaiarLogo'
+export { MaiarAppWalletLogo } from './features/Logos/MaiarAppWalletLogo'
+export { MaiarDefiWalletLogo } from './features/Logos/MaiarDefiWalletLogo'
 export { SuperTokenLogo } from './features/Logos/SuperTokenLogo'
 
 // modals
