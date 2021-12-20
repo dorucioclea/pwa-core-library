@@ -113,7 +113,7 @@ export class WalletService implements IWalletService {
     } else if (providerId === 'hardware') {
       this.provider = new HWProvider(proxy)
     } else if (providerId === 'web') {
-      this.provider = new WebWalletProvider(config?.WebWalletUrl)
+      this.provider = new WebWalletProvider(config.WebWalletUrl)
     }
 
     this.providerId = providerId
@@ -148,6 +148,10 @@ export class WalletService implements IWalletService {
     if (this.providerId === 'hardware') {
       const login = await (this.provider as HWProvider).tokenLogin({ token: Buffer.from(`${proofableToken}{}`), addressIndex: addressIndex })
       this.finalizeLogin({ signature: login.signature.hex(), address: login.address }, addressIndex)
+    }
+
+    if (this.providerId === 'web') {
+      this.provider.login({ token: proofableToken })
     }
 
     return {}
