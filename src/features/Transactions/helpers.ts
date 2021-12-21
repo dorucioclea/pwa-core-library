@@ -61,9 +61,9 @@ export const fetchAndSendPreparedTx = async (
 
 export const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: TxHooks) => {
   if (walletService.getProviderId() === 'maiar_extension') {
-    showToast('Please confirm on Maiar Extension', 'vibe', faHourglassStart)
+    showToast('Please confirm in Maiar DeFi Wallet', 'vibe', faHourglassStart)
   } else if (walletService.getProviderId() === 'maiar_app') {
-    showToast('Please confirm on Maiar', 'vibe', faHourglassStart)
+    showToast('Please confirm in Maiar App', 'vibe', faHourglassStart)
   } else if (walletService.getProviderId() === 'hardware') {
     showToast('Please confirm on Ledger', 'vibe', faHourglassStart)
   }
