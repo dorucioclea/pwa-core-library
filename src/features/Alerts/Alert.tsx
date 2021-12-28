@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { classNames } from '../../helpers'
 
 type Props = {
-  icon: IconProp
   children: any
+  icon?: IconProp
   type?: 'info' | 'warning' | 'error' | 'success'
   className?: string
 }
@@ -35,10 +35,12 @@ export const Alert = (props: Props) => {
   return (
     <div className={classNames('rounded-xl px-4 py-2 md:py-3 mb-4', getBackgroundColorClassNames(), props.className)}>
       <div className="flex items-center">
-        <div className="flex-shrink-0">
-          <FontAwesomeIcon icon={props.icon} className={getIconColorClassNames()} />
-        </div>
-        <div className="ml-3 flex-1 md:flex md:justify-between">
+        {props.icon && (
+          <div className="flex-shrink-0 mr-3">
+            <FontAwesomeIcon icon={props.icon} className={getIconColorClassNames()} />
+          </div>
+        )}
+        <div className="flex-1 md:flex md:justify-between">
           <p className={classNames('text-base sm:text-lg xl:text-xl', getTextColorClassNames())}>{props.children}</p>
         </div>
       </div>
