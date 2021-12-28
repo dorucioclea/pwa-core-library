@@ -5,6 +5,7 @@ import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
 import { IssuableCollection } from './types'
 import { IssueCollectionCost } from '../../constants'
+import { Alert } from '../Alerts/Alert'
 
 type Props = {
   onCreated: (issuableCollection: IssuableCollection) => void
@@ -53,18 +54,9 @@ const _NftCollectionCreator = (props: Props) => {
       <h2 className="mb-4">
         <span className="highlight">Create</span> a collection
       </h2>
-      <div className="rounded-xl bg-yellow-100 px-4 py-2 md:py-3 mb-4">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <FontAwesomeIcon icon={faCoins} className="text-yellow-500" />
-          </div>
-          <div className="ml-3 flex-1 md:flex md:justify-between">
-            <p className="text-base sm:text-lg xl:text-xl text-yellow-700">
-              Issuing a collection <strong>costs {IssueCollectionCost} EGLD</strong>, which is defined by the network.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Alert icon={faCoins} type="warning">
+        Issuing a collection <strong>costs {IssueCollectionCost} EGLD</strong>, which is defined by the network.
+      </Alert>
       <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
         Name
       </label>

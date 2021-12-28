@@ -12,6 +12,7 @@ export { useDidMountEffect } from './hooks/did-mount'
 // * * * * * * * *
 
 // alerts
+export { Alert } from './features/Alerts/Alert'
 export { SuperTokenGuardNotice } from './features/Alerts/SuperTokenGuardNotice'
 
 // auth
