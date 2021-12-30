@@ -58,7 +58,7 @@ export const fetchAndSendPreparedTx = async (
   wallet: IWalletService,
   preparedTxName: string,
   args: Record<string, any>,
-  hooks: any
+  hooks: TxHooks
 ) => handleAppResponse(getPreparedTxRequest(http, preparedTxName, args), async (tx) => await sendPreparedTx(wallet, tx, hooks))
 
 export const sendTx = async (wallet: IWalletService, tx: Transaction, hooks?: TxHooks) => {
