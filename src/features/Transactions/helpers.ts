@@ -4,6 +4,7 @@ import { IWalletService } from '../../services/wallet'
 import { showToast } from '../Feedback/Toast'
 import { PreparedTx } from './types'
 import { getPreparedTxRequest } from './api'
+import { capitalizeFirstLetter } from '../../helpers'
 import {
   Address,
   ContractFunction,
@@ -14,13 +15,14 @@ import {
   TransactionPayload,
   Balance,
   ChainID,
+  ApiProvider,
 } from '@elrondnetwork/erdjs'
 
 type TxHooks = {
   onSigned?: (transaction: Transaction) => void
   onSent?: (transaction: Transaction) => void
   onSuccess?: (transaction: Transaction) => void
-  onFailed?: (transaction: Transaction) => void
+  onFailed?: () => void
 }
 
 export const callSmartContract = async (
@@ -59,12 +61,12 @@ export const fetchAndSendPreparedTx = async (
   hooks: any
 ) => handleAppResponse(getPreparedTxRequest(http, preparedTxName, args), async (tx) => await sendPreparedTx(wallet, tx, hooks))
 
-export const sendTx = async (walletService: IWalletService, tx: Transaction, hooks?: TxHooks) => {
-  if (walletService.getProviderId() === 'maiar_extension') {
+export const sendTx = async (wallet: IWalletService, tx: Transaction, hooks?: TxHooks) => {
+  if (wallet.getProviderId() === 'maiar_extension') {
     showToast('Please confirm in Maiar DeFi Wallet', 'vibe', faHourglassStart)
-  } else if (walletService.getProviderId() === 'maiar_app') {
+  } else if (wallet.getProviderId() === 'maiar_app') {
     showToast('Please confirm in Maiar App', 'vibe', faHourglassStart)
-  } else if (walletService.getProviderId() === 'hardware') {
+  } else if (wallet.getProviderId() === 'hardware') {
     showToast('Please confirm on Ledger', 'vibe', faHourglassStart)
   }
 
@@ -78,21 +80,37 @@ export const sendTx = async (walletService: IWalletService, tx: Transaction, hoo
   const handleSuccessEvent = (transaction: Transaction) =>
     hooks?.onSuccess ? hooks.onSuccess(transaction) : showToast('Transaction executed', 'success', faHourglassEnd)
 
-  const handleErrorEvent = (transaction: Transaction) =>
-    hooks?.onFailed ? hooks.onFailed(transaction) : showToast('Transaction failed', 'error', faHourglassEnd)
+  const handleErrorEvent = () => (hooks?.onFailed ? hooks.onFailed() : showToast('Transaction failed', 'error', faHourglassEnd))
 
   try {
-    const signedTx = await walletService.signTransaction(tx)
+    const signedTx = await wallet.signTransaction(tx)
 
     handleSignedEvent(signedTx)
 
     signedTx.onSent.on(({ transaction }) => handleSentEvent(transaction))
-    signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isSuccessful() && handleSuccessEvent(transaction))
-    signedTx.onStatusChanged.on(({ transaction }) => transaction.getStatus().isFailed() && handleErrorEvent(transaction))
 
-    await walletService.sendTransaction(signedTx)
+    const sentTx = await wallet.sendTransaction(signedTx)
+
+    // erdjs has some internal issues: https://github.com/ElrondNetwork/elrond-sdk-erdjs/issues/96
+    // const finalizedTx = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
+    // workaround:
+    const apiProvider = new ApiProvider(wallet.getConfig().ApiAddress, { timeout: 5000 }) as any
+    const finalizedTx = await sentTx.getAsOnNetwork(apiProvider, true, false, true)
+
+    const contractErrorResults = finalizedTx
+      .getSmartContractResults()
+      .getAllResults()
+      // .filter((result) => !result.isSuccess()) // part of the above bug that returnCode is empty, comment back in when fixed
+      .filter((result) => result.getReturnMessage()) // remove this when bug fixed
+
+    if (contractErrorResults.length > 0) {
+      throw contractErrorResults[0].getReturnMessage()
+    }
+
+    handleSuccessEvent(sentTx)
   } catch (e) {
     console.error(e)
-    showToast(e as string, 'error')
+    handleErrorEvent()
+    showToast(capitalizeFirstLetter(e as string), 'error')
   }
 }

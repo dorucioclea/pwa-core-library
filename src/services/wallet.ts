@@ -4,7 +4,6 @@ import {
   IDappProvider,
   ExtensionProvider,
   Transaction,
-  IProvider,
   ProxyProvider,
   Address,
   Account,
@@ -20,6 +19,7 @@ const WalletAuthStorageKey = 'wallet_user'
 export type WalletProviderId = 'maiar_app' | 'maiar_extension' | 'hardware' | 'web' | 'empty'
 
 export type WalletServiceConfig = {
+  ApiAddress: string
   GatewayAddress: string
   WebWalletUrl: string
   WalletConnectBridge: string
@@ -53,6 +53,7 @@ export interface IWalletService {
   getProvider: () => IDappProvider
   getProviderId: () => WalletProviderId
   getChainId: () => ChainID
+  getProxy: () => ProxyProvider
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
 }
@@ -78,7 +79,7 @@ export class WalletService implements IWalletService {
   private provider: IDappProvider = new EmptyProvider()
   private providerId: WalletProviderId = 'empty'
   private config: WalletServiceConfig | null = null
-  private proxy: IProvider | null = null
+  private proxy: ProxyProvider | null = null
   private address: string | null = null
 
   constructor() {
@@ -222,6 +223,8 @@ export class WalletService implements IWalletService {
     if (this.config!.ChainId === 'testnet') return new ChainID('T')
     return new ChainID('1')
   }
+
+  getProxy = () => this.proxy!
 
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
 
