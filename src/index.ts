@@ -90,9 +90,10 @@ export { getTokenTypeDisplayName, getSuperToken } from './features/Tokens/helper
 
 // transactions
 export type { Transaction, TransactionType, PreparedTx } from './features/Transactions/types'
+export { callSmartContract, sendPreparedTx, fetchAndSendPreparedTx, sendTx } from './features/Transactions/helpers'
 export { TxProcessingIndicator } from './features/Transactions/TxProcessingIndicator'
 export { TxProcessingIndicatorOverlay } from './features/Transactions/TxProcessingIndicatorOverlay'
-export { callSmartContract, sendPreparedTx, fetchAndSendPreparedTx, sendTx } from './features/Transactions/helpers'
+export { SignTxNote } from './features/Transactions/SignTxNote'
 
 // user
 export type { UserPrivate } from './features/User/types'
