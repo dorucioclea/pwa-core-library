@@ -1,6 +1,6 @@
 export type { AppSystemColor, BlockchainNetwork } from './types'
+export { trimHash, classNames, getBlockchainNetworkFromId, capitalizeFirstLetter } from './helpers'
 export { ScyRoot } from './ScyRoot'
-export { trimHash, classNames, getBlockchainNetworkFromId } from './helpers'
 export { IssueEdstCost } from './constants'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
