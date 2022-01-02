@@ -24,7 +24,7 @@ export type WalletServiceConfig = {
   WebWalletUrl: string
   WalletConnectBridge: string
   WalletConnectDeepLink: string
-  ChainId: BlockchainNetwork
+  Network: BlockchainNetwork
 }
 
 export type ProofableLogin = {
@@ -219,8 +219,8 @@ export class WalletService implements IWalletService {
 
   getChainId = () => {
     this.ensureInitialized()
-    if (this.config!.ChainId === 'devnet') return new ChainID('D')
-    if (this.config!.ChainId === 'testnet') return new ChainID('T')
+    if (this.config!.Network === 'devnet') return new ChainID('D')
+    if (this.config!.Network === 'testnet') return new ChainID('T')
     return new ChainID('1')
   }
 
