@@ -1,6 +1,6 @@
 import React from 'react'
 import { _ProviderButton } from './_ProviderButton'
-import { ElrondWebWalletLogo } from '../Logos/ElrondWebWalletLogo'
+// import { ElrondWebWalletLogo } from '../Logos/ElrondWebWalletLogo'
 import { MaiarAppWalletLogo } from '../Logos/MaiarAppWalletLogo'
 import { MaiarDefiWalletLogo } from '../Logos/MaiarDefiWalletLogo'
 import { LedgerLogo } from '../Logos/LedgerLogo'
@@ -26,10 +26,10 @@ export const _ProviderSelector = (props: Props) => (
       <LedgerLogo white className="w-6 h-6 mr-4" />
       Ledger
     </_ProviderButton>
-    <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-500']} onClick={() => props.onLoginRequest('web')}>
+    {/* <_ProviderButton gradientClassName={['from-gray-700', 'to-gray-500']} onClick={() => props.onLoginRequest('web')}>
       <ElrondWebWalletLogo white className="w-6 h-6 mr-4" />
       Elrond Web Wallet
-    </_ProviderButton>
+    </_ProviderButton> */}
     <p className="text-xl text-gray-500 text-center leading-tight mt-8">
       <strong className="block">New to Elrond Blockchain?</strong>
       <a href={ElrondWalletSetupLinkUrl} target="_blank" className="text-base">
