@@ -92,16 +92,18 @@ export const sendTx = async (wallet: IWalletService, tx: Transaction, hooks?: Tx
     const sentTx = await wallet.sendTransaction(signedTx)
 
     // erdjs has some internal issues: https://github.com/ElrondNetwork/elrond-sdk-erdjs/issues/96
+    // original:
     // const finalizedTx = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
     // workaround:
     const apiProvider = new ApiProvider(wallet.getConfig().ApiAddress, { timeout: 5000 }) as any
     const finalizedTx = await sentTx.getAsOnNetwork(apiProvider, true, false, true)
+    // ^ workaround end
 
     const contractErrorResults = finalizedTx
       .getSmartContractResults()
       .getAllResults()
       // .filter((result) => !result.isSuccess()) // part of the above bug that returnCode is empty, comment back in when fixed
-      .filter((result) => result.getReturnMessage()) // remove this when bug fixed
+      .filter((result) => result.getReturnMessage() && !result.getReturnMessage().includes('too much gas provided')) // remove this when bug fixed
 
     if (contractErrorResults.length > 0) {
       throw contractErrorResults[0].getReturnMessage()
