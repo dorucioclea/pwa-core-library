@@ -19,6 +19,7 @@ type Props = {
   children?: any
   color?: AppSystemColor
   large?: boolean
+  disabledProviders?: WalletProviderId[]
 }
 
 export const ConnectButton = (props: Props) => {
@@ -69,7 +70,7 @@ export const ConnectButton = (props: Props) => {
             onCloseRequest={() => setActiveConnector(null)}
           />
         ) : (
-          <_ProviderSelector onLoginRequest={handleLoginRequest} />
+          <_ProviderSelector onLoginRequest={handleLoginRequest} disabledProviders={props.disabledProviders} />
         )}
       </StickyModal>
     </>
