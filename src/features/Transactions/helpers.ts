@@ -16,6 +16,7 @@ import {
   Balance,
   ChainID,
   ApiProvider,
+  NetworkConfig,
 } from '@elrondnetwork/erdjs'
 
 type TxHooks = {
@@ -26,7 +27,7 @@ type TxHooks = {
 }
 
 export const callSmartContract = async (
-  walletService: IWalletService,
+  wallet: IWalletService,
   address: string,
   func: string,
   args: TypedValue[],
@@ -34,10 +35,12 @@ export const callSmartContract = async (
   value?: Balance,
   hooks?: TxHooks
 ) => {
+  await NetworkConfig.getDefault().sync(wallet.getProxy())
+
   const sc = new SmartContract({ address: new Address(address) })
   const tx = sc.call({ func: new ContractFunction(func), gasLimit: new GasLimit(gasLimit), value: value || Balance.egld(0), args })
 
-  await sendTx(walletService, tx, hooks)
+  await sendTx(wallet, tx, hooks)
 }
 
 export const sendPreparedTx = async (walletService: IWalletService, prepared: PreparedTx, hooks?: TxHooks) => {
