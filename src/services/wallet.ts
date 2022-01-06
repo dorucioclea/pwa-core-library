@@ -170,6 +170,13 @@ export class WalletService implements IWalletService {
     const address = new Address(this.getAddress())
     const account = new Account(address)
     await account.sync(this.proxy!)
+
+    if (tx.getValue().isEgld()) {
+      this.ensureAccountHasSufficientEgldFor(tx, account)
+    }
+
+    // TODO: implement balance guard for EDSTs (requires extra api call)
+
     tx.setNonce(account.nonce)
 
     return await this.provider.signTransaction(tx)
@@ -256,7 +263,19 @@ export class WalletService implements IWalletService {
       throw new Error('wallet not initialized. call init() first')
     }
     if (!this.proxy) {
-      throw new Error('wallet >proxy< needs configuration')
+      throw new Error('wallet proxy needs configuration')
+    }
+  }
+
+  private ensureAccountHasSufficientEgldFor = (tx: Transaction, account: Account) => {
+    const accountBalance = account.balance.valueOf()
+    const txValue = tx.getValue().valueOf()
+
+    // potentially pr this into erdjs - if you see this and pr it, you are my hero
+    const displayValue = parseFloat(tx.getValue().toDenominated().replace(/(\.0+|0+)$/, '')).toLocaleString("en")
+
+    if (accountBalance.isLessThan(txValue)) {
+      throw new Error(`insufficient balance: ${displayValue} EGLD needed`)
     }
   }
 }
