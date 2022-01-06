@@ -115,7 +115,8 @@ export const sendTx = async (wallet: IWalletService, tx: Transaction, hooks?: Tx
     handleSuccessEvent(sentTx)
   } catch (e) {
     console.error(e)
+    const message = (e instanceof Error ? e.message : e) as string
     handleErrorEvent()
-    showToast(capitalizeFirstLetter(e as string), 'error')
+    showToast(capitalizeFirstLetter(message), 'error')
   }
 }
