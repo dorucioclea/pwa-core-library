@@ -22,7 +22,7 @@ const OptionalProperties: OptionalProperty[] = [
   {
     id: 'canFreeze',
     name: 'Freezable',
-    description: 'Ability to freeze the collection? (for regulatory reasons)',
+    description: 'Ability to freeze the collection (for regulatory reasons)',
   },
   { id: 'canWipe', name: 'Wipeable', description: 'Ability to wipe frozen accounts (for regulatory reasons)' },
   { id: 'canPause', name: 'Pauseable', description: 'Ability to pause transfers (for regulatory reasons)' },
