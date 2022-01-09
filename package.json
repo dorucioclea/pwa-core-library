@@ -1,6 +1,6 @@
 {
   "name": "@superciety/pwa-core-library",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "description": "Core library for Superciety DApps written in ReactJS",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
