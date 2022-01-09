@@ -7,6 +7,7 @@ import { FileSelector } from '../Controls/FileSelector'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
+import { sanitizeAlphanumeric } from '../../helpers'
 
 const RoyaltiesDefaultPercent = 10
 
@@ -51,7 +52,7 @@ export const NftMinter = (props: Props) => {
       <label htmlFor="name" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
         Name
       </label>
-      <Input id="name" value={name} onChange={(val) => setName(val)} className="mb-2 md:mb-4" required />
+      <Input id="name" value={name} onChange={(val) => setName(sanitizeAlphanumeric(val))} className="mb-2 md:mb-4" required />
       <label htmlFor="description" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
         Description
       </label>

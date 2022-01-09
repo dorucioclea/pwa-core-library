@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
+import { sanitizeAlphanumeric } from '../../helpers'
 
 type Props = {
   tags: string[]
@@ -41,7 +42,7 @@ const _NftMinterTagAdder = (props: Props) => {
           icon={faHashtag}
           value={tagInput}
           placeholder="yourtag"
-          onChange={(val) => setTagInput(val.replace(' ', '').toLowerCase())}
+          onChange={(val) => setTagInput(sanitizeAlphanumeric(val).toLowerCase())}
           onKeyDown={handleKeydownOrAdd} // Must be keydown (!) otherwise Enter will submit the form
           max={20}
           className="flex-grow mr-2"

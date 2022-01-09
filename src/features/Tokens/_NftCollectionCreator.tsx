@@ -6,6 +6,7 @@ import { Button } from '../Controls/Button'
 import { IssuableCollection } from './types'
 import { IssueEdstCost } from '../../constants'
 import { Alert } from '../Alerts/Alert'
+import { sanitizeAlphanumeric } from '../../helpers'
 
 type Props = {
   onCreated: (issuableCollection: IssuableCollection) => void
@@ -60,7 +61,7 @@ const _NftCollectionCreator = (props: Props) => {
       <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
         Name
       </label>
-      <Input id="name" minLength={3} maxLength={20} value={name} onChange={(val) => setName(val.replace(' ', ''))} className="mb-4" />
+      <Input id="name" minLength={3} maxLength={20} value={name} onChange={(val) => setName(sanitizeAlphanumeric(val))} className="mb-4" />
       <label htmlFor="ticker" className="pl-1 text-xl mb-2 text-gray-800">
         Ticker
       </label>
@@ -69,7 +70,7 @@ const _NftCollectionCreator = (props: Props) => {
         minLength={3}
         maxLength={10}
         value={ticker}
-        onChange={(val) => setTicker(val.replace(' ', '').toUpperCase())}
+        onChange={(val) => setTicker(sanitizeAlphanumeric(val).toUpperCase())}
         className="mb-8"
       />
       <div className="mb-8">
