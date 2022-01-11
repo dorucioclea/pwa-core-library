@@ -175,7 +175,7 @@ export class WalletService implements IWalletService {
       this.ensureAccountHasSufficientEgldFor(tx, account)
     }
 
-    // TODO: implement balance guard for EDSTs (requires extra api call)
+    // TODO: implement balance guard for esdts (requires extra api call)
 
     tx.setNonce(account.nonce)
 

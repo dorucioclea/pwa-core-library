@@ -1,7 +1,7 @@
 export type { AppSystemColor } from './types'
 export { trimHash, classNames, capitalizeFirstLetter, sanitizeAlphanumeric } from './helpers'
 export { ScyRoot } from './ScyRoot'
-export { IssueEdstCost } from './constants'
+export { IssueEsdtCost } from './constants'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // H O O K S

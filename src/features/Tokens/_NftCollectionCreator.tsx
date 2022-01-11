@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
 import { IssuableCollection } from './types'
-import { IssueEdstCost } from '../../constants'
+import { IssueEsdtCost } from '../../constants'
 import { Alert } from '../Alerts/Alert'
 import { sanitizeAlphanumeric } from '../../helpers'
 
@@ -56,7 +56,7 @@ const _NftCollectionCreator = (props: Props) => {
         <span className="highlight">Create</span> a collection
       </h2>
       <Alert icon={faCoins} type="warning">
-        Issuing a collection <strong>costs {IssueEdstCost} EGLD</strong>, which is defined by the network.
+        Issuing a collection <strong>costs {IssueEsdtCost} EGLD</strong>, which is defined by the network.
       </Alert>
       <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
         Name
