@@ -2,24 +2,31 @@ import React from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavigationItem } from './types'
+import { Tooltip } from '../Feedback/Tooltip'
 
-export const _NavigationMobileItem = (item: NavigationItem) => {
+export const _NavigationMobileItem = (props: NavigationItem) => {
   const className = 'flex items-center justify-center w-full h-full text-gray-400 active:text-primary-400'
+  const tooltip = props.soon ? 'coming soon' : undefined
+  const href = props.soon ? '#' : props.href
 
   const content = (
     <>
-      {item.icon && <FontAwesomeIcon icon={item.icon} size="lg" />}
-      <span className="sr-only">{item.text}</span>
+      {props.icon && <FontAwesomeIcon icon={props.icon} size="lg" />}
+      <span className="sr-only">{props.text}</span>
     </>
   )
 
-  return item.href.startsWith('http') ? (
-    <a href={item.href} target="_blank" rel="noopener" className={className}>
-      {content}
-    </a>
-  ) : (
-    <Link href={item.href} as={item.as}>
-      <a className={className}>{content}</a>
-    </Link>
+  return (
+    <Tooltip tip={tooltip}>
+      {props.href.startsWith('http') ? (
+        <a href={href} target="_blank" rel="noopener" className={className}>
+          {content}
+        </a>
+      ) : (
+        <Link href={href} as={props.as}>
+          <a className={className}>{content}</a>
+        </Link>
+      )}
+    </Tooltip>
   )
 }

@@ -36,6 +36,7 @@ export { Switch } from './features/Controls/Switch'
 
 // feedback
 export { showToast } from './features/Feedback/Toast'
+export { Tooltip } from './features/Feedback/Tooltip'
 
 // front
 export { FrontHero } from './features/Front/FrontHero'

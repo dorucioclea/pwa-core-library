@@ -1,14 +1,7 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { ScyRoot } from '../../src/index'
+import { Tooltip } from '../../src/index'
 
-const MockComponent = () => (
-  <div className="block w-full h-screen">
-    <ScyRoot />
-    <span data-tip="Just some example text :)" className="block p-4 bg-blue-500 text-white text-lg rounded-lg">
-      Hover me :)
-    </span>
-  </div>
-)
+const MockComponent = () => <Tooltip tip="you're looking good today :)">Hover me :)</Tooltip>
 
 export default {
   title: 'Feedback/Tooltip',
