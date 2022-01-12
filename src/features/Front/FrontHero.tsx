@@ -48,9 +48,7 @@ export const FrontHero = (props: Props) => {
         <img src={props.image} className={props.imageClassName} />
       </div>
       {props.children && <div className="flex justify-center items-center text-3xl text-gray-600">{props.children}</div>}
-      <footer className="relative md:absolute bottom-0 left-0 right-0 h-32 sm:h-20 md:h-12 flex justify-center items-center">
-        {props.footerContent}
-      </footer>
+      <footer className="relative bottom-0 left-0 right-0 h-32 sm:h-20 md:h-12 flex justify-center items-center">{props.footerContent}</footer>
     </section>
   )
 }
