@@ -1,4 +1,4 @@
-export type TransactionType = 'nft_create' | 'nft_transfer'
+export type TransactionType = 'ESDTNFTCreate' | 'ESDTNFTTransfer'
 
 export type Transaction = {
   type: TransactionType
