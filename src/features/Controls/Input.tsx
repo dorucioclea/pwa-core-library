@@ -2,7 +2,7 @@ import React, { ChangeEvent, InputHTMLAttributes } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { IntersectProps } from '../../types'
-import { classNames } from '../..'
+import { classNames } from '../../helpers'
 
 type Props = {
   onChange: (value: string) => void
@@ -30,9 +30,12 @@ export const Input = (props: IntersectProps<InputHTMLAttributes<HTMLInputElement
       </div>
     </div>
   ) : (
-    <input
-      {...props}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => props.onChange(e.target.value)}
-      className={`${DefaultClassNames} ${props.className}`}
-    />
+    <div className={classNames('relative w-full', props.className)}>
+      <input {...props} onChange={(e: ChangeEvent<HTMLInputElement>) => props.onChange(e.target.value)} className={DefaultClassNames} />
+      {props.value && props.maxLength && props.maxLength > 1 && (
+        <small className="absolute right-2 -bottom-6 text-gray-500 text-sm">
+          ({(props.value as string).length} / {props.maxLength})
+        </small>
+      )}
+    </div>
   )
