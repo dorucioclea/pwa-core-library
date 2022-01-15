@@ -16,7 +16,7 @@ export const StickyModal = ({ open, onClose: handleClose, children }: Props) => 
       isOpen={open}
       onRequestClose={handleClose}
       closeTimeoutMS={400}
-      className="modal-container-sticky bg-white pb-6 px-6 pt-2 focus:outline-none w-full max-w-3xl rounded-t-2xl"
+      className="modal-container-sticky bg-white pb-6 px-6 pt-2 focus:outline-none w-full max-w-3xl rounded-t-2xl max-h-screen overflow-y-auto"
       overlayClassName="modal-overlay modal-overlay-slide"
     >
       <button className="w-full h-8 focus:outline-none text-center relative" onClick={handleClose}>
