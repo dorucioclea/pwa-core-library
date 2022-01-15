@@ -7,7 +7,7 @@ import { FileSelector } from '../Controls/FileSelector'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
-import { sanitizeAlphanumeric } from '../../helpers'
+import { sanitizeAlphanumeric, sanitizeNumeric } from '../../helpers'
 
 const RoyaltiesDefaultPercent = 10
 
@@ -38,9 +38,10 @@ export const NftMinter = (props: Props) => {
   }
 
   const sanitizeRoyaltiesInput = (input: string, previous: string): string => {
-    if (input.length < 1) return ''
-    if (+input / 100 > 1) return previous
-    return Math.abs(parseFloat((+input).toFixed(2))).toString()
+    const val = sanitizeNumeric(input)
+    if (input.length < 1 || val < 1) return ''
+    if (val / 100 > 1) return previous
+    return Math.abs(parseFloat(val.toFixed(2))).toString()
   }
 
   return (
@@ -80,7 +81,7 @@ export const NftMinter = (props: Props) => {
       </div>
       <div className="mb-4 md:mb-6">
         <small className="block pl-1 text-gray-600 text-base md:text-lg mb-2">
-          Your will receive <strong>{royalties}%</strong> of any transaction involving this NFT.
+          Your will receive <strong>{royalties}%</strong> every time this NFT is being sold.
         </small>
         {tags.length > 0 && (
           <div className="flex flex-wrap items-center">

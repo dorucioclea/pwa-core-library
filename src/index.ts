@@ -1,7 +1,16 @@
 export type { AppSystemColor } from './types'
 export { ScyRoot } from './ScyRoot'
 export { IssueEsdtCost } from './constants'
-export { trimHash, classNames, capitalizeFirstLetter, sanitizeAlphanumeric, isFileFormatImage, isFileFormatVideo, isFileFormatAudio } from './helpers'
+export {
+  trimHash,
+  classNames,
+  capitalizeFirstLetter,
+  sanitizeAlphanumeric,
+  sanitizeNumeric,
+  isFileFormatImage,
+  isFileFormatVideo,
+  isFileFormatAudio,
+} from './helpers'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // H O O K S

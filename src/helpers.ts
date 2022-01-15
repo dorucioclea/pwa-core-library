@@ -6,6 +6,8 @@ export const trimHash = (hash: string, keep = 10) => {
 
 export const sanitizeAlphanumeric = (val: string) => val.replace(/[^a-z0-9]/gi, '')
 
+export const sanitizeNumeric = (val: string) => +val.replace(/[^0-9]/gi, '')
+
 export const capitalizeFirstLetter = (val: string) => (val ? val.charAt(0).toUpperCase() + val.slice(1) : '')
 
 export const classNames = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ')

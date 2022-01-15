@@ -48,7 +48,7 @@ const _NftCollectionCreator = (props: Props) => {
   }
 
   const handlePropertyChange = (id: string, checked: boolean) =>
-    checked ? setProperties((current) => current.filter((p) => p === id)) : setProperties((current) => [...current, id])
+    checked ? setProperties((current) => [...current, id]) : setProperties((current) => current.filter((p) => p !== id))
 
   return (
     <form onSubmit={handleSubmit}>
