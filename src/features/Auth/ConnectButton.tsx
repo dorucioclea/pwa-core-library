@@ -32,6 +32,11 @@ export const ConnectButton = (props: Props) => {
     init()
   }, [isOpen])
 
+  useEffect(() => {
+    if (!props.forceOpen) return
+    setIsOpen(props.forceOpen)
+  }, [props.forceOpen])
+
   const init = async () => setProofableToken(await props.onTokenRequest())
 
   const handleLoginRequest = async (provider: WalletProviderId) => {
