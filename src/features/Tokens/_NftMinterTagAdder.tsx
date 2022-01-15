@@ -44,7 +44,7 @@ const _NftMinterTagAdder = (props: Props) => {
           placeholder="yourtag"
           onChange={(val) => setTagInput(sanitizeAlphanumeric(val).toLowerCase())}
           onKeyDown={handleKeydownOrAdd} // Must be keydown (!) otherwise Enter will submit the form
-          max={20}
+          maxLength={20}
           className="flex-grow mr-2"
         />
         <Button color="gray" onClick={() => handleKeydownOrAdd()}>
