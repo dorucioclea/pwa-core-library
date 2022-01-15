@@ -12,9 +12,10 @@ export type Nft = {
   royalties: number | null
   url: string
   thumbnailUrl: string
-  tags: string[]
   owner: string
   supply: number
+  tags: string[]
+  description: string | null
 }
 
 export type NftCollection = Nft[]
