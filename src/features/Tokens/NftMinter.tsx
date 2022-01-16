@@ -81,7 +81,7 @@ export const NftMinter = (props: Props) => {
       </div>
       <div className="mb-4 md:mb-6">
         <small className="block pl-1 text-gray-600 text-base md:text-lg mb-2">
-          Your will receive <strong>{royalties}%</strong> every time this NFT is being sold.
+          You will receive <strong>{royalties}%</strong> royalties every time this piece is being sold.
         </small>
         {tags.length > 0 && (
           <div className="flex flex-wrap items-center">
