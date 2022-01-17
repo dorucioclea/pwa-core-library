@@ -20,6 +20,9 @@ export const StatsTile = (props: Props) => {
     if (props.color === 'green') return 'bg-green-500'
     if (props.color === 'indigo') return 'bg-indigo-500'
     if (props.color === 'gray') return 'bg-gray-500'
+    if (props.color === 'black') return 'bg-black'
+    if (props.color === 'purple') return 'bg-purple-500'
+    if (props.color === 'pink') return 'bg-pink-500'
     return 'bg-primary-500'
   }
 
