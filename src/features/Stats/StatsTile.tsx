@@ -29,13 +29,13 @@ export const StatsTile = (props: Props) => {
   return (
     <div className={`relative bg-white p-6 rounded-lg overflow-hidden ${props.className || ''}`}>
       <div>
-        <div className={`absolute rounded-lg h-10 w-10 m-2 flex justify-center items-center ${getBackgroundCssColorClassName()}`}>
-          <FontAwesomeIcon icon={props.icon} size="lg" className="text-white" />
+        <div className={`absolute rounded-lg h-14 w-14 m-2 flex justify-center items-center ${getBackgroundCssColorClassName()}`}>
+          <FontAwesomeIcon icon={props.icon} size="lg" className="text-white opacity-90" />
         </div>
-        <p className="ml-16 text-lg md:text-xl font-medium text-gray-500 truncate">{props.name}</p>
+        <p className="ml-20 text-lg md:text-xl font-medium text-gray-500 truncate pt-1">{props.name}</p>
       </div>
-      <p className="ml-16 text-2xl font-semibold text-gray-900">{props.value}</p>
-      {!!props.description && <p className="text-lg text-gray-400">{props.description}</p>}
+      <p className="ml-20 text-2xl font-semibold text-gray-900">{props.value}</p>
+      {!!props.description && <p className="text-lg text-gray-400 p-2">{props.description}</p>}
     </div>
   )
 }
