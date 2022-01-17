@@ -16,6 +16,7 @@ type Props = {
   onResetRequest: () => void
   mintingNotice?: any
   processing: boolean
+  loading: boolean
 }
 
 export const NftCreator = (props: Props) => (
@@ -40,6 +41,7 @@ export const NftCreator = (props: Props) => (
         onCreateRequest={props.onCollectionCreateRequest}
         onSetRolesRequest={props.onCollectionSetRolesRequest}
         onResetRequest={props.onResetRequest}
+        loading={props.loading}
       />
     )}
   </div>

@@ -61,7 +61,7 @@ const _NftCollectionCreator = (props: Props) => {
       <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
         Name
       </label>
-      <Input id="name" minLength={3} maxLength={20} value={name} onChange={(val) => setName(sanitizeAlphanumeric(val))} className="mb-4" />
+      <Input id="name" minLength={3} maxLength={20} value={name} onChange={(val) => setName(sanitizeAlphanumeric(val))} className="mb-4" required />
       <label htmlFor="ticker" className="pl-1 text-xl mb-2 text-gray-800">
         Ticker
       </label>
@@ -72,6 +72,7 @@ const _NftCollectionCreator = (props: Props) => {
         value={ticker}
         onChange={(val) => setTicker(sanitizeAlphanumeric(val).toUpperCase())}
         className="mb-8"
+        required
       />
       <div className="mb-8">
         {OptionalProperties.map((property) => (
