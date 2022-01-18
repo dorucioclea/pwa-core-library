@@ -2,6 +2,7 @@ import React from 'react'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AppSystemColor } from '../../types'
+import { classNames } from '../../helpers'
 
 type Props = {
   name: string
@@ -27,7 +28,7 @@ export const StatsTile = (props: Props) => {
   }
 
   return (
-    <div className={`relative bg-white p-6 rounded-lg overflow-hidden ${props.className || ''}`}>
+    <div className={classNames('relative bg-white p-6 rounded-lg overflow-hidden', props.className)}>
       <div>
         <div className={`absolute rounded-lg h-14 w-14 m-2 flex justify-center items-center ${getBackgroundCssColorClassName()}`}>
           <FontAwesomeIcon icon={props.icon} size="lg" className="text-white opacity-90" />
