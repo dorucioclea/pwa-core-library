@@ -1,4 +1,5 @@
 import React from 'react'
+import { Tooltip } from '../Feedback/Tooltip'
 
 type Props = {
   txs: string[]
@@ -10,10 +11,10 @@ export const SignTxNote = (props: Props) => {
   const tooltip = props.txs.join(', ')
 
   return (
-    <div className="mb-2" data-tip={tooltip}>
+    <Tooltip tip={tooltip}>
       <p className="text-xl">
         You will be asked to <span className="text-blue-500">sign</span> {amount} {txLabel}
       </p>
-    </div>
+    </Tooltip>
   )
 }
