@@ -13,6 +13,7 @@ export type Identity = {
   txs: string
   connections: Record<SocialAccountPlatform, SocialAccount>
   balances: Record<'egld' | 'super', string>
+  joined: string
 }
 
 export type SocialAccount = {
