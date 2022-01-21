@@ -42,6 +42,7 @@ export { Pagination } from './features/Controls/Pagination'
 export type { SelectOption } from './features/Controls/Select'
 export { Select } from './features/Controls/Select'
 export { Switch } from './features/Controls/Switch'
+export { Textarea } from './features/Controls/Textarea'
 
 // feedback
 export { showToast } from './features/Feedback/Toast'
