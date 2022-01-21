@@ -1,13 +1,21 @@
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavigationItem } from './types'
 import { Tooltip } from '../Feedback/Tooltip'
+import { classNames } from '../../helpers'
 
 export const _NavigationMobileItem = (props: NavigationItem) => {
-  const className = 'flex items-center justify-center w-full h-full text-gray-400 active:text-primary-400'
+  const router = useRouter()
   const tooltip = props.soon ? 'coming soon' : undefined
   const href = props.soon ? '#' : props.href
+  const isActive = router.pathname === href
+
+  const className = classNames(
+    'flex items-center justify-center w-full h-full active:text-primary-400',
+    isActive ? 'text-primary-400' : 'text-gray-400'
+  )
 
   const content = (
     <>
