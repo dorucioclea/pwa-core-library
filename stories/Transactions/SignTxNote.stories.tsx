@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof SignTxNote> = (args) => (
 
 export const Default = Template.bind({})
 Default.args = {
-  txs: ['transfer nft'],
+  actions: ['transfer nft'],
 }
