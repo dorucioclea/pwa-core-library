@@ -34,7 +34,7 @@ export const _HardwareConnector = (props: Props) => {
   const handleLoginRequest = async (addressIndex: number) => {
     try {
       setIsLoading(true)
-      await props.wallet.login(props.proofableToken)
+      await props.wallet.login(props.proofableToken, addressIndex)
       setIsLoading(false)
       setIsSelectingAccount(false)
       setAvailableAccounts([])
