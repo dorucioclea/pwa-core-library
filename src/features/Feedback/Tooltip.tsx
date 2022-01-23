@@ -17,8 +17,8 @@ export const Tooltip = (props: Props) => {
 
   return (
     <>
-      {props.tip ? <span data-tip={props.tip}>{props.children}</span> : props.children}
-      {props.tip && isMounted && <ReactTooltip arrowColor="transparent" className="scy-tooltip" />}
+      {!!props.tip ? <span data-tip={props.tip}>{props.children}</span> : props.children}
+      {!!props.tip && isMounted && <ReactTooltip arrowColor="transparent" className="scy-tooltip" />}
     </>
   )
 }
