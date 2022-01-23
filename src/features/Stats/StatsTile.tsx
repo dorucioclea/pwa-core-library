@@ -3,6 +3,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AppSystemColor } from '../../types'
 import { classNames } from '../../helpers'
+import { Tooltip } from '../Feedback/Tooltip'
 
 type Props = {
   name: string
@@ -10,6 +11,7 @@ type Props = {
   icon: IconProp
   value: string | number
   color?: AppSystemColor
+  tooltip?: string
   className?: string
 }
 
@@ -29,12 +31,14 @@ export const StatsTile = (props: Props) => {
 
   return (
     <div className={classNames('relative bg-white p-6 rounded-lg overflow-hidden', props.className)}>
-      <div>
-        <div className={`absolute rounded-lg h-14 w-14 m-2 flex justify-center items-center ${getBackgroundCssColorClassName()}`}>
-          <FontAwesomeIcon icon={props.icon} size="lg" className="text-white opacity-90" />
+      <Tooltip tip={props.tooltip}>
+        <div>
+          <div className={`absolute rounded-lg h-14 w-14 m-2 flex justify-center items-center ${getBackgroundCssColorClassName()}`}>
+            <FontAwesomeIcon icon={props.icon} size="lg" className="text-white opacity-90" />
+          </div>
+          <p className="ml-20 text-lg md:text-xl font-medium text-gray-500 truncate pt-1">{props.name}</p>
         </div>
-        <p className="ml-20 text-lg md:text-xl font-medium text-gray-500 truncate pt-1">{props.name}</p>
-      </div>
+      </Tooltip>
       <p className="ml-20 text-2xl font-semibold text-gray-900">{props.value}</p>
       {!!props.description && <p className="text-lg text-gray-400 p-2">{props.description}</p>}
     </div>
