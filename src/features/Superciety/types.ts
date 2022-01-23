@@ -12,6 +12,7 @@ export type Identity = {
   shard: number
   txs: string
   connections: Record<SocialAccountPlatform, SocialAccount>
+  professions: Profession[]
   balances: Record<'egld' | 'super', string>
   joined: string
 }
@@ -29,4 +30,9 @@ export type SocialAccountProvider = {
   icon: IconProp
   colorCode: string
   connectUrl: string
+}
+
+export type Profession = {
+  slug: string
+  name: string
 }
