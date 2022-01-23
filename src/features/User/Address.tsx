@@ -27,7 +27,7 @@ export const Address = (props: Props) => {
   return (
     <div className={classNames('flex', props.className || 'mb-4')}>
       <a href={`${explorerBaseUrl}/accounts/${props.children}`} target="_blank" className="block text-gray-400">
-        <span className="sm:hidden">{trimHash(props.children || '', 18)}</span>
+        <span className="sm:hidden">{trimHash(props.children || '', 15)}</span>
         <span className="hidden sm:inline">{props.children}</span>
       </a>
       <button onClick={() => clipboard.copy(props.children)}>
