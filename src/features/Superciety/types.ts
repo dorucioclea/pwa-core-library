@@ -38,4 +38,5 @@ export type SocialAccountProvider = {
 export type Profession = {
   slug: string
   name: string
+  color: string
 }
