@@ -171,11 +171,7 @@ export class WalletService implements IWalletService {
     const account = new Account(address)
     await account.sync(this.proxy!)
 
-    if (tx.getValue().isEgld()) {
-      this.ensureAccountHasSufficientEgldFor(tx, account)
-    }
-
-    // TODO: implement balance guard for esdts (requires extra api call)
+    await this.ensureAccountHasSufficientBalanceFor(tx, account)
 
     tx.setNonce(account.nonce)
 
@@ -267,15 +263,34 @@ export class WalletService implements IWalletService {
     }
   }
 
-  private ensureAccountHasSufficientEgldFor = (tx: Transaction, account: Account) => {
+  private ensureAccountHasSufficientBalanceFor = async (tx: Transaction, account: Account) => {
+    // this method houses a lot of ugly code; if you have time to PR some of this in to erdjs, you are my hero
+    // warning: this is the most ugly code i have every written
     const accountBalance = account.balance.valueOf()
     const txValue = tx.getValue().valueOf()
+    const isEgld = tx.getValue().isEgld()
+    const isEsdtTransfer = tx.getData().getEncodedArguments()[0] === 'ESDTTransfer'
+    const tokenId = tx.getData().getRawArguments()[1].toString() || null
+    const tokenAmount = parseInt(tx.getData().getRawArguments()[2].toString('hex'), 16) || null
 
-    // potentially pr this into erdjs - if you see this and pr it, you are my hero
-    const displayValue = parseFloat(tx.getValue().toDenominated().replace(/(\.0+|0+)$/, '')).toLocaleString("en")
+    const displayValue = parseFloat(
+      tx
+        .getValue()
+        .toDenominated()
+        .replace(/(\.0+|0+)$/, '')
+    ).toLocaleString('en')
 
-    if (accountBalance.isLessThan(txValue)) {
+    if (isEgld && accountBalance.isLessThan(txValue)) {
       throw new Error(`insufficient balance: ${displayValue} EGLD needed`)
+    }
+
+    if (isEsdtTransfer && tokenId && tokenAmount) {
+      const gwTokenResponse = await this.proxy!.getAddressEsdt(new Address(this.address!), tokenId)
+      // this code probably doesn't work for tokens with decimals, but is a quick impl for SUPER
+      // TODO: generalize & beautify
+      if (+gwTokenResponse.balance < tokenAmount) {
+        throw new Error(`insufficient balance: ${tokenAmount} ${tokenId.split('-')[0]} needed`)
+      }
     }
   }
 }
