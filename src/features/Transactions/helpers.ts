@@ -26,6 +26,27 @@ type TxHooks = {
   onFailed?: () => void
 }
 
+export const buildTx = async (
+  wallet: IWalletService,
+  receiver: string,
+  value: Balance,
+  gasLimit: number,
+  data?: (networkConfig: NetworkConfig) => TransactionPayload
+) => {
+  const networkConfig = NetworkConfig.getDefault()
+
+  await networkConfig.sync(wallet.getProxy())
+
+  const preparedData = data ? data(networkConfig) : undefined
+
+  return new Transaction({
+    data: preparedData,
+    gasLimit: new GasLimit(gasLimit),
+    receiver: new Address(receiver),
+    value: value,
+  })
+}
+
 export const callSmartContract = async (
   wallet: IWalletService,
   address: string,
