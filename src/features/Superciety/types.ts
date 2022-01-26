@@ -6,7 +6,10 @@ export type Identity = {
   username: string | null
   name: string | null
   bio: string | null
-  profileImageUrl: string
+  image: {
+    url: string
+    nft: string | null
+  }
   timezone: string | null
   rank: string
   shard: number
