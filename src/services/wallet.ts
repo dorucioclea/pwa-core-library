@@ -270,8 +270,8 @@ export class WalletService implements IWalletService {
     const txValue = tx.getValue().valueOf()
     const isEgld = tx.getValue().isEgld()
     const isEsdtTransfer = tx.getData().getEncodedArguments()[0] === 'ESDTTransfer'
-    const tokenId = tx.getData().getRawArguments()[1].toString() || null
-    const tokenAmount = parseInt(tx.getData().getRawArguments()[2].toString('hex'), 16) || null
+    const tokenId = tx.getData().getRawArguments()[1]?.toString() || null
+    const tokenAmount = parseInt(tx.getData().getRawArguments()[2]?.toString('hex'), 16) || null
 
     const displayValue = parseFloat(
       tx
