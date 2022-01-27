@@ -1,6 +1,6 @@
 import type { IWalletService, WalletProviderId, WalletServiceConfig } from '../../services/wallet'
 import type { AppSystemColor } from '../../types'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { _ProviderButton } from './_ProviderButton'
 import { faBolt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,11 +15,13 @@ type Props = {
   walletService: IWalletService
   onTokenRequest: () => Promise<string>
   onLocalLogin: (proofable: ProofableLogin) => void
+  onClose?: () => void
   forceOpen?: boolean
   children?: any
   color?: AppSystemColor
   large?: boolean
   disabledProviders?: WalletProviderId[]
+  buttonComponent?: ReactElement
 }
 
 export const ConnectButton = (props: Props) => {
@@ -56,17 +58,24 @@ export const ConnectButton = (props: Props) => {
     setActiveConnector(null)
   }
 
+  const handleClose = () => {
+    setIsOpen(false)
+    if (props.onClose) props.onClose()
+  }
+
   return (
     <>
-      <Button color={props.color || 'blue'} onClick={() => setIsOpen(true)} large={props.large}>
-        {props.children || (
-          <>
-            <FontAwesomeIcon icon={faBolt} className="inline-block mr-2 text-white opacity-75" />
-            Connect
-          </>
-        )}
-      </Button>
-      <StickyModal open={isOpen} onClose={() => setIsOpen(false)}>
+      {props.buttonComponent || (
+        <Button color={props.color || 'blue'} onClick={() => setIsOpen(true)} large={props.large}>
+          {props.children || (
+            <>
+              <FontAwesomeIcon icon={faBolt} className="inline-block mr-2 text-white opacity-75" />
+              Connect
+            </>
+          )}
+        </Button>
+      )}
+      <StickyModal open={isOpen} onClose={handleClose}>
         {!!activeConnector && proofableToken ? (
           <_ProviderConnector
             provider={activeConnector}
