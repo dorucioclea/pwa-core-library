@@ -32,14 +32,7 @@ export const RadioGroup = (props: Props) => {
     <div className={classNames('flex', props.className)}>
       {props.items.map((item) => (
         <div key={item.id}>
-          <input
-            id={item.id}
-            name="notification-method"
-            type="radio"
-            checked={isActive(item.id)}
-            onChange={() => handleChange(item.id)}
-            className="hidden"
-          />
+          <input id={item.id} type="radio" checked={isActive(item.id)} onChange={() => handleChange(item.id)} className="hidden" />
           <Tooltip tip={item.tip} place={props.tipPlace}>
             <label
               htmlFor={item.id}
