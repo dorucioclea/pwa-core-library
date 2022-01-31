@@ -3,7 +3,7 @@ import _NftCollectionCreator from './_NftCollectionCreator'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { NftCollectionRoleSetter } from './_NftCollectionRoleSetter'
-import { IssuableCollection, NftCollectionAccount, SettableCollectionRoles } from './types'
+import { IssuableCollection, NftCollectionAccount, CollectionSettableProperty, SettableCollectionRoles } from './types'
 import { Select, SelectOption } from '../Controls/Select'
 import { Button } from '../Controls/Button'
 import { getTokenTypeDisplayName } from './helper'
@@ -17,10 +17,11 @@ type Props = {
   onCreateRequest: (issuableCollection: IssuableCollection) => void
   onSetRolesRequest: (settableRoles: SettableCollectionRoles) => void
   onResetRequest: () => void
+  creatorSettableProperties?: CollectionSettableProperty[]
   loading: boolean
 }
 
-const _NftCollectionSelector = (props: Props) => {
+export const _NftCollectionSelector = (props: Props) => {
   const [isCreating, setIsCreating] = useState(false)
   const hasNoCollections = !props.loading && props.availableCollections.length < 1
 
@@ -35,7 +36,13 @@ const _NftCollectionSelector = (props: Props) => {
   const findCollectionBy = (ticker: string) => props.availableCollections.find((c) => c.ticker === ticker)!
 
   if (isCreating) {
-    return <_NftCollectionCreator onCreated={handleCreation} onGoBackRequest={() => setIsCreating(false)} />
+    return (
+      <_NftCollectionCreator
+        onCreated={handleCreation}
+        onGoBackRequest={() => setIsCreating(false)}
+        settableProperties={props.creatorSettableProperties}
+      />
+    )
   }
 
   if (props.collection && !props.collection.canCreate) {
@@ -84,5 +91,3 @@ const _NftCollectionSelector = (props: Props) => {
     </div>
   )
 }
-
-export default _NftCollectionSelector

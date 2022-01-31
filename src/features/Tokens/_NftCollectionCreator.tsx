@@ -3,41 +3,24 @@ import { faAngleLeft, faCoins } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
-import { IssuableCollection } from './types'
 import { IssueEsdtCost } from '../../constants'
 import { Alert } from '../Alerts/Alert'
 import { sanitizeAlphanumeric } from '../../helpers'
+import { IssuableCollection, CollectionSettableProperty } from './types'
+
+const DefaultSettableProperties = ['canUpgrade', 'canAddSpecialRoles']
 
 type Props = {
+  settableProperties?: CollectionSettableProperty[]
   onCreated: (issuableCollection: IssuableCollection) => void
   onGoBackRequest: () => void
 }
 
-type OptionalProperty = {
-  id: string
-  name: string
-  description: string
-}
-
-const OptionalProperties: OptionalProperty[] = [
-  {
-    id: 'canFreeze',
-    name: 'Freezable',
-    description: 'Ability to freeze the collection (for regulatory reasons)',
-  },
-  { id: 'canWipe', name: 'Wipeable', description: 'Ability to wipe frozen accounts (for regulatory reasons)' },
-  { id: 'canPause', name: 'Pauseable', description: 'Ability to pause transfers (for regulatory reasons)' },
-  {
-    id: 'canTransferNFTCreateRole',
-    name: 'Transferable Create Role',
-    description: 'Ability to transfer the creator role to another account',
-  },
-]
-
 const _NftCollectionCreator = (props: Props) => {
+  const hasConfiguredSettableProperties = props.settableProperties && props.settableProperties.length > 0
   const [name, setName] = useState('')
   const [ticker, setTicker] = useState('')
-  const [properties, setProperties] = useState<string[]>([])
+  const [properties, setProperties] = useState<string[]>(hasConfiguredSettableProperties ? [] : DefaultSettableProperties)
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -74,29 +57,35 @@ const _NftCollectionCreator = (props: Props) => {
         className="mb-8"
         required
       />
-      <div className="mb-8">
-        {OptionalProperties.map((property) => (
-          <div key={property.id} className="relative flex items-start mb-2">
-            <div className="flex items-center h-5">
-              <input
-                id={property.id}
-                aria-describedby={property.id + '-description'}
-                type="checkbox"
-                onChange={(e) => handlePropertyChange(property.id, e.target.checked)}
-                className="focus:ring-indigo-500 h-6 w-6 text-indigo-600 border-gray-300 rounded-xl"
-              />
+      {hasConfiguredSettableProperties ? (
+        <div className="mb-8">
+          {props.settableProperties!.map((property) => (
+            <div key={property.id} className="relative flex items-start mb-2">
+              <div className="flex items-center h-5">
+                <input
+                  id={property.id}
+                  aria-describedby={property.id + '-description'}
+                  type="checkbox"
+                  onChange={(e) => handlePropertyChange(property.id, e.target.checked)}
+                  className="focus:ring-indigo-500 h-6 w-6 text-indigo-600 border-gray-300 rounded-xl"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor={property.id} className="font-medium text-gray-700 text-lg">
+                  {property.name} ({property.id})
+                </label>
+                <p id={property.id + '-description'} className="text-sm md:text-base text-gray-500">
+                  {property.description}
+                </p>
+              </div>
             </div>
-            <div className="ml-3 text-sm">
-              <label htmlFor={property.id} className="font-medium text-gray-700 text-lg">
-                {property.name} ({property.id})
-              </label>
-              <p id={property.id + '-description'} className="text-sm md:text-base text-gray-500">
-                {property.description}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-gray-500 text-lg md:text-xl mb-8 pl-1">
+          This collection will be <strong>upgradable</strong> in the future.
+        </p>
+      )}
       <div className="flex items-center">
         <button onClick={() => props.onGoBackRequest()} className="w-1/3 md:w-1/2 text-lg md:text-xl text-center text-gray-500">
           <FontAwesomeIcon icon={faAngleLeft} className="text-gray-500 opacity-75 inline-block mr-2" />

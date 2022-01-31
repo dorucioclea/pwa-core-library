@@ -1,9 +1,9 @@
 import React from 'react'
-import _NftCollectionSelector from './_NftCollectionSelector'
 import { NftMinter } from './NftMinter'
-import { IssuableCollection, MintableNft, NftCollectionAccount, SettableCollectionRoles } from './types'
-import { TxProcessingIndicatorOverlay } from '../Transactions/TxProcessingIndicatorOverlay'
 import { Steps } from '../Progress/Steps'
+import { _NftCollectionSelector } from './_NftCollectionSelector'
+import { TxProcessingIndicatorOverlay } from '../Transactions/TxProcessingIndicatorOverlay'
+import { IssuableCollection, MintableNft, NftCollectionAccount, CollectionSettableProperty, SettableCollectionRoles } from './types'
 
 type Props = {
   address: string
@@ -15,6 +15,7 @@ type Props = {
   onNftCreateRequest: (mintableNft: MintableNft) => void
   onResetRequest: () => void
   mintingNotice?: any
+  collectionSettableProperties?: CollectionSettableProperty[]
   processing: boolean
   loading: boolean
 }
@@ -37,6 +38,7 @@ export const NftCreator = (props: Props) => (
         address={props.address}
         collection={props.collection}
         availableCollections={props.availableCollections}
+        creatorSettableProperties={props.collectionSettableProperties}
         onSelected={(c) => props.onCollectionSelected(c)}
         onCreateRequest={props.onCollectionCreateRequest}
         onSetRolesRequest={props.onCollectionSetRolesRequest}

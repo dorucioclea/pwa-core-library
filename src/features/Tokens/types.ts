@@ -47,6 +47,12 @@ export type SettableCollectionRoles = {
   roles: string[]
 }
 
+export type CollectionSettableProperty = {
+  id: 'canFreeze' | 'canWipe' | 'canPause' | 'canTransferNFTCreateRole' | 'canChangeOwner' | 'canUpgrade' | 'canAddSpecialRoles'
+  name: string
+  description: string
+}
+
 export type MintableNft = {
   collection: string
   name: string
