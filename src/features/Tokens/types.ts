@@ -21,9 +21,11 @@ export type Nft = {
 export type NftCollection = Nft[]
 export type NftCollectionList = Record<CollectionTokenIdentifier, NftCollection>
 
+export type TokenType = 'FungibleESDT' | 'NonFungibleESDT' | 'SemiFungibleESDT' | 'MetaESDT'
+
 export type NftCollectionAccount = {
   collection: string
-  type: string
+  type: TokenType
   name: string
   ticker: string
   canFreeze: boolean
@@ -35,7 +37,7 @@ export type NftCollectionAccount = {
 }
 
 export type IssuableCollection = {
-  type: 'nft' | 'sft' | 'meta'
+  type: TokenType
   name: string
   ticker: string
   properties: string[]
