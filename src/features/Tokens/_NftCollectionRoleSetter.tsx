@@ -2,7 +2,7 @@ import React from 'react'
 import { faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SyntheticEvent, useState } from 'react'
-import { NftCollectionAccount, SettableCollectionRoles } from './types'
+import { NftCollectionAccount, SettableCollectionRoles, TokenType } from './types'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
 import { Switch } from '../Controls/Switch'
@@ -19,26 +19,37 @@ type SettableRole = {
   id: string
   name: string
   description: string
+  default?: boolean
   required?: boolean
+  hide?: boolean
 }
 
-const SettableRoles: SettableRole[] = [
+const GetSettableRoles = (collectionType: TokenType): SettableRole[] => [
   {
     id: 'ESDTRoleNFTCreate',
     name: 'Create',
-    description: 'Allows the given address to CREATE NFTs for that collection.',
+    description: 'Allows the given address to CREATE in that collection.',
     required: true,
   },
   {
     id: 'ESDTRoleNFTBurn',
     name: 'Burn',
-    description: 'Allows the given address to BURN NFTs in that collection.',
+    description: 'Allows the given address to BURN in that collection.',
+  },
+  {
+    id: 'ESDTRoleNFTAddQuantity',
+    name: 'Add Quantity',
+    description: 'Allows the given address to ADD QUANTITY to SFTs in that collection.',
+    default: true,
+    hide: collectionType !== 'SemiFungibleESDT',
   },
 ]
 
 export const NftCollectionRoleSetter = (props: Props) => {
+  const activeRoles = GetSettableRoles(props.collection.type).filter((r) => !r.hide)
+  const defaultRolesState = activeRoles.filter((r) => r.required || r.default).map((r) => r.id)
   const [address, setAddress] = useState(props.presetAddress || '')
-  const [roles, setRoles] = useState<string[]>(SettableRoles.filter((r) => r.required).map((r) => r.id))
+  const [roles, setRoles] = useState<string[]>(defaultRolesState)
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -70,7 +81,7 @@ export const NftCollectionRoleSetter = (props: Props) => {
       </label>
       <Input id="address" value={address} onChange={(val) => !props.presetAddress && setAddress(val)} disabled className="mb-4" />
       <ul className="p-4">
-        {SettableRoles.map((settable) => (
+        {activeRoles.map((settable) => (
           <li key={settable.id} className="flex items-center mb-8">
             <Switch label={settable.name} checked={roles.includes(settable.id)} onChange={() => toggleRole(settable)} />
             <div className="pl-4">

@@ -61,5 +61,6 @@ export type MintableNft = {
   description: string
   royalties: number
   tags: string[]
+  quantity: number
   media: File
 }

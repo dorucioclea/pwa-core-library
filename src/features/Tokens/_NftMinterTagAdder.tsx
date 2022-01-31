@@ -12,7 +12,7 @@ type Props = {
   className?: string
 }
 
-const _NftMinterTagAdder = (props: Props) => {
+export const _NftMinterTagAdder = (props: Props) => {
   const [tagInput, setTagInput] = useState('')
 
   const handleKeydownOrAdd = (event?: KeyboardEvent<HTMLInputElement>) => {
@@ -55,5 +55,3 @@ const _NftMinterTagAdder = (props: Props) => {
     </div>
   )
 }
-
-export default _NftMinterTagAdder

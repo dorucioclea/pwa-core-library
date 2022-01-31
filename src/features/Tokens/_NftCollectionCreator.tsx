@@ -6,9 +6,15 @@ import { Button } from '../Controls/Button'
 import { IssueEsdtCost } from '../../constants'
 import { Alert } from '../Alerts/Alert'
 import { sanitizeAlphanumeric } from '../../helpers'
-import { IssuableCollection, CollectionSettableProperty } from './types'
+import { IssuableCollection, CollectionSettableProperty, TokenType } from './types'
+import { RadioGroup, RadioGroupItem } from '../Controls/RadioGroup'
 
 const DefaultSettableProperties = ['canUpgrade', 'canAddSpecialRoles']
+
+const CollectionTypes: RadioGroupItem[] = [
+  { id: 'NonFungibleESDT' as TokenType, title: 'NFT', tip: 'Non-fungible Token - All pieces are unique and only exist once', default: true },
+  { id: 'SemiFungibleESDT' as TokenType, title: 'SFT', tip: 'Semi-fungible Token - Pieces can have a supply of more than one' },
+]
 
 type Props = {
   settableProperties?: CollectionSettableProperty[]
@@ -18,13 +24,15 @@ type Props = {
 
 const _NftCollectionCreator = (props: Props) => {
   const hasConfiguredSettableProperties = props.settableProperties && props.settableProperties.length > 0
+  const defaultTypeState = CollectionTypes.find((i) => i.default)?.id as TokenType
   const [name, setName] = useState('')
   const [ticker, setTicker] = useState('')
+  const [type, setType] = useState<TokenType>(defaultTypeState || 'NonFungibleESDT')
   const [properties, setProperties] = useState<string[]>(hasConfiguredSettableProperties ? [] : DefaultSettableProperties)
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
-    props.onCreated({ type: 'nft', name, ticker, properties })
+    props.onCreated({ type: type, name, ticker, properties })
     setName('')
     setTicker('')
     setProperties([])
@@ -41,7 +49,7 @@ const _NftCollectionCreator = (props: Props) => {
       <Alert icon={faCoins} type="warning">
         Issuing a collection <strong>costs {IssueEsdtCost} EGLD</strong>, which is defined by the network.
       </Alert>
-      <label htmlFor="name" className="pl-1 text-xl mb-2 text-gray-800">
+      <label htmlFor="name" className="pl-1 text-xl mb-4 text-gray-800">
         Name
       </label>
       <Input id="name" minLength={3} maxLength={20} value={name} onChange={(val) => setName(sanitizeAlphanumeric(val))} className="mb-4" required />
@@ -54,9 +62,11 @@ const _NftCollectionCreator = (props: Props) => {
         maxLength={10}
         value={ticker}
         onChange={(val) => setTicker(sanitizeAlphanumeric(val).toUpperCase())}
-        className="mb-8"
+        className="mb-4"
         required
       />
+      <label className="block pl-1 text-xl mb-2 text-gray-800">Type</label>
+      <RadioGroup items={CollectionTypes} onChange={(activeId) => setType(activeId as TokenType)} tipPlace="right" className="pl-2 mb-4" />
       {hasConfiguredSettableProperties ? (
         <div className="mb-8">
           {props.settableProperties!.map((property) => (

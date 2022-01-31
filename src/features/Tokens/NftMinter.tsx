@@ -1,5 +1,4 @@
 import React, { SyntheticEvent, useState } from 'react'
-import _NftMinterTagAdder from './_NftMinterTagAdder'
 import { faAngleLeft, faPercentage, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MintableNft, NftCollectionAccount } from './types'
@@ -8,6 +7,8 @@ import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
 import { Button } from '../Controls/Button'
 import { sanitizeNumeric } from '../../helpers'
+import { getTokenTypeDisplayName } from './helper'
+import { _NftMinterTagAdder } from './_NftMinterTagAdder'
 
 const RoyaltiesDefaultPercent = 10
 
@@ -23,6 +24,7 @@ export const NftMinter = (props: Props) => {
   const [description, setDescription] = useState('')
   const [royalties, setRoyalties] = useState<string>(RoyaltiesDefaultPercent.toString())
   const [tags, setTags] = useState<string[]>([])
+  const [quantity, setQuantity] = useState(1)
   const [media, setMedia] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -34,7 +36,7 @@ export const NftMinter = (props: Props) => {
     }
     setIsLoading(true)
     setTimeout(() => setIsLoading(false), 5000)
-    props.onCreateRequest({ collection: props.collection.ticker, name, description, royalties: +royalties, tags, media })
+    props.onCreateRequest({ collection: props.collection.ticker, name, description, royalties: +royalties, tags, quantity, media })
   }
 
   const sanitizeRoyaltiesInput = (input: string, previous: string): string => {
@@ -47,13 +49,25 @@ export const NftMinter = (props: Props) => {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="mb-2 md:mb-4">
-        <span className="highlight">Mint</span> an NFT
+        <span className="highlight">Mint</span> an {getTokenTypeDisplayName(props.collection.type)}
       </h2>
       {props.notice && <div className="mb-2">{props.notice}</div>}
-      <label htmlFor="name" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
-        Name
-      </label>
-      <Input id="name" value={name} onChange={(val) => setName(val)} className="mb-2 md:mb-4" required />
+      <div className="flex">
+        <div className="flex-grow">
+          <label htmlFor="name" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
+            Name
+          </label>
+          <Input id="name" value={name} onChange={(val) => setName(val)} className="mb-2 md:mb-4" required />
+        </div>
+        {props.collection.type === 'SemiFungibleESDT' && (
+          <div className="pl-4 w-32">
+            <label htmlFor="quantity" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
+              Quantity
+            </label>
+            <Input id="quantity" value={quantity} onChange={(val) => setQuantity(+val)} className="mb-2 md:mb-4" required />
+          </div>
+        )}
+      </div>
       <label htmlFor="description" className="pl-1 text-lg md:text-xl mb-2 text-gray-800">
         Description
       </label>
