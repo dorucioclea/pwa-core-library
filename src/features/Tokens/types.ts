@@ -5,7 +5,7 @@ export type Nft = {
   identifier: TokenIdentifier
   collection: string
   nonce: number
-  type: string
+  type: TokenType
   name: string
   creator: string
   ticker: string
