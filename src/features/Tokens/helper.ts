@@ -9,7 +9,7 @@ export const getTokenTypeDisplayName = (tokenType: TokenType) => {
 }
 
 export const getSuperToken = (chainId: ChainID): Token => {
-  if (chainId.valueOf() === 'D') return new Token({ identifier: 'XSUPER-d0da40', name: 'XSuper', decimals: 0 })
-  if (chainId.valueOf() === 'T') return new Token({ identifier: 'XSUPER-34d9ea', name: 'XSuper', decimals: 0 })
-  return new Token({ identifier: 'SUPER-764d8d', name: 'Super', decimals: 0 })
+  if (chainId.valueOf() === 'D') return new Token({ identifier: 'XSUPER-d0da40', name: 'XSUPER', decimals: 0 })
+  if (chainId.valueOf() === 'T') return new Token({ identifier: 'XSUPER-d99d09', name: 'XSUPER', decimals: 0 })
+  return new Token({ identifier: 'SUPER-507aa6', name: 'SUPER', decimals: 0 })
 }
