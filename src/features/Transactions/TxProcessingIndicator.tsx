@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
 import { classNames } from '../../helpers'
 
 type Props = {
@@ -23,7 +22,7 @@ export const TxProcessingIndicator = (props: Props) => {
 
   return (
     <span className={classNames('animate-ping', props.className)}>
-      <FontAwesomeIcon icon={faCircleNotch} size="2x" className={`animate-spin ${colorCssClassName}`} />
+      <FontAwesomeIcon icon={faCircleNotch} size="2x" className={classNames('animate-spin', colorCssClassName)} />
     </span>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { classNames } from '../..'
+import { classNames } from '../../helpers'
 import { SuperTokenLogo } from '../Logos/SuperTokenLogo'
 
 type Props = {
