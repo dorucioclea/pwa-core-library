@@ -18,6 +18,7 @@ export type Identity = {
   professions: Profession[]
   balances: Record<'egld' | 'super', string>
   joined: string
+  meta: boolean
 }
 
 export type SocialAccount = {
