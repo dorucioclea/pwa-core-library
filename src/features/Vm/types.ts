@@ -1,4 +1,3 @@
-export type VmQueryResult = {
-  code: 'ok' | 'error'
-  data: string[]
+export type VmResult = {
+  data: string
 }
