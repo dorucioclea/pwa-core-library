@@ -46,7 +46,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@elrondnetwork/erdjs": "^8.0.1-alpha.13",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
