@@ -15,7 +15,7 @@ export {
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // H O O K S
 // * * * * * * * *
-export { useDidMountEffect } from './hooks/did-mount'
+export { useDidMountEffect } from './hooks/useDidMountEffect'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // F E A T U R E S
