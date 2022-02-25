@@ -126,6 +126,8 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
 
   const _handleSignedWebWalletTx = async () => {
     if (!router.query['chainID[0]'] || !router.query['version[0]']) {
+      // the web wallet sign-transaction hook currently is missing 'chainID' & 'version'
+      // in the callback query params. this is a workaround to add them ourselves for now.
       const networkConfig = NetworkConfig.getDefault()
       await networkConfig.sync(wallet.getProxy())
       router.query['chainID[0]'] = networkConfig.ChainID.valueOf()
