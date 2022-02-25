@@ -16,6 +16,7 @@ export {
 // H O O K S
 // * * * * * * * *
 export { useDidMountEffect } from './hooks/useDidMountEffect'
+export { usePendingTx } from './hooks/usePendingTx'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // F E A T U R E S
@@ -103,7 +104,6 @@ export { getTokenTypeDisplayName, getSuperToken } from './features/Tokens/helper
 
 // transactions
 export type { Transaction, TransactionType, PreparedTx } from './features/Transactions/types'
-export { callSmartContract, sendPreparedTx, fetchAndSendPreparedTx, sendTx, buildTx } from './features/Transactions/helpers'
 export { TxProcessingIndicator } from './features/Transactions/TxProcessingIndicator'
 export { TxProcessingIndicatorOverlay } from './features/Transactions/TxProcessingIndicatorOverlay'
 export { SignTxNote } from './features/Transactions/SignTxNote'
