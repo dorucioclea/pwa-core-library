@@ -1,4 +1,5 @@
 import platform from 'platform'
+import BigNumber from 'bignumber.js'
 import {
   IDappProvider,
   ExtensionProvider,
@@ -10,6 +11,9 @@ import {
   WalletProvider as WebWalletProvider,
   WalletConnectProvider,
   HWProvider,
+  ApiProvider,
+  Balance,
+  Token,
 } from '@elrondnetwork/erdjs'
 
 const WalletAuthStorageKey = 'wallet_user'
@@ -41,6 +45,7 @@ export interface IWalletService {
   onLogin?: (proofableLogin: ProofableLogin) => void
   onLogout?: () => void
   login: (proofableToken: string, addressIndex?: number) => Promise<{ walletConnectLoginUri?: string }>
+  finalizeLogin: (proofableLogin: ProofableLogin, addressIndex?: number) => void
   logout: () => Promise<void>
   isLoggedIn: () => boolean
   signTransaction: (transaction: Transaction) => Promise<Transaction>
@@ -50,6 +55,7 @@ export interface IWalletService {
   getProvider: () => IDappProvider
   getProviderId: () => WalletProviderId
   getProxy: () => ProxyProvider
+  getApi: () => ApiProvider
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
 }
@@ -76,6 +82,7 @@ export class WalletService implements IWalletService {
   private providerId: WalletProviderId = 'empty'
   private config: WalletServiceConfig | null = null
   private proxy: ProxyProvider | null = null
+  private api: ApiProvider | null = null
   private address: string | null = null
 
   constructor() {
@@ -95,6 +102,7 @@ export class WalletService implements IWalletService {
 
     const storedWallet = this.loadFromStorage()
     const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
+    const api = new ApiProvider(config.ApiAddress, { timeout: 5000 })
     providerId = providerId || storedWallet?.providerId || 'empty'
 
     if (providerId === 'maiar_app') {
@@ -116,6 +124,7 @@ export class WalletService implements IWalletService {
     this.providerId = providerId
     this.config = config
     this.proxy = proxy
+    this.api = api
     this.address = !!storedWallet ? storedWallet.address : null
 
     return await this.provider.init()
@@ -143,7 +152,10 @@ export class WalletService implements IWalletService {
     }
 
     if (this.providerId === 'hardware') {
-      const login = await (this.provider as HWProvider).tokenLogin({ token: Buffer.from(`${proofableToken}{}`), addressIndex: addressIndex })
+      const login = await (this.provider as HWProvider).tokenLogin({
+        token: Buffer.from(`${proofableToken}{}`),
+        addressIndex: addressIndex,
+      })
       this.finalizeLogin({ signature: login.signature.hex(), address: login.address }, addressIndex)
     }
 
@@ -184,7 +196,6 @@ export class WalletService implements IWalletService {
     tx.getSignature() // tx does not expose a way to check if sig is applied, so using it as a guard
 
     await tx.send(this.proxy!)
-    await tx.awaitExecuted(this.proxy!)
 
     return tx
   }
@@ -218,6 +229,8 @@ export class WalletService implements IWalletService {
 
   getProxy = () => this.proxy!
 
+  getApi = () => this.api!
+
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
 
   getHardwareAccounts = async () => {
@@ -225,7 +238,7 @@ export class WalletService implements IWalletService {
     return await (this.provider as HWProvider).getAccounts()
   }
 
-  private finalizeLogin = (proofableLogin: ProofableLogin, addressIndex?: number) => {
+  finalizeLogin = (proofableLogin: ProofableLogin, addressIndex?: number) => {
     this.persistLoginInStorage(proofableLogin.address, addressIndex)
     this.address = proofableLogin.address
     if (this.onLogin) this.onLogin(proofableLogin)
@@ -264,31 +277,33 @@ export class WalletService implements IWalletService {
   }
 
   private ensureAccountHasSufficientBalanceFor = async (tx: Transaction, account: Account) => {
-    // this method houses a lot of ugly code; if you have time to PR some of this in to erdjs, you are my hero
-    // warning: this is the most ugly code i have every written
     const accountBalance = account.balance.valueOf()
     const txValue = tx.getValue().valueOf()
     const isEgld = tx.getValue().isEgld()
     const isEsdtTransfer = tx.getData().getEncodedArguments()[0] === 'ESDTTransfer'
-    const tokenId = tx.getData().getRawArguments()[1]?.toString() || null
-    const tokenAmount = parseInt(tx.getData().getRawArguments()[2]?.toString('hex'), 16) || null
-
-    const displayValue = parseFloat(
-      tx
-        .getValue()
-        .toDenominated()
-        .replace(/(\.0+|0+)$/, '')
-    ).toLocaleString('en')
+    const txData = tx.getData().getRawArguments()
+    const tokenId = txData[1]?.toString()
+    const tokenAmount = +parseInt(txData[2]?.toString('hex'), 16)
 
     if (isEgld && accountBalance.isLessThan(txValue)) {
+      const displayValue = +parseFloat(tx.getValue().toDenominated()).toFixed(4)
       throw new Error(`insufficient balance: ${displayValue} EGLD needed`)
     }
 
     if (isEsdtTransfer && tokenId && tokenAmount) {
-      const gwTokenResponse = await this.proxy!.getAddressEsdt(new Address(this.address!), tokenId)
-      // this code probably doesn't work for tokens with decimals, but is a quick impl for SUPER
-      // TODO: generalize & beautify
-      if (+gwTokenResponse.balance < tokenAmount) {
+      let balanceValue = 0
+      let decimals = 18
+      try {
+        // TODO: refactor when this PR is packaged in new npm version: https://github.com/ElrondNetwork/elrond-sdk-erdjs/pull/133
+        const networkTokenRes = await this.api!.doGetGeneric(`accounts/${this.address!}/tokens/${tokenId}`, (r) => r)
+        balanceValue = networkTokenRes.balance
+        decimals = networkTokenRes.decimals
+      } catch {}
+
+      const token = new Token({ decimals })
+      const balance = new Balance(token, new BigNumber(0), new BigNumber(balanceValue))
+      const transferAmount = new BigNumber(tokenAmount).shiftedBy(decimals)
+      if (balance.valueOf().isLessThan(transferAmount)) {
         throw new Error(`insufficient balance: ${tokenAmount} ${tokenId.split('-')[0]} needed`)
       }
     }
