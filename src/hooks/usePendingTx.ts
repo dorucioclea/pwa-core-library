@@ -24,6 +24,7 @@ import {
   WalletProvider as WebWalletProvider,
   TransactionPayload,
 } from '@elrondnetwork/erdjs'
+import { TransactionOnNetwork } from '@elrondnetwork/erdjs/out/transactionOnNetwork' // not exported
 
 type ScInfo = {
   address: string
@@ -35,7 +36,7 @@ type ScInfo = {
 type TxHooks = {
   onSigned?: (transaction: Transaction) => void
   onSent?: (transaction: Transaction) => void
-  onSuccess?: (transaction: Transaction, txOnNetwork: any) => void
+  onSuccess?: (transaction: Transaction, txOnNetwork: TransactionOnNetwork) => void
   onFailed?: () => void
 }
 
@@ -53,7 +54,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
     const networkConfig = NetworkConfig.getDefault()
     await networkConfig.sync(wallet.getProxy())
 
-    send(
+    await send(
       new Transaction({
         data: data ? data(networkConfig) : undefined,
         gasLimit: new GasLimit(gasLimit),
@@ -187,7 +188,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
     showToast('Transaction sent ...', 'success', faHourglassHalf)
   }
 
-  const _handleSuccessEvent = (transaction: Transaction, txOnNetwork: any) =>
+  const _handleSuccessEvent = (transaction: Transaction, txOnNetwork: TransactionOnNetwork) =>
     hooks?.onSuccess ? hooks.onSuccess(transaction, txOnNetwork) : showToast('Transaction executed', 'success', faHourglassEnd)
 
   const _handleErrorEvent = () => (hooks?.onFailed ? hooks.onFailed() : showToast('Transaction failed', 'error', faHourglassEnd))
