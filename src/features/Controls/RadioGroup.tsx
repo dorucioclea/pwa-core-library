@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Tooltip } from '../..'
+import { Tooltip } from '../Feedback/Tooltip'
 import { classNames } from '../../helpers'
 
 export type RadioGroupItem = {
