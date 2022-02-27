@@ -100,7 +100,7 @@ export type {
 } from './features/Tokens/types'
 export { NftCreator } from './features/Tokens/NftCreator'
 export { NftMinter } from './features/Tokens/NftMinter'
-export { getTokenTypeDisplayName, getSuperToken } from './features/Tokens/helper'
+export { getTokenTypeDisplayName } from './features/Tokens/helper'
 
 // transactions
 export type { Transaction, TransactionType, PreparedTx } from './features/Transactions/types'
