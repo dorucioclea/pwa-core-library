@@ -196,6 +196,7 @@ export class WalletService implements IWalletService {
     tx.getSignature() // tx does not expose a way to check if sig is applied, so using it as a guard
 
     await tx.send(this.proxy!)
+    await tx.awaitExecuted(this.proxy!)
 
     return tx
   }
