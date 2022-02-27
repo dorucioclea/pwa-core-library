@@ -158,10 +158,14 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
       const sentTx = await wallet.sendTransaction(signedTx)
       const txOnNetwork = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
 
+      // there is currently a bug in erdjs where SC returnCode (returnCode.ts) isSuccess() returns false
+      // if results contain transfers like of ESDT:
+      // https://github.com/ElrondNetwork/elrond-sdk-erdjs/blob/12a772f2b56872455e54876fee44ea9c6167238a/src/smartcontracts/returnCode.ts#L45
       const contractErrorResults = txOnNetwork
         .getSmartContractResults()
         .getAllResults()
-        .filter((result) => !result.isSuccess())
+        // .filter((result) => !result.isSuccess()) comment this line back in when bug is fixed
+        .filter((result) => result.getReturnMessage() && !result.getReturnMessage().includes('too much gas provided')) // remove this when bug fixed
 
       if (contractErrorResults.length > 0) {
         throw contractErrorResults[0].getReturnMessage()
