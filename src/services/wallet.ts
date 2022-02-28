@@ -160,7 +160,10 @@ export class WalletService implements IWalletService {
     }
 
     if (this.providerId === 'web') {
-      this.provider.login({ token: proofableToken })
+      // currently there is a bug in erdjs / web wallet that incorrectly encodes query params in the callback url,
+      // so strip them in the callback url entirely for now
+      const callbackUrl = location.protocol + '//' + location.host + location.pathname
+      this.provider.login({ token: proofableToken, callbackUrl })
     }
 
     return {}
