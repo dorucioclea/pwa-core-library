@@ -16,6 +16,7 @@ export {
 // H O O K S
 // * * * * * * * *
 export { useDidMountEffect } from './hooks/useDidMountEffect'
+export type { ScInfo, TxHooks } from './hooks/usePendingTx'
 export { usePendingTx } from './hooks/usePendingTx'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
