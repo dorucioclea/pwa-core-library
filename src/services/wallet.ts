@@ -287,7 +287,7 @@ export class WalletService implements IWalletService {
     const isEsdtTransfer = tx.getData().getEncodedArguments()[0] === 'ESDTTransfer'
     const txData = tx.getData().getRawArguments()
     const tokenId = txData[1]?.toString()
-    const tokenAmount = +parseInt(txData[2]?.toString('hex'), 16)
+    const tokenAmount = new BigNumber(txData[2]?.toString('hex'), 16)
 
     if (isEgld && accountBalance.isLessThan(txValue)) {
       const displayValue = +parseFloat(tx.getValue().toDenominated()).toFixed(4)
@@ -306,9 +306,9 @@ export class WalletService implements IWalletService {
 
       const token = new Token({ decimals })
       const balance = new Balance(token, new BigNumber(0), new BigNumber(balanceValue))
-      const transferAmount = new BigNumber(tokenAmount).shiftedBy(decimals)
-      if (balance.valueOf().isLessThan(transferAmount)) {
-        throw new Error(`insufficient balance: ${tokenAmount} ${tokenId.split('-')[0]} needed`)
+      if (balance.valueOf().isLessThan(tokenAmount)) {
+        const displayValue = +tokenAmount.toFixed(4)
+        throw new Error(`insufficient balance: ${displayValue} ${tokenId.split('-')[0]} needed`)
       }
     }
   }
