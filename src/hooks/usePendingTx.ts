@@ -26,23 +26,24 @@ import {
 } from '@elrondnetwork/erdjs'
 import { TransactionOnNetwork } from '@elrondnetwork/erdjs/out/transactionOnNetwork' // not exported
 
-type ScInfo = {
+export type ScInfo = {
   address: string
   endpoint: string
+  gasLimit?: number
   abiUrl?: string
   abiName?: string
 }
 
-type TxHooks = {
-  onSigned?: (transaction: Transaction) => void
-  onSent?: (transaction: Transaction) => void
-  onSuccess?: (transaction: Transaction, txOnNetwork: TransactionOnNetwork) => void
+export type TxHooks = {
+  onSigned?: ({ tx }: { tx: Transaction; scInteraction?: Interaction }) => void
+  onSent?: ({ tx }: { tx: Transaction; scInteraction?: Interaction }) => void
+  onSuccess?: ({ tx, txOnNetwork }: { tx: Transaction; txOnNetwork: TransactionOnNetwork; scInteraction?: Interaction }) => void
   onFailed?: () => void
 }
 
 const WebWalletProviderSignedStatus = ['transactionSigned', 'transactionsSigned']
 
-export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?: TxHooks) => {
+export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?: ScInfo, hooks?: TxHooks) => {
   const router = useRouter()
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
   const fetchAndSendPrepared = async (preparedTxName: string, args: Record<string, any>) =>
     handleAppResponse(getPreparedTxRequest(http, preparedTxName, args), async (tx) => await sendPrepared(tx))
 
-  const send = async (tx: Transaction) => {
+  const send = async (tx: Transaction, scInteraction?: Interaction) => {
     if (wallet.getProviderId() === 'maiar_extension') {
       showToast('Please confirm in Maiar DeFi Wallet', 'vibe', faHourglassStart)
     } else if (wallet.getProviderId() === 'maiar_app') {
@@ -91,38 +92,50 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
     const signedTx = await _withUIErrorHandling(async () => {
       const _signedTx = await wallet.signTransaction(tx)
       if (wallet.getProviderId() !== 'web') {
-        _handleSignedEvent(_signedTx)
+        _handleSignedEvent(_signedTx, scInteraction)
       }
       return _signedTx
     })
 
     if (!!signedTx && wallet.getProviderId() !== 'web') {
-      await _sendTxWithFeedback(signedTx)
+      await _sendTxWithFeedback(signedTx, scInteraction)
     }
   }
 
-  const callSc = async (scInfo: ScInfo, args: TypedValue[], gasLimit: number, value?: Balance) => {
+  const callSc = async (value: Balance, args: TypedValue[], estimatedExecutionComponent?: number) => {
+    if (!scInfo) return null
     await NetworkConfig.getDefault().sync(wallet.getProxy())
-    const { sc, interaction } = await _getScInteraction(scInfo, args)
-    const tx = interaction
-      .withValue(value || Balance.egld(0))
-      .withGasLimit(new GasLimit(gasLimit))
-      .buildTransaction()
+    const interaction = await _getScInteraction(scInfo, args)
+    interaction.withValue(value)
 
-    await send(tx)
-    return sc
+    if (estimatedExecutionComponent) {
+      interaction.withGasLimitComponents({ estimatedExecutionComponent })
+    }
+
+    if (scInfo.gasLimit) {
+      interaction.withGasLimit(new GasLimit(scInfo.gasLimit))
+    }
+
+    await send(interaction.buildTransaction(), interaction)
+    return interaction
   }
 
-  const callScWithEsdt = async (scInfo: ScInfo, value: Balance, args: TypedValue[], gasLimit: number) => {
+  const callScWithEsdt = async (esdtValue: Balance, args: TypedValue[], estimatedExecutionComponent?: number) => {
+    if (!scInfo) return null
     await NetworkConfig.getDefault().sync(wallet.getProxy())
-    const { sc, interaction } = await _getScInteraction(scInfo, args)
-    const tx = interaction
-      // TODO: add '.withSingleESDTTransfer(value)' when PR is packed in new npm: https://github.com/ElrondNetwork/elrond-sdk-erdjs/pull/131
-      .withGasLimit(new GasLimit(gasLimit))
-      .buildTransaction()
+    const interaction = await _getScInteraction(scInfo, args)
+    interaction.withSingleESDTTransfer(esdtValue)
 
-    await send(tx)
-    return sc
+    if (estimatedExecutionComponent) {
+      interaction.withGasLimitComponents({ estimatedExecutionComponent })
+    }
+
+    if (scInfo.gasLimit) {
+      interaction.withGasLimit(new GasLimit(scInfo.gasLimit))
+    }
+
+    await send(interaction.buildTransaction(), interaction)
+    return interaction
   }
 
   const _handleSignedWebWalletTx = async () => {
@@ -138,23 +151,23 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
       const txs = (wallet.getProvider() as WebWalletProvider).getTransactionsFromWalletUrl()
       if (txs.length < 1) return
       router.push(router.asPath.split('?')[0])
-      _handleSignedEvent(txs[0])
-      await _sendTxWithFeedback(txs[0])
+      const scInteraction = !!scInfo ? await _getScInteraction(scInfo, []) : undefined
+      _handleSignedEvent(txs[0], scInteraction)
+      await _sendTxWithFeedback(txs[0], scInteraction)
     }
   }
 
-  const _getScInteraction = async (scInfo: ScInfo, args: TypedValue[]) => {
-    const hasAbi = scInfo.abiUrl && scInfo.abiName
-    const abi = hasAbi ? new SmartContractAbi(await AbiRegistry.load({ urls: [scInfo.abiUrl!] }), [scInfo.abiName!]) : undefined
-    const sc = new SmartContract({ address: new Address(scInfo.address), abi: abi })
-    const func = new ContractFunction(scInfo.endpoint)
-    const interaction = hasAbi ? sc.methods[scInfo.endpoint](args) : new Interaction(sc, func, func, args)
-    return { sc, interaction }
+  const _getScInteraction = async (info: ScInfo, args: TypedValue[]) => {
+    const hasAbi = info.abiUrl && info.abiName
+    const abi = hasAbi ? new SmartContractAbi(await AbiRegistry.load({ urls: [info.abiUrl!] }), [info.abiName!]) : undefined
+    const sc = new SmartContract({ address: new Address(info.address), abi: abi })
+    const func = new ContractFunction(info.endpoint)
+    return hasAbi ? sc.methods[info.endpoint](args) : new Interaction(sc, func, func, args)
   }
 
-  const _sendTxWithFeedback = async (signedTx: Transaction) =>
+  const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction) =>
     _withUIErrorHandling(async () => {
-      signedTx.onSent.on(({ transaction }) => _handleSentEvent(transaction))
+      signedTx.onSent.on(({ transaction }) => _handleSentEvent(transaction, scInteraction))
       const sentTx = await wallet.sendTransaction(signedTx)
       const txOnNetwork = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
 
@@ -171,7 +184,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
         throw contractErrorResults[0].getReturnMessage()
       }
 
-      _handleSuccessEvent(sentTx, txOnNetwork)
+      _handleSuccessEvent(sentTx, txOnNetwork, scInteraction)
     })
 
   const _withUIErrorHandling = async <T>(action: () => T) => {
@@ -185,15 +198,15 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, hooks?:
     }
   }
 
-  const _handleSignedEvent = (transaction: Transaction) => hooks?.onSigned && hooks.onSigned(transaction)
+  const _handleSignedEvent = (tx: Transaction, scInteraction?: Interaction) => hooks?.onSigned && hooks.onSigned({ tx, scInteraction })
 
-  const _handleSentEvent = (transaction: Transaction) => {
-    hooks?.onSent && hooks.onSent(transaction)
+  const _handleSentEvent = (tx: Transaction, scInteraction?: Interaction) => {
+    hooks?.onSent && hooks.onSent({ tx, scInteraction })
     showToast('Transaction sent ...', 'success', faHourglassHalf)
   }
 
-  const _handleSuccessEvent = (transaction: Transaction, txOnNetwork: TransactionOnNetwork) =>
-    hooks?.onSuccess ? hooks.onSuccess(transaction, txOnNetwork) : showToast('Transaction executed', 'success', faHourglassEnd)
+  const _handleSuccessEvent = (tx: Transaction, txOnNetwork: TransactionOnNetwork, scInteraction?: Interaction) =>
+    hooks?.onSuccess ? hooks.onSuccess({ tx, txOnNetwork, scInteraction }) : showToast('Transaction executed', 'success', faHourglassEnd)
 
   const _handleErrorEvent = () => (hooks?.onFailed ? hooks.onFailed() : showToast('Transaction failed', 'error', faHourglassEnd))
 
