@@ -46,6 +46,7 @@ export type { RadioGroupItem } from './features/Controls/RadioGroup'
 export { RadioGroup } from './features/Controls/RadioGroup'
 export type { SelectOption } from './features/Controls/Select'
 export { Select } from './features/Controls/Select'
+export { Slider } from './features/Controls/Slider'
 export { Switch } from './features/Controls/Switch'
 export { Textarea } from './features/Controls/Textarea'
 
