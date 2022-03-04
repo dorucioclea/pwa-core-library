@@ -14,7 +14,9 @@ import {
   ApiProvider,
   Balance,
   Token,
+  ApiNetworkProvider,
 } from '@elrondnetwork/erdjs'
+import { INetworkProvider } from '@elrondnetwork/erdjs/out/networkProvider/interface'
 
 const WalletAuthStorageKey = 'wallet_user'
 
@@ -56,6 +58,7 @@ export interface IWalletService {
   getProviderId: () => WalletProviderId
   getProxy: () => ProxyProvider
   getApi: () => ApiProvider
+  getNetworkProvider: () => INetworkProvider
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
 }
@@ -83,6 +86,7 @@ export class WalletService implements IWalletService {
   private config: WalletServiceConfig | null = null
   private proxy: ProxyProvider | null = null
   private api: ApiProvider | null = null
+  private networkProvider: INetworkProvider | null = null
   private address: string | null = null
 
   constructor() {
@@ -103,6 +107,7 @@ export class WalletService implements IWalletService {
     const storedWallet = this.loadFromStorage()
     const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
     const api = new ApiProvider(config.ApiAddress, { timeout: 5000 })
+    const networkProvider = new ApiNetworkProvider(config.ApiAddress, { timeout: 5000 })
     providerId = providerId || storedWallet?.providerId || 'empty'
 
     if (providerId === 'maiar_app') {
@@ -125,6 +130,7 @@ export class WalletService implements IWalletService {
     this.config = config
     this.proxy = proxy
     this.api = api
+    this.networkProvider = networkProvider
     this.address = !!storedWallet ? storedWallet.address : null
 
     return await this.provider.init()
@@ -234,6 +240,8 @@ export class WalletService implements IWalletService {
   getProxy = () => this.proxy!
 
   getApi = () => this.api!
+
+  getNetworkProvider = () => this.networkProvider!
 
   isMobile = () => platform.os?.family === 'iOS' || platform.os?.family === 'Android'
 
