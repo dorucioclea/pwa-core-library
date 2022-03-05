@@ -34,16 +34,25 @@ export type ScInfo = {
   abiName?: string
 }
 
-export type TxHooks = {
-  onSigned?: ({ tx }: { tx: Transaction; scInteraction?: Interaction }) => void
-  onSent?: ({ tx }: { tx: Transaction; scInteraction?: Interaction }) => void
-  onSuccess?: ({ tx, txOnNetwork }: { tx: Transaction; txOnNetwork: TransactionOnNetwork; scInteraction?: Interaction }) => void
+type SignedHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: M }
+type SentHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: M }
+type SuccessHookParams<M> = {
+  tx: Transaction
+  txOnNetwork: TransactionOnNetwork
+  scInteraction?: Interaction
+  meta?: M
+}
+
+export type TxHooks<M> = {
+  onSigned?: ({ tx, meta }: SignedHookParams<M>) => void
+  onSent?: ({ tx, meta }: SentHookParams<M>) => void
+  onSuccess?: ({ tx, txOnNetwork, meta }: SuccessHookParams<M>) => void
   onFailed?: () => void
 }
 
 const WebWalletProviderSignedStatus = ['transactionSigned', 'transactionsSigned']
 
-export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?: ScInfo, hooks?: TxHooks) => {
+export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService, scInfo?: ScInfo, hooks?: TxHooks<M>) => {
   const router = useRouter()
 
   useEffect(() => {
@@ -65,7 +74,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?
     )
   }
 
-  const sendPrepared = async (preparedTx: PreparedTx) =>
+  const sendPrepared = async (preparedTx: PreparedTx, meta?: M) =>
     await send(
       new Transaction({
         sender: Address.fromBech32(preparedTx.sender),
@@ -74,13 +83,15 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?
         data: TransactionPayload.fromEncoded(preparedTx.data),
         gasLimit: new GasLimit(preparedTx.gasLimit),
         chainID: new ChainID(preparedTx.chainID),
-      })
+      }),
+      undefined,
+      meta
     )
 
-  const fetchAndSendPrepared = async (preparedTxName: string, args: Record<string, any>) =>
-    handleAppResponse(getPreparedTxRequest(http, preparedTxName, args), async (tx) => await sendPrepared(tx))
+  const fetchAndSendPrepared = async (preparedTxName: string, args: Record<string, any>, meta?: M) =>
+    handleAppResponse(getPreparedTxRequest(http, preparedTxName, args), async (tx) => await sendPrepared(tx, meta))
 
-  const send = async (tx: Transaction, scInteraction?: Interaction) => {
+  const send = async (tx: Transaction, scInteraction?: Interaction, meta?: M) => {
     if (wallet.getProviderId() === 'maiar_extension') {
       showToast('Please confirm in Maiar DeFi Wallet', 'vibe', faHourglassStart)
     } else if (wallet.getProviderId() === 'maiar_app') {
@@ -98,7 +109,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?
     })
 
     if (!!signedTx && wallet.getProviderId() !== 'web') {
-      await _sendTxWithFeedback(signedTx, scInteraction)
+      await _sendTxWithFeedback(signedTx, scInteraction, meta)
     }
   }
 
@@ -165,9 +176,9 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?
     return hasAbi ? sc.methods[info.endpoint](args) : new Interaction(sc, func, func, args)
   }
 
-  const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction) =>
+  const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction, meta?: M) =>
     _withUIErrorHandling(async () => {
-      signedTx.onSent.on(({ transaction }) => _handleSentEvent(transaction, scInteraction))
+      signedTx.onSent.on(({ transaction }) => _handleSentEvent(transaction, scInteraction, meta))
       const sentTx = await wallet.sendTransaction(signedTx)
       const txOnNetwork = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
 
@@ -184,7 +195,7 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?
         throw contractErrorResults[0].getReturnMessage()
       }
 
-      _handleSuccessEvent(sentTx, txOnNetwork, scInteraction)
+      _handleSuccessEvent(sentTx, txOnNetwork, scInteraction, meta)
     })
 
   const _withUIErrorHandling = async <T>(action: () => T) => {
@@ -198,15 +209,16 @@ export const usePendingTx = (http: IHttpService, wallet: IWalletService, scInfo?
     }
   }
 
-  const _handleSignedEvent = (tx: Transaction, scInteraction?: Interaction) => hooks?.onSigned && hooks.onSigned({ tx, scInteraction })
+  const _handleSignedEvent = (tx: Transaction, scInteraction?: Interaction, meta?: M) =>
+    hooks?.onSigned && hooks.onSigned({ tx, scInteraction, meta })
 
-  const _handleSentEvent = (tx: Transaction, scInteraction?: Interaction) => {
-    hooks?.onSent && hooks.onSent({ tx, scInteraction })
+  const _handleSentEvent = (tx: Transaction, scInteraction?: Interaction, meta?: M) => {
+    hooks?.onSent && hooks.onSent({ tx, scInteraction, meta })
     showToast('Transaction sent ...', 'success', faHourglassHalf)
   }
 
-  const _handleSuccessEvent = (tx: Transaction, txOnNetwork: TransactionOnNetwork, scInteraction?: Interaction) =>
-    hooks?.onSuccess ? hooks.onSuccess({ tx, txOnNetwork, scInteraction }) : showToast('Transaction executed', 'success', faHourglassEnd)
+  const _handleSuccessEvent = (tx: Transaction, txOnNetwork: TransactionOnNetwork, scInteraction?: Interaction, meta?: M) =>
+    hooks?.onSuccess ? hooks.onSuccess({ tx, txOnNetwork, scInteraction, meta }) : showToast('Transaction executed', 'success', faHourglassEnd)
 
   const _handleErrorEvent = () => (hooks?.onFailed ? hooks.onFailed() : showToast('Transaction failed', 'error', faHourglassEnd))
 
