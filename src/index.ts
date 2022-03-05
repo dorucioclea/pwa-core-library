@@ -107,6 +107,7 @@ export { getTokenTypeDisplayName } from './features/Tokens/helper'
 
 // transactions
 export type { Transaction, TransactionType, PreparedTx } from './features/Transactions/types'
+export { getPreparedTxRequest } from './features/Transactions/api'
 export { TxProcessingIndicator } from './features/Transactions/TxProcessingIndicator'
 export { TxProcessingIndicatorOverlay } from './features/Transactions/TxProcessingIndicatorOverlay'
 export { SignTxNote } from './features/Transactions/SignTxNote'
