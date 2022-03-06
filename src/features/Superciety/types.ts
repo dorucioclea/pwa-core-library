@@ -19,6 +19,7 @@ export type Identity = {
   balances: Record<'egld' | 'super', string>
   joined: string
   meta: boolean
+  power: number
 }
 
 export type SocialAccount = {
