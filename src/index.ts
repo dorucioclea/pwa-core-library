@@ -78,6 +78,7 @@ export { MaiarLogo } from './features/Logos/MaiarLogo'
 export { MaiarAppWalletLogo } from './features/Logos/MaiarAppWalletLogo'
 export { MaiarDefiWalletLogo } from './features/Logos/MaiarDefiWalletLogo'
 export { SuperTokenLogo } from './features/Logos/SuperTokenLogo'
+export { SuperPowerLogo } from './features/Logos/SuperPowerLogo'
 
 // modals
 export { StickyModal } from './features/Modals/StickyModal'
