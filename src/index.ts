@@ -36,6 +36,7 @@ export { BrandingBanner } from './features/Banners/BrandingBanner'
 export { DevModeBanner } from './features/Banners/DevModeBanner'
 
 // controls
+export { BackButton } from './features/Controls/BackButton'
 export { Button } from './features/Controls/Button'
 export { FileSelector } from './features/Controls/FileSelector'
 export { LinkButton } from './features/Controls/LinkButton'
