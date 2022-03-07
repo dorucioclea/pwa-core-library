@@ -15,10 +15,10 @@ export const BackButton = (props: Props) => {
   const displayText = props.children || 'Go back'
 
   return (
-    <div className={props.className || 'mb-4'}>
+    <div className={props.className || 'mb-8'}>
       {props.href ? (
         <Link href={props.href}>
-          <a className="text-blue-500 text-lg">
+          <a className="text-blue-500 text-xl">
             <FontAwesomeIcon icon={faAngleDoubleLeft} className="text-blue-400 inline-block mr-2" />
             {displayText}
           </a>
