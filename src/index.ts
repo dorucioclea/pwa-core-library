@@ -120,7 +120,6 @@ export type { UserPrivate } from './features/User/types'
 export { Address } from './features/User/Address'
 
 // vm
-export type { VmResult } from './features/Vm/types'
 export { storeVmQueryRequest } from './features/Vm/api'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
