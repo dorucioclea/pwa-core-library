@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactSlider from 'react-slider'
+import { classNames } from '../../helpers'
 
 type Props = {
   value: number
@@ -7,6 +8,7 @@ type Props = {
   min?: number
   max?: number
   className?: string
+  classNameKnob?: string
 }
 
 export const Slider = (props: Props) => (
@@ -18,7 +20,11 @@ export const Slider = (props: Props) => (
       onChange={(val) => props.onChange(val)}
       className="flex items-center w-full h-6"
       trackClassName="block bg-gray-200 h-5 rounded-xl"
-      thumbClassName="bg-primary-400 w-8 h-8 -mt-1 rounded-xl shadow focus:border-white hover:opacity-80 hover:shadow-3xl focus:outline-none hover:cursor-pointer"
+      thumbClassName={classNames(
+        'w-8 h-8 -mt-1 rounded-xl shadow focus:border-white hover:opacity-80 hover:shadow-3xl focus:outline-none hover:cursor-pointer',
+        props.classNameKnob || 'bg-primary-400',
+        '-' // keep this space separator (currently a slider bug in library that appens some chars to the last classname)
+      )}
     />
   </div>
 )
