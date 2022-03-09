@@ -315,7 +315,7 @@ export class WalletService implements IWalletService {
       const token = new Token({ decimals })
       const balance = new Balance(token, new BigNumber(0), new BigNumber(balanceValue))
       if (balance.valueOf().isLessThan(tokenAmount)) {
-        const displayValue = +tokenAmount.toFixed(4)
+        const displayValue = +tokenAmount.shiftedBy(-decimals).toFixed(4)
         throw new Error(`insufficient balance: ${displayValue} ${tokenId.split('-')[0]} needed`)
       }
     }
