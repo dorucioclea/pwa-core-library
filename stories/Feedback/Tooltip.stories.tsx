@@ -1,14 +1,19 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { Tooltip } from '../../src/index'
-
-const MockComponent = () => <Tooltip tip="you're looking good today :)">Hover me :)</Tooltip>
+import { Tooltip, ScyRoot } from '../../src/index'
 
 export default {
   title: 'Feedback/Tooltip',
-  component: MockComponent,
-} as ComponentMeta<typeof MockComponent>
+  component: Tooltip,
+} as ComponentMeta<typeof Tooltip>
 
-const Template: ComponentStory<typeof MockComponent> = (args) => <MockComponent />
+const Template: ComponentStory<typeof Tooltip> = (args) => (
+  <div>
+    <Tooltip tip="you're looking good today :)">
+      <span>Hover me :)</span>
+    </Tooltip>
+    <ScyRoot />
+  </div>
+)
 
 export const Default = Template.bind({})
 Default.args = {}

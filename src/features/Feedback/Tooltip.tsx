@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement } from 'react'
 import ReactTooltip from 'react-tooltip'
 import './Tooltip.css'
 
@@ -9,23 +9,13 @@ type Props = {
   className?: string
 }
 
-export const Tooltip = (props: Props) => {
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  return (
-    <>
-      {!!props.tip ? (
-        <span data-tip={props.tip} data-place={props.place}>
-          {props.children}
-        </span>
-      ) : (
-        props.children
-      )}
-      {!!props.tip && isMounted && <ReactTooltip arrowColor="transparent" className="scy-tooltip" />}
-    </>
+export const Tooltip = (props: Props) =>
+  props.tip ? (
+    <span data-tip={props.tip} data-place={props.place}>
+      {props.children}
+    </span>
+  ) : (
+    props.children
   )
-}
+
+export const ScyTooltipRoot = () => <ReactTooltip arrowColor="transparent" className="scy-tooltip" />
