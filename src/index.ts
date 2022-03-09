@@ -4,9 +4,10 @@ export { IssueEsdtCost } from './constants'
 export {
   trimHash,
   classNames,
-  capitalizeFirstLetter,
   sanitizeAlphanumeric,
   sanitizeNumeric,
+  capitalizeFirstLetter,
+  abbreviateNumber,
   isFileFormatImage,
   isFileFormatVideo,
   isFileFormatAudio,
