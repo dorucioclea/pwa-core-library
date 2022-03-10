@@ -1,4 +1,5 @@
 import React from 'react'
+import { classNames } from '../../helpers'
 import { NavigationItem } from './types'
 import { _NavigationItem } from './_NavigationItem'
 
@@ -8,7 +9,7 @@ type Navigation = {
 }
 
 export const Navigation = (props: Navigation) => (
-  <nav className={`px-4 rounded-lg h-12 ${props.className || ''}`} style={{ background: 'rgba(255,255,255,0.1)' }}>
+  <nav className={classNames('px-4 rounded-lg h-12 ', props.className)} style={{ background: 'rgba(255,255,255,0.1)' }}>
     <ul className="flex justify-center h-full list-none">
       {props.items.map((item, index) => (
         <li key={index} className="flex items-center justify-center mx-4">

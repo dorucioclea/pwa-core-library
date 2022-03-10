@@ -10,7 +10,7 @@ export const _NavigationItem = (props: NavigationItem) => {
   const style = { transition: 'all .2s ease-in' }
   const tooltip = props.soon ? 'coming soon' : undefined
   const href = props.soon ? '#' : props.href
-  const isActive = router.pathname === href
+  const isActive = router?.pathname === href
 
   const className = classNames(
     'items-center flex-col pt-4 md:justify-center md:pt-0 md:flex text-xl hover:text-primary-500 hover:no-underline',

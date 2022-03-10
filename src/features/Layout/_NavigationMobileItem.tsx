@@ -10,7 +10,7 @@ export const _NavigationMobileItem = (props: NavigationItem) => {
   const router = useRouter()
   const tooltip = props.soon ? 'coming soon' : undefined
   const href = props.soon ? '#' : props.href
-  const isActive = router.pathname === href
+  const isActive = router?.pathname === href
 
   const className = classNames(
     'flex items-center justify-center w-full h-full active:text-primary-400',
@@ -18,10 +18,10 @@ export const _NavigationMobileItem = (props: NavigationItem) => {
   )
 
   const content = (
-    <>
-      {props.icon && <FontAwesomeIcon icon={props.icon} size="lg" />}
-      <span className="sr-only">{props.text}</span>
-    </>
+    <div className="flex flex-col justify-center items-center">
+      {props.icon && <FontAwesomeIcon icon={props.icon} size="lg" className="inline-block mb-1" />}
+      <span className="text-xs text-gray-400">{props.text}</span>
+    </div>
   )
 
   return (

@@ -11,13 +11,13 @@ type Navigation = {
 export const NavigationMobile = (props: Navigation) => (
   <nav
     className={classNames(
-      'fixed bottom-0 left-0 right-0 flex-grow z-50 pb-2 bg-white rounded-t-lg md:hidden shadow-inner border-t border-gray-100',
+      'fixed bottom-0 left-0 right-0 flex-grow z-50 bg-white rounded-t-lg md:hidden shadow-inner border-t border-gray-100',
       props.className
     )}
   >
-    <ul className="flex h-16">
+    <ul className="flex h-20">
       {props.items.map((item, index) => (
-        <li key={index} className="relative flex items-center justify-center flex-grow">
+        <li key={index} className="relative flex items-center justify-center flex-1">
           <_NavigationMobileItem {...item} />
         </li>
       ))}
