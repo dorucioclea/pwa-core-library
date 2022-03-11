@@ -27,6 +27,7 @@ export { usePendingTx } from './hooks/usePendingTx'
 // alerts
 export { Alert } from './features/Alerts/Alert'
 export { SuperTokenGuardNotice } from './features/Alerts/SuperTokenGuardNotice'
+export { SuperPowerGuardNotice } from './features/Alerts/SuperPowerGuardNotice'
 
 // auth
 export { ConnectButton } from './features/Auth/ConnectButton'
