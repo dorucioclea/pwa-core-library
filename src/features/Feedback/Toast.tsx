@@ -2,9 +2,17 @@ import React from 'react'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { toast, ToastContainer, Flip } from 'react-toastify'
+import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 import './Toast.css'
 
-export const showToast = (text: string, type?: 'success' | 'info' | 'warning' | 'error' | 'vibe', icon?: IconProp) => {
+type Options = {
+  icon?: IconProp
+  href?: string
+}
+
+export const showToast = (text: string, type?: 'success' | 'info' | 'warning' | 'error' | 'vibe', options?: Options) => {
+  const { icon, href } = options || {}
+
   const getCssBodyClassNames = () => {
     if (type === 'success') return 'bg-gradient-to-br from-green-300 to-green-500 border-green-600'
     if (type === 'warning') return 'bg-gradient-to-br from-yellow-300 to-yellow-500 border-yellow-600'
@@ -29,16 +37,28 @@ export const showToast = (text: string, type?: 'success' | 'info' | 'warning' | 
     return 'text-blue-700'
   }
 
-  const content = !!icon ? (
-    <span>
-      <FontAwesomeIcon icon={icon} className="inline-block mr-2 text-white opacity-80" />
-      {text}
-    </span>
-  ) : (
-    text
-  )
+  const Content = () => {
+    if (!!href) {
+      return (
+        <a href={href} target={href.startsWith('http') ? '_blank' : undefined} className="relative block w-full">
+          {!!icon && <FontAwesomeIcon icon={icon} className="inline-block mr-2 text-white opacity-80" />}
+          {text}
+          <FontAwesomeIcon icon={faExternalLink} className="block -mt-px absolute right-2 top-1/2 transform -translate-y-1/2 text-white opacity-80" />
+        </a>
+      )
+    }
+    if (!!icon) {
+      return (
+        <span>
+          <FontAwesomeIcon icon={icon} className="inline-block mr-2 text-white opacity-80" />
+          {text}
+        </span>
+      )
+    }
+    return text
+  }
 
-  toast(content, {
+  toast(Content, {
     className: `rounded ${getCssClassNames()}`,
     bodyClassName: `flex border-l-4 px-4 py-2 max-w-lg rounded shadow-md text-white text-lg ${getCssBodyClassNames()}`,
     progressClassName: `rounded ${getCssProgressClassNames()}`,

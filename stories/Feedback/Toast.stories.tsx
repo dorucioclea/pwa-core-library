@@ -21,6 +21,9 @@ const MockComponent = () => (
     <button className={ButtonClassNames} onClick={() => showToast("here we're vibin - like you!", 'vibe')}>
       Lets vibe 🙌
     </button>
+    <button className={ButtonClassNames} onClick={() => showToast('this is a success - like you!', 'success', { icon: faCheck })}>
+      Success with Icon
+    </button>
   </div>
 )
 
