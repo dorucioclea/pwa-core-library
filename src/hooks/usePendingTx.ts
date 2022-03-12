@@ -36,6 +36,7 @@ export type ScInfo = {
 
 type SignedHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: M }
 type SentHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: M }
+type ErrorHookParams = { tx: Transaction }
 type SuccessHookParams<M> = {
   tx: Transaction
   txOnNetwork: TransactionOnNetwork
@@ -46,8 +47,8 @@ type SuccessHookParams<M> = {
 export type TxHooks<M> = {
   onSigned?: ({ tx, meta }: SignedHookParams<M>) => void
   onSent?: ({ tx, meta }: SentHookParams<M>) => void
+  onFailed?: ({ tx }: ErrorHookParams) => void
   onSuccess?: ({ tx, txOnNetwork, meta }: SuccessHookParams<M>) => void
-  onFailed?: () => void
 }
 
 const WebWalletProviderSignedStatus = ['transactionSigned', 'transactionsSigned']
@@ -93,14 +94,14 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
 
   const send = async (tx: Transaction, scInteraction?: Interaction, meta?: M) => {
     if (wallet.getProviderId() === 'maiar_extension') {
-      showToast('Please confirm in Maiar DeFi Wallet', 'vibe', faHourglassStart)
+      showToast('Please confirm in Maiar DeFi Wallet', 'vibe', { icon: faHourglassStart })
     } else if (wallet.getProviderId() === 'maiar_app') {
-      showToast('Please confirm in Maiar App', 'vibe', faHourglassStart)
+      showToast('Please confirm in Maiar App', 'vibe', { icon: faHourglassStart })
     } else if (wallet.getProviderId() === 'hardware') {
-      showToast('Please confirm on Ledger', 'vibe', faHourglassStart)
+      showToast('Please confirm on Ledger', 'vibe', { icon: faHourglassStart })
     }
 
-    const signedTx = await _withUIErrorHandling(async () => {
+    const signedTx = await _withUIErrorHandling(tx, async () => {
       const _signedTx = await wallet.signTransaction(tx)
       if (wallet.getProviderId() !== 'web') {
         _handleSignedEvent(_signedTx, scInteraction)
@@ -177,7 +178,7 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   }
 
   const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction, meta?: M) =>
-    _withUIErrorHandling(async () => {
+    _withUIErrorHandling(signedTx, async () => {
       signedTx.onSent.on(({ transaction }) => _handleSentEvent(transaction, scInteraction, meta))
       const sentTx = await wallet.sendTransaction(signedTx)
       const txOnNetwork = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
@@ -198,29 +199,34 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
       _handleSuccessEvent(sentTx, txOnNetwork, scInteraction, meta)
     })
 
-  const _withUIErrorHandling = async <T>(action: () => T) => {
+  const _withUIErrorHandling = async <T>(tx: Transaction, action: () => T) => {
     try {
       return await action()
     } catch (e) {
       console.error(e)
       const message = (e instanceof Error ? e.message : e) as string
-      _handleErrorEvent()
+      _handleErrorEvent(tx)
       showToast(capitalizeFirstLetter(message), 'error')
     }
   }
+
+  const getTxExplorerUrl = (tx: Transaction) => `${wallet.getConfig().Explorer}/transactions/${tx.getHash()}`
 
   const _handleSignedEvent = (tx: Transaction, scInteraction?: Interaction, meta?: M) =>
     hooks?.onSigned && hooks.onSigned({ tx, scInteraction, meta })
 
   const _handleSentEvent = (tx: Transaction, scInteraction?: Interaction, meta?: M) => {
     hooks?.onSent && hooks.onSent({ tx, scInteraction, meta })
-    showToast('Transaction sent ...', 'success', faHourglassHalf)
+    showToast('Transaction sent ...', 'success', { icon: faHourglassHalf, href: getTxExplorerUrl(tx) })
   }
 
   const _handleSuccessEvent = (tx: Transaction, txOnNetwork: TransactionOnNetwork, scInteraction?: Interaction, meta?: M) =>
-    hooks?.onSuccess ? hooks.onSuccess({ tx, txOnNetwork, scInteraction, meta }) : showToast('Transaction executed', 'success', faHourglassEnd)
+    hooks?.onSuccess
+      ? hooks.onSuccess({ tx, txOnNetwork, scInteraction, meta })
+      : showToast('Transaction executed', 'success', { icon: faHourglassEnd, href: getTxExplorerUrl(tx) })
 
-  const _handleErrorEvent = () => (hooks?.onFailed ? hooks.onFailed() : showToast('Transaction failed', 'error', faHourglassEnd))
+  const _handleErrorEvent = (tx: Transaction) =>
+    hooks?.onFailed ? hooks.onFailed({ tx }) : showToast('Transaction failed', 'error', { icon: faHourglassEnd, href: getTxExplorerUrl(tx) })
 
   return { send, buildAndSend, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt }
 }

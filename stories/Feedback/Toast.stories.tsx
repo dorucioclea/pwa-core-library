@@ -1,4 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { showToast, ScyRoot } from '../../src/index'
 
 const ButtonClassNames = 'bg-gray-100 rounded-lg m-2 px-2 py-1'
@@ -23,6 +24,15 @@ const MockComponent = () => (
     </button>
     <button className={ButtonClassNames} onClick={() => showToast('this is a success - like you!', 'success', { icon: faCheck })}>
       Success with Icon
+    </button>
+    <button className={ButtonClassNames} onClick={() => showToast('this is a success - like you!', 'success', { href: 'https://superciety.com' })}>
+      Success with Link
+    </button>
+    <button
+      className={ButtonClassNames}
+      onClick={() => showToast('this is a success - like you!', 'success', { icon: faCheck, href: 'https://superciety.com' })}
+    >
+      Success with Link & Icon
     </button>
   </div>
 )

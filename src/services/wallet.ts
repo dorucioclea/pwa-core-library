@@ -28,6 +28,7 @@ export type WalletServiceConfig = {
   WebWalletUrl: string
   WalletConnectBridge: string
   WalletConnectDeepLink: string
+  Explorer: string
 }
 
 export type ProofableLogin = {
