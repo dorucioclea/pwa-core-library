@@ -9,4 +9,6 @@ export default {
 const Template: ComponentStory<typeof SuperPowerGuardNotice> = (args) => <SuperPowerGuardNotice {...args} />
 
 export const Default = Template.bind({})
-Default.args = {}
+Default.args = {
+  additional: '',
+}

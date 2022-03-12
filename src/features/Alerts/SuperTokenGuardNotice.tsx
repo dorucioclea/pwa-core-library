@@ -15,7 +15,7 @@ export const SuperTokenGuardNotice = (props: Props) => {
   const Content = ({ className }: { className?: string }) => (
     <div className={classNames('flex items-center', className)}>
       <div className="flex-shrink-0">
-        <SuperTokenLogo className="w-6 h-6 lg:w-8 lg:h-8" />
+        <SuperTokenLogo className="w-10 h-10 md:w-12 md:h-12" />
       </div>
       <div className="ml-3 flex-1 md:flex md:justify-between">
         <p className="text-base sm:text-lg xl:text-xl text-indigo-700">
