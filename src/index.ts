@@ -33,6 +33,9 @@ export { SuperPowerGuardNotice } from './features/Alerts/SuperPowerGuardNotice'
 export { ConnectButton } from './features/Auth/ConnectButton'
 export { DisconnectButton } from './features/Auth/DisconnectButton'
 
+// badges
+export { TextBadge } from './features/Badge/TextBadge'
+
 // banners
 export { BrandingBanner } from './features/Banners/BrandingBanner'
 export { DevModeBanner } from './features/Banners/DevModeBanner'
