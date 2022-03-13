@@ -15,7 +15,7 @@ export const BackButton = (props: Props) => {
   const displayText = props.children || 'Go back'
 
   return (
-    <div className={props.className || 'mb-8'}>
+    <div className={props.className || 'mb-4'}>
       {props.href ? (
         <Link href={props.href}>
           <a className="text-blue-500 text-xl">
