@@ -72,6 +72,9 @@ export { NavigationMobile } from './features/Layout/NavigationMobile'
 export type { SideNavigationItem } from './features/Layout/SideNavigation'
 export { SideNavigation } from './features/Layout/SideNavigation'
 
+// list
+export { BulletPointList } from './features/List/BulletPointList'
+
 // loaders
 export { EllipsisLoader } from './features/Loaders/EllipsisLoader'
 
