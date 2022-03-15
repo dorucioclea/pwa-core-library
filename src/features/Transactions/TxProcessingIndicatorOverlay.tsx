@@ -1,5 +1,5 @@
 import React from 'react'
-import { classNames } from '../..'
+import { classNames } from '../../helpers'
 import { TxProcessingIndicator } from './TxProcessingIndicator'
 
 type Props = {
