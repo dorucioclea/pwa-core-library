@@ -150,6 +150,21 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     return interaction
   }
 
+  const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: TypedValue[]) => {
+    if (!scInfo) return null
+    await NetworkConfig.getDefault().sync(wallet.getProxy())
+    const interaction = await _getScInteraction(scInfo, args)
+
+    if (scInfo.gasLimit) {
+      interaction.withGasLimit(new GasLimit(scInfo.gasLimit))
+    }
+
+    builder(interaction)
+
+    await send(interaction.buildTransaction(), interaction)
+    return interaction
+  }
+
   const _handleSignedWebWalletTx = async () => {
     if (!router.query['chainID[0]'] || !router.query['version[0]']) {
       // the web wallet sign-transaction hook currently is missing 'chainID' & 'version'
@@ -228,5 +243,5 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   const _handleErrorEvent = (tx: Transaction) =>
     hooks?.onFailed ? hooks.onFailed({ tx }) : showToast('Transaction failed', 'error', { icon: faHourglassEnd, href: getTxExplorerUrl(tx) })
 
-  return { send, buildAndSend, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt }
+  return { send, buildAndSend, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt, callScCustom }
 }
