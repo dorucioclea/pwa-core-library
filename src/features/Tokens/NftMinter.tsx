@@ -40,7 +40,7 @@ export const NftMinter = (props: Props) => {
   }
 
   const sanitizeRoyaltiesInput = (input: string, previous: string): string => {
-    const val = sanitizeNumeric(input)
+    const val = parseFloat(sanitizeNumeric(input))
     if (input.length < 1 || val < 0) return ''
     if (val / 100 > 1) return previous
     return Math.abs(parseFloat(val.toFixed(2))).toString()

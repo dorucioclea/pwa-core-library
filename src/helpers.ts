@@ -6,7 +6,10 @@ export const trimHash = (hash: string, keep = 10) => {
 
 export const sanitizeAlphanumeric = (val: string) => val.replace(/[^a-z0-9]/gi, '')
 
-export const sanitizeNumeric = (val: string) => +val.replace(/[^0-9]/gi, '')
+export const sanitizeNumeric = (val: string): string => {
+  const sanitizedDots = val.split('.').length > 2 && val.endsWith('.') ? val.slice(0, -1) : val
+  return sanitizedDots.replace(/[^0-9\.]+/g, '')
+}
 
 export const capitalizeFirstLetter = (val: string) => (val ? val.charAt(0).toUpperCase() + val.slice(1) : '')
 
