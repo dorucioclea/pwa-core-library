@@ -1,4 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { WalletConfig } from '../setup'
 import { Address } from '../../src/index'
 import { ScyRoot } from '../../src/ScyRoot'
 
@@ -9,12 +10,12 @@ export default {
 
 const Template: ComponentStory<typeof Address> = (args) => (
   <div>
-    <Address {...args} />
+    <Address {...args} walletConfig={WalletConfig} />
     <ScyRoot />
   </div>
 )
 
 export const Default = Template.bind({})
 Default.args = {
-  children: 'erd1xxxYourxxxAddressxxx',
+  value: 'erd1xxxYourxxxAddressxxx',
 }
