@@ -125,7 +125,6 @@ export { TxProcessingIndicatorOverlay } from './features/Transactions/TxProcessi
 export { SignTxNote } from './features/Transactions/SignTxNote'
 
 // user
-export type { UserPrivate } from './features/User/types'
 export { Address } from './features/User/Address'
 
 // vm

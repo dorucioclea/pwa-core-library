@@ -1,15 +1,15 @@
-import React, { useMemo } from 'react'
-import * as Constants from '../../constants'
+import React from 'react'
+import { trimHash } from '../../helpers'
+import { classNames } from '../../helpers'
+import { showToast } from '../Feedback/Toast'
+import { useClipboard } from 'use-clipboard-copy'
+import { IWalletService } from '../../services/wallet'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { trimHash } from '../../helpers'
-import { useClipboard } from 'use-clipboard-copy'
-import { showToast } from '../Feedback/Toast'
-import { classNames } from '../../helpers'
 
 type Props = {
-  children: string
-  chain?: 'mainnet' | 'testnet' | 'devnet'
+  value: string
+  wallet?: IWalletService
   className?: string
 }
 
@@ -18,19 +18,13 @@ export const Address = (props: Props) => {
     onSuccess: () => showToast('Copied!', 'info'),
   })
 
-  const explorerBaseUrl = useMemo(() => {
-    if (props.chain === 'devnet') return Constants.ExplorerUrlDevnet
-    if (props.chain === 'testnet') return Constants.ExplorerUrlTestnet
-    return Constants.ExplorerUrl
-  }, [props.chain])
-
   return (
     <div className={classNames('flex', props.className || 'mb-4')}>
-      <a href={`${explorerBaseUrl}/accounts/${props.children}`} target="_blank" className="block text-gray-400">
-        <span className="sm:hidden">{trimHash(props.children || '', 15)}</span>
-        <span className="hidden sm:inline">{props.children}</span>
+      <a href={`${props.wallet?.getConfig().Explorer}/accounts/${props.value}`} target="_blank" className="block text-gray-400">
+        <span className="sm:hidden">{trimHash(props.value || '', 15)}</span>
+        <span className="hidden sm:inline">{props.value}</span>
       </a>
-      <button onClick={() => clipboard.copy(props.children)}>
+      <button onClick={() => clipboard.copy(props.value)}>
         <FontAwesomeIcon icon={faCopy} className="inline-block ml-2 text-gray-400 opacity-80" />
       </button>
     </div>
