@@ -35,6 +35,7 @@ export type SocialAccountProvider = {
   icon: IconProp
   colorCode: string
   connectUrl: string
+  disabled?: boolean
 }
 
 export type Profession = {
