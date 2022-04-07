@@ -23,6 +23,7 @@ export { usePendingTx } from './hooks/usePendingTx'
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // F E A T U R E S
 // * * * * * * * *
+export { InfiniteScroll } from './features/InfiniteScroll'
 
 // alerts
 export { Alert } from './features/Alerts/Alert'
