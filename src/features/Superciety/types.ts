@@ -20,6 +20,9 @@ export type Identity = {
   joined: string
   meta: boolean
   power: number
+  follow: boolean | null
+  followers: number
+  followings: number
 }
 
 export type SocialAccount = {
