@@ -24,14 +24,14 @@ interface IProps {
 export const ArrowButton = (props: IProps) => {
   const arrowIcon = props.direction === 'down' ? faAngleDown : faAngleRight
 
-  const backgroundColorClassName = props.inverted ? `bg-${props.color}-500` : 'bg-white'
+  const backgroundColorClassName = props.inverted ? `bg-${props.color}-500 hover:bg-${props.color}-600` : 'bg-gray-50 hover:bg-gray-100'
   const arrowColorClassName = props.inverted ? 'text-white' : 'text-gray-600'
   const iconContainerBgColorClassName = props.inverted ? 'bg-white bg-opacity-25' : `bg-${props.color}-500`
   const badgeBgColorClassName = props.inverted ? 'bg-white bg-opacity-25' : `bg-${props.badgeColor || 'primary'}-500`
   const badgeTextColorClassName = props.inverted ? 'text-white' : `text-${props.badgeTextColor || 'gray'}-500`
 
   const content = (
-    <div className={classNames('flex items-center px-4 py-2 w-full rounded-lg', backgroundColorClassName)}>
+    <div className={classNames('flex items-center px-4 py-2 w-full rounded-lg transition duration-300', backgroundColorClassName)}>
       <div className={classNames('mr-4 flex justify-center items-center w-8 h-8 rounded-full', iconContainerBgColorClassName)}>
         <FontAwesomeIcon icon={props.icon} className="" style={{ color: props.iconColor || '#fff' }} />
       </div>
