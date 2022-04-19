@@ -161,8 +161,9 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
 
   const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction, meta?: M) =>
     _withUIErrorHandling(signedTx, async () => {
-      const sentTx = await wallet.sendTransaction(signedTx)
       _handleSentEvent(signedTx, scInteraction, meta)
+
+      const sentTx = await wallet.sendTransaction(signedTx)
       const txOnNetwork = await wallet.getNetworkProvider().getTransaction(sentTx.hash)
 
       const contractErrorResults = txOnNetwork.contractResults.items.filter(
