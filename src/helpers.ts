@@ -25,11 +25,17 @@ export const abbreviateNumber = (val: number) => {
 
 export const classNames = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ')
 
-export const isFileFormatImage = (filename: string) =>
-  filename.endsWith('png') || filename.endsWith('jpeg') || filename.endsWith('jpg') || filename.endsWith('gif')
+export const isFileFormatImage = (filename: string | null) => {
+  if (!filename) return false
+  return filename.endsWith('png') || filename.endsWith('jpeg') || filename.endsWith('jpg') || filename.endsWith('gif')
+}
 
-export const isFileFormatVideo = (filename: string) =>
-  filename.endsWith('mov') || filename.endsWith('quicktime') || filename.endsWith('mp4') || filename.endsWith('webm')
+export const isFileFormatVideo = (filename: string | null) => {
+  if (!filename) return false
+  return filename.endsWith('mov') || filename.endsWith('quicktime') || filename.endsWith('mp4') || filename.endsWith('webm')
+}
 
-export const isFileFormatAudio = (filename: string) =>
-  filename.endsWith('acc') || filename.endsWith('flac') || filename.endsWith('m4a') || filename.endsWith('mp3') || filename.endsWith('wav')
+export const isFileFormatAudio = (filename: string | null) => {
+  if (!filename) return false
+  return filename.endsWith('acc') || filename.endsWith('flac') || filename.endsWith('m4a') || filename.endsWith('mp3') || filename.endsWith('wav')
+}
