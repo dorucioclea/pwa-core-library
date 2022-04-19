@@ -1,6 +1,6 @@
 export type { AppSystemColor } from './types'
 export { ScyRoot } from './ScyRoot'
-export { IssueEsdtCost } from './constants'
+export { Constants } from './constants'
 export {
   trimHash,
   classNames,

@@ -2,12 +2,12 @@ import React, { SyntheticEvent, useState } from 'react'
 import { faAngleLeft, faCoins } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Input } from '../Controls/Input'
-import { Button } from '../Controls/Button'
-import { IssueEsdtCost } from '../../constants'
 import { Alert } from '../Alerts/Alert'
+import { Constants } from '../../constants'
+import { Button } from '../Controls/Button'
 import { sanitizeAlphanumeric } from '../../helpers'
-import { IssuableCollection, CollectionSettableProperty, TokenType } from './types'
 import { RadioGroup, RadioGroupItem } from '../Controls/RadioGroup'
+import { IssuableCollection, CollectionSettableProperty, TokenType } from './types'
 
 const DefaultSettableProperties = ['canUpgrade', 'canAddSpecialRoles']
 
@@ -47,7 +47,7 @@ const _NftCollectionCreator = (props: Props) => {
         <span className="highlight">Create</span> a collection
       </h2>
       <Alert icon={faCoins} type="warning">
-        Issuing a collection <strong>costs {IssueEsdtCost} EGLD</strong>, which is defined by the network.
+        Issuing a collection <strong>costs {Constants.NetworkCosts.IssueEsdt} EGLD</strong>, which is defined by the network.
       </Alert>
       <label htmlFor="name" className="pl-1 text-xl mb-4 text-gray-800">
         Name

@@ -10,26 +10,21 @@ import { getPreparedTxRequest } from '../features/Transactions/api'
 import { faHourglassEnd, faHourglassHalf, faHourglassStart } from '@fortawesome/free-solid-svg-icons'
 import {
   Address,
-  ContractFunction,
-  GasLimit,
-  SmartContract,
-  TypedValue,
   Transaction,
-  Balance,
-  ChainID,
-  NetworkConfig,
   AbiRegistry,
-  SmartContractAbi,
   Interaction,
-  WalletProvider as WebWalletProvider,
+  TokenPayment,
+  SmartContract,
+  SmartContractAbi,
+  ContractFunction,
   TransactionPayload,
+  ITransactionOnNetwork,
 } from '@elrondnetwork/erdjs'
-import { TransactionOnNetwork } from '@elrondnetwork/erdjs/out/transactionOnNetwork' // not exported
 
 export type ScInfo = {
   address: string
   endpoint: string
-  gasLimit?: number
+  gasLimit: number
   abiUrl?: string
   abiName?: string
 }
@@ -39,7 +34,7 @@ type SentHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: 
 type ErrorHookParams = { tx: Transaction }
 type SuccessHookParams<M> = {
   tx: Transaction
-  txOnNetwork: TransactionOnNetwork
+  txOnNetwork: ITransactionOnNetwork
   scInteraction?: Interaction
   meta?: M
 }
@@ -61,29 +56,26 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     _handleSignedWebWalletTx()
   }, [router.query])
 
-  const buildAndSend = async (receiver: string, value: Balance, gasLimit: number, data?: (networkConfig: NetworkConfig) => TransactionPayload) => {
-    const networkConfig = NetworkConfig.getDefault()
-    await networkConfig.sync(wallet.getProxy())
-
+  const sendWithPayload = async (receiver: string, payment: TokenPayment, gasLimit: number, data: TransactionPayload) =>
     await send(
       new Transaction({
-        data: data ? data(networkConfig) : undefined,
-        gasLimit: new GasLimit(gasLimit),
+        data: data,
+        gasLimit: gasLimit,
         receiver: new Address(receiver),
-        value: value,
+        value: payment,
+        chainID: wallet.getConfig().ChainId,
       })
     )
-  }
 
   const sendPrepared = async (preparedTx: PreparedTx, meta?: M) =>
     await send(
       new Transaction({
         sender: Address.fromBech32(preparedTx.sender),
         receiver: Address.fromBech32(preparedTx.receiver),
-        value: Balance.fromString(preparedTx.value),
+        value: TokenPayment.egldFromBigInteger(preparedTx.value),
         data: TransactionPayload.fromEncoded(preparedTx.data),
-        gasLimit: new GasLimit(preparedTx.gasLimit),
-        chainID: new ChainID(preparedTx.chainID),
+        gasLimit: preparedTx.gasLimit,
+        chainID: preparedTx.chainID,
       }),
       undefined,
       meta
@@ -114,50 +106,28 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     }
   }
 
-  const callSc = async (value: Balance, args: TypedValue[], estimatedExecutionComponent?: number) => {
+  const callSc = async (payment: TokenPayment, args: any[]) => {
     if (!scInfo) return null
-    await NetworkConfig.getDefault().sync(wallet.getProxy())
     const interaction = await _getScInteraction(scInfo, args)
-    interaction.withValue(value)
-
-    if (estimatedExecutionComponent) {
-      interaction.withGasLimitComponents({ estimatedExecutionComponent })
-    }
-
-    if (scInfo.gasLimit) {
-      interaction.withGasLimit(new GasLimit(scInfo.gasLimit))
-    }
+    interaction.withValue(payment).withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit)
 
     await send(interaction.buildTransaction(), interaction)
     return interaction
   }
 
-  const callScWithEsdt = async (esdtValue: Balance, args: TypedValue[], estimatedExecutionComponent?: number) => {
+  const callScWithEsdt = async (esdtPayment: TokenPayment, args: any[]) => {
     if (!scInfo) return null
-    await NetworkConfig.getDefault().sync(wallet.getProxy())
     const interaction = await _getScInteraction(scInfo, args)
-    interaction.withSingleESDTTransfer(esdtValue)
-
-    if (estimatedExecutionComponent) {
-      interaction.withGasLimitComponents({ estimatedExecutionComponent })
-    }
-
-    if (scInfo.gasLimit) {
-      interaction.withGasLimit(new GasLimit(scInfo.gasLimit))
-    }
+    interaction.withSingleESDTTransfer(esdtPayment).withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit)
 
     await send(interaction.buildTransaction(), interaction)
     return interaction
   }
 
-  const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: TypedValue[]) => {
+  const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: any[]) => {
     if (!scInfo) return null
-    await NetworkConfig.getDefault().sync(wallet.getProxy())
     const interaction = await _getScInteraction(scInfo, args)
-
-    if (scInfo.gasLimit) {
-      interaction.withGasLimit(new GasLimit(scInfo.gasLimit))
-    }
+    interaction.withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit)
 
     builder(interaction)
 
@@ -166,52 +136,44 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   }
 
   const _handleSignedWebWalletTx = async () => {
-    if (!router.query['chainID[0]'] || !router.query['version[0]']) {
-      // the web wallet sign-transaction hook currently is missing 'chainID' & 'version'
-      // in the callback query params. this is a workaround to add them ourselves for now.
-      const networkConfig = NetworkConfig.getDefault()
-      await networkConfig.sync(wallet.getProxy())
-      router.query['chainID[0]'] = networkConfig.ChainID.valueOf()
-      router.query['version[0]'] = networkConfig.MinTransactionVersion.valueOf().toString()
-      router.push(router)
-    } else {
-      const txs = (wallet.getProvider() as WebWalletProvider).getTransactionsFromWalletUrl()
-      if (txs.length < 1) return
-      router.push(router.asPath.split('?')[0])
-      const scInteraction = !!scInfo ? await _getScInteraction(scInfo, []) : undefined
-      _handleSignedEvent(txs[0], scInteraction)
-      await _sendTxWithFeedback(txs[0], scInteraction)
-    }
+    // TODO: implement web wallet
+    // const txs = (wallet.getProvider() as WebWalletProvider).getTransactionsFromWalletUrl()
+    // if (txs.length < 1) return
+    // router.push(router.asPath.split('?')[0])
+    // const scInteraction = !!scInfo ? await _getScInteraction(scInfo, []) : undefined
+    // _handleSignedEvent(txs[0], scInteraction)
+    // await _sendTxWithFeedback(txs[0], scInteraction)
   }
 
-  const _getScInteraction = async (info: ScInfo, args: TypedValue[]) => {
-    const hasAbi = info.abiUrl && info.abiName
-    const abi = hasAbi ? new SmartContractAbi(await AbiRegistry.load({ urls: [info.abiUrl!] }), [info.abiName!]) : undefined
-    const sc = new SmartContract({ address: new Address(info.address), abi: abi })
-    const func = new ContractFunction(info.endpoint)
-    return hasAbi ? sc.methods[info.endpoint](args) : new Interaction(sc, func, func, args)
+  const _getScInteraction = async (info: ScInfo, args: any[]) => {
+    if (!info.abiUrl || !info.abiName) {
+      const sc = new SmartContract({ address: new Address(info.address) })
+      return new Interaction(sc, new ContractFunction(info.endpoint), args)
+    }
+
+    const abiRes = await fetch(info.abiUrl!)
+    const registry = AbiRegistry.create(await abiRes.json())
+    const abi = new SmartContractAbi(registry, [info.abiName!])
+    const sc = new SmartContract({ address: new Address(info.address), abi })
+
+    return sc.methods[info.endpoint](args)
   }
 
   const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction, meta?: M) =>
     _withUIErrorHandling(signedTx, async () => {
-      signedTx.onSent.on(({ transaction }) => _handleSentEvent(transaction, scInteraction, meta))
       const sentTx = await wallet.sendTransaction(signedTx)
-      const txOnNetwork = await sentTx.getAsOnNetwork(wallet.getProxy(), true, false, true)
+      _handleSentEvent(signedTx, scInteraction, meta)
+      const txOnNetwork = await wallet.getNetworkProvider().getTransaction(sentTx.hash)
 
-      // there is currently a bug in erdjs where SC returnCode (returnCode.ts) isSuccess() returns false
-      // if results contain transfers like of ESDT:
-      // https://github.com/ElrondNetwork/elrond-sdk-erdjs/blob/12a772f2b56872455e54876fee44ea9c6167238a/src/smartcontracts/returnCode.ts#L45
-      const contractErrorResults = txOnNetwork
-        .getSmartContractResults()
-        .getAllResults()
-        // .filter((result) => !result.isSuccess()) comment this line back in when bug is fixed
-        .filter((result) => result.getReturnMessage() && !result.getReturnMessage().includes('too much gas provided')) // remove this when bug fixed
+      const contractErrorResults = txOnNetwork.contractResults.items.filter(
+        (result) => result.returnMessage && !result.returnMessage.includes('too much gas provided')
+      )
 
       if (contractErrorResults.length > 0) {
-        throw contractErrorResults[0].getReturnMessage()
+        throw contractErrorResults[0].returnMessage
       }
 
-      _handleSuccessEvent(sentTx, txOnNetwork, scInteraction, meta)
+      _handleSuccessEvent(signedTx, txOnNetwork, scInteraction, meta)
     })
 
   const _withUIErrorHandling = async <T>(tx: Transaction, action: () => T) => {
@@ -235,7 +197,7 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     showToast('Transaction sent ...', 'success', { icon: faHourglassHalf, href: getTxExplorerUrl(tx) })
   }
 
-  const _handleSuccessEvent = (tx: Transaction, txOnNetwork: TransactionOnNetwork, scInteraction?: Interaction, meta?: M) =>
+  const _handleSuccessEvent = (tx: Transaction, txOnNetwork: ITransactionOnNetwork, scInteraction?: Interaction, meta?: M) =>
     hooks?.onSuccess
       ? hooks.onSuccess({ tx, txOnNetwork, scInteraction, meta })
       : showToast('Transaction executed', 'success', { icon: faHourglassEnd, href: getTxExplorerUrl(tx) })
@@ -243,5 +205,5 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   const _handleErrorEvent = (tx: Transaction) =>
     hooks?.onFailed ? hooks.onFailed({ tx }) : showToast('Transaction failed', 'error', { icon: faHourglassEnd, href: getTxExplorerUrl(tx) })
 
-  return { send, buildAndSend, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt, callScCustom }
+  return { send, sendWithPayload, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt, callScCustom }
 }

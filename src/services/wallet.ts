@@ -1,22 +1,11 @@
 import platform from 'platform'
 import BigNumber from 'bignumber.js'
-import {
-  IDappProvider,
-  ExtensionProvider,
-  Transaction,
-  ProxyProvider,
-  Address,
-  Account,
-  SignableMessage,
-  WalletProvider as WebWalletProvider,
-  WalletConnectProvider,
-  HWProvider,
-  ApiProvider,
-  Balance,
-  Token,
-  ApiNetworkProvider,
-} from '@elrondnetwork/erdjs'
-import { INetworkProvider } from '@elrondnetwork/erdjs/out/networkProvider/interface'
+import { HWProvider } from '@elrondnetwork/erdjs-hw-provider'
+import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers'
+import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider'
+import { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider'
+import { Transaction, Address, Account, TransactionWatcher, ITransactionOnNetwork, TokenPayment } from '@elrondnetwork/erdjs'
+import { TransactionDecoder } from '@elrondnetwork/transaction-decoder'
 
 const WalletAuthStorageKey = 'wallet_user'
 
@@ -24,11 +13,11 @@ export type WalletProviderId = 'maiar_app' | 'maiar_extension' | 'hardware' | 'w
 
 export type WalletServiceConfig = {
   ApiAddress: string
-  GatewayAddress: string
   WebWalletUrl: string
   WalletConnectBridge: string
   WalletConnectDeepLink: string
   Explorer: string
+  ChainId: 'D' | 'T' | '1'
 }
 
 export type ProofableLogin = {
@@ -52,42 +41,22 @@ export interface IWalletService {
   logout: () => Promise<void>
   isLoggedIn: () => boolean
   signTransaction: (transaction: Transaction) => Promise<Transaction>
-  sendTransaction: (transaction: Transaction) => Promise<Transaction>
-  heartbeat: () => Promise<void>
+  sendTransaction: (transaction: Transaction) => Promise<ITransactionOnNetwork>
   getAddress: () => string
-  getProvider: () => IDappProvider
   getProviderId: () => WalletProviderId
-  getProxy: () => ProxyProvider
-  getApi: () => ApiProvider
-  getNetworkProvider: () => INetworkProvider
+  getNetworkProvider: () => ApiNetworkProvider
   isMobile: () => boolean
   getHardwareAccounts: () => Promise<string[]>
-}
-
-class EmptyProvider implements IDappProvider {
-  constructor() {}
-  init = () => new Promise<boolean>((resolve) => resolve(true))
-  login = () => new Promise<string>((resolve) => resolve(''))
-  logout = () => new Promise<boolean>((resolve) => resolve(true))
-  getAddress = () => new Promise<string>((resolve) => resolve(''))
-  isInitialized = () => true
-  isConnected = () => new Promise<boolean>((resolve) => resolve(true))
-  sendTransaction = () => new Promise<Transaction>((resolve) => resolve(new Transaction({ receiver: new Address('erd1Empty') })))
-  signTransaction = () => new Promise<Transaction>((resolve) => resolve(new Transaction({ receiver: new Address('erd1Empty') })))
-  signTransactions = () => new Promise<Array<Transaction>>((resolve) => resolve([new Transaction({ receiver: new Address('erd1Empty') })]))
-  signMessage = () => new Promise<SignableMessage>((resolve) => resolve(new SignableMessage({})))
 }
 
 export class WalletService implements IWalletService {
   public onLogin?: (proofableLogin: ProofableLogin) => any
   public onLogout?: () => any
   private static _instance: WalletService = new WalletService()
-  private provider: IDappProvider = new EmptyProvider()
+  private provider: any
   private providerId: WalletProviderId = 'empty'
   private config: WalletServiceConfig | null = null
-  private proxy: ProxyProvider | null = null
-  private api: ApiProvider | null = null
-  private networkProvider: INetworkProvider | null = null
+  private networkProvider: ApiNetworkProvider | null = null
   private address: string | null = null
 
   constructor() {
@@ -106,13 +75,12 @@ export class WalletService implements IWalletService {
     if (this.providerId === providerId) return true // prevent double-init for same provider
 
     const storedWallet = this.loadFromStorage()
-    const proxy = new ProxyProvider(config.GatewayAddress, { timeout: 5000 })
-    const api = new ApiProvider(config.ApiAddress, { timeout: 5000 })
     const networkProvider = new ApiNetworkProvider(config.ApiAddress, { timeout: 5000 })
     providerId = providerId || storedWallet?.providerId || 'empty'
+    config.ChainId = config.ChainId || '1'
 
     if (providerId === 'maiar_app') {
-      this.provider = new WalletConnectProvider(proxy, config.WalletConnectBridge, {
+      this.provider = new WalletConnectProvider(config.WalletConnectBridge, {
         onClientLogin: async () => {
           const castedProvider = this.provider as WalletConnectProvider
           this.finalizeLogin({ signature: await castedProvider.getSignature(), address: await castedProvider.getAddress() })
@@ -122,15 +90,13 @@ export class WalletService implements IWalletService {
     } else if (providerId === 'maiar_extension') {
       this.provider = !!storedWallet ? ExtensionProvider.getInstance().setAddress(storedWallet.address) : ExtensionProvider.getInstance()
     } else if (providerId === 'hardware') {
-      this.provider = new HWProvider(proxy)
+      this.provider = new HWProvider()
     } else if (providerId === 'web') {
-      this.provider = new WebWalletProvider(config.WebWalletUrl)
+      // this.provider = new WalletProvider(config.WebWalletUrl) // TODO: properly implement web wallet
     }
 
     this.providerId = providerId
     this.config = config
-    this.proxy = proxy
-    this.api = api
     this.networkProvider = networkProvider
     this.address = !!storedWallet ? storedWallet.address : null
 
@@ -191,7 +157,7 @@ export class WalletService implements IWalletService {
 
     const address = new Address(this.getAddress())
     const account = new Account(address)
-    await account.sync(this.proxy!)
+    account.update(await this.networkProvider!.getAccount(address))
 
     await this.ensureAccountHasSufficientBalanceFor(tx, account)
 
@@ -203,30 +169,13 @@ export class WalletService implements IWalletService {
   sendTransaction = async (tx: Transaction) => {
     this.ensureLoggedIn()
     this.ensureInitialized()
-    tx.getSignature() // tx does not expose a way to check if sig is applied, so using it as a guard
 
-    await tx.send(this.proxy!)
-    await tx.awaitExecuted(this.proxy!)
+    await this.networkProvider!.sendTransaction(tx)
 
-    return tx
-  }
+    let watcher = new TransactionWatcher(this.networkProvider!)
+    let transactionOnNetwork = await watcher.awaitCompleted(tx)
 
-  heartbeat = async () => {
-    if (this.providerId === 'maiar_app') {
-      const wc = this.provider as WalletConnectProvider
-      const isSafari = wc.walletConnector?.peerMeta?.description.match(/(iPad|iPhone|iPod)/g)
-
-      if (!wc.walletConnector?.connected || isSafari) return
-
-      try {
-        await wc.sendCustomMessage({ method: 'heartbeat', params: {} })
-      } catch (e) {
-        console.error('wallet connect: connection lost', e)
-        await this.logout()
-      }
-    }
-
-    // ... space for other provider's heartbeats
+    return transactionOnNetwork
   }
 
   getAddress = () => {
@@ -237,10 +186,6 @@ export class WalletService implements IWalletService {
   getProvider = () => this.provider
 
   getProviderId = () => this.providerId
-
-  getProxy = () => this.proxy!
-
-  getApi = () => this.api!
 
   getNetworkProvider = () => this.networkProvider!
 
@@ -276,48 +221,46 @@ export class WalletService implements IWalletService {
 
   private ensureLoggedIn = () => {
     if (!this.address) {
-      throw new Error('wallet user needs to login before')
+      throw new Error('wallet: user needs to login before')
     }
   }
 
   private ensureInitialized = () => {
     if (this.providerId === 'empty') {
-      throw new Error('wallet not initialized. call init() first')
+      throw new Error('wallet: not initialized')
     }
-    if (!this.proxy) {
-      throw new Error('wallet proxy needs configuration')
+    if (!this.networkProvider) {
+      throw new Error('wallet: network provider needs configuration')
     }
   }
 
   private ensureAccountHasSufficientBalanceFor = async (tx: Transaction, account: Account) => {
-    const accountBalance = account.balance.valueOf()
-    const txValue = tx.getValue().valueOf()
-    const isEgld = tx.getValue().isEgld()
-    const isEsdtTransfer = tx.getData().getEncodedArguments()[0] === 'ESDTTransfer'
-    const txData = tx.getData().getRawArguments()
-    const tokenId = txData[1]?.toString()
-    const tokenAmount = new BigNumber(txData[2]?.toString('hex'), 16)
+    const accountBalance = new BigNumber(account.balance.toString())
+    const txValue = new BigNumber(tx.getValue().toString())
+    const metadata = new TransactionDecoder().getTransactionMetadata({
+      sender: tx.getSender().bech32(),
+      receiver: tx.getReceiver().bech32(),
+      data: tx.getData().encoded(),
+      value: tx.getValue().toString(),
+      type: '',
+    })
+    const isEsdtTransfer = metadata.functionName === 'ESDTTransfer'
+    const isEgld = metadata.value.valueOf()
 
     if (isEgld && accountBalance.isLessThan(txValue)) {
-      const displayValue = +parseFloat(tx.getValue().toDenominated()).toFixed(4)
-      throw new Error(`insufficient balance: ${displayValue} EGLD needed`)
+      const dislay = TokenPayment.egldFromBigInteger(txValue).toPrettyString()
+      throw new Error(`insufficient balance: ${dislay} EGLD needed`)
     }
 
-    if (isEsdtTransfer && tokenId && tokenAmount) {
-      let balanceValue = 0
-      let decimals = 18
-      try {
-        // TODO: refactor when this PR is packaged in new npm version: https://github.com/ElrondNetwork/elrond-sdk-erdjs/pull/133
-        const networkTokenRes = await this.api!.doGetGeneric(`accounts/${this.address!}/tokens/${tokenId}`, (r) => r)
-        balanceValue = networkTokenRes.balance
-        decimals = networkTokenRes.decimals
-      } catch {}
+    if (isEsdtTransfer && metadata.transfers && metadata.transfers[0]) {
+      const transfer = metadata.transfers[0]
+      const transferTokenId = transfer.properties?.identifier!
+      const transferTokenAmount = new BigNumber(transfer.value.toString())
+      const accountToken = await this.networkProvider!.getFungibleTokenOfAccount(new Address(this.address!), transferTokenId)
 
-      const token = new Token({ decimals })
-      const balance = new Balance(token, new BigNumber(0), new BigNumber(balanceValue))
-      if (balance.valueOf().isLessThan(tokenAmount)) {
-        const displayValue = +tokenAmount.shiftedBy(-decimals).toFixed(4)
-        throw new Error(`insufficient balance: ${displayValue} ${tokenId.split('-')[0]} needed`)
+      if (accountToken.balance.isLessThan(transferTokenAmount)) {
+        const dislay = TokenPayment.fungibleFromBigInteger(transferTokenId, transferTokenAmount, 18).toPrettyString()
+        throw new Error(`insufficient balance: ${dislay} needed`)
       }
     }
   }
