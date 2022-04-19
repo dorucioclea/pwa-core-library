@@ -15,7 +15,7 @@ type Props = {
 export const FileSelector = (props: Props) => {
   const [previewSource, setPreviewSource] = useState<string | null>(null)
 
-  const onDrop = useCallback((acceptedFiles) => handleSelect(acceptedFiles[0]), [])
+  const onDrop = useCallback((acceptedFiles: File[]) => handleSelect(acceptedFiles[0]), [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   const handleSelect = (file: File) => {
