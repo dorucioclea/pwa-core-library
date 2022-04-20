@@ -25,9 +25,7 @@ export default {
   plugins: [
     peerDepsExternal(),
     resolve({ preferBuiltins: true }),
-    commonjs({
-      ignore: ['bufferutil', 'utf-8-validate'], // ignore optional peer dependencies of ws
-    }),
+    commonjs({ sourceMap: false }),
     typescript({ useTsconfigDeclarationDir: true }),
     json(),
     postcss({

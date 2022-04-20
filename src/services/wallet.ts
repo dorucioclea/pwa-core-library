@@ -103,7 +103,7 @@ export class WalletService implements IWalletService {
     TransactionFactoryLocator.setTransactionFactory({ fromPlainObject: (obj: any) => Transaction.fromPlainObject(obj) })
     SignableMessageFactoryLocator.setMessageFactory({ fromPlainObject: (obj: any) => Transaction.fromPlainObject(obj) })
 
-    return await this.provider.init()
+    return await this.provider?.init()
   }
 
   getConfig = () => {
