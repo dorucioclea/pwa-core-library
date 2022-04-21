@@ -1,7 +1,7 @@
 import { AppSystemColor } from '../../types'
 
 export const getButtonColorClassNames = (color?: AppSystemColor, disabled?: boolean, inverted?: boolean) => {
-  if (disabled) return 'bg-gray-400'
+  if (disabled) return 'bg-gray-400 text-white'
   if (color === 'blue') return inverted ? 'text-blue-500 bg-white' : 'bg-blue-500 text-white'
   if (color === 'red') return inverted ? 'text-red-500 bg-white' : 'bg-red-500 text-white'
   if (color === 'gray') return inverted ? 'text-gray-500 bg-white' : 'bg-gray-800 text-white'
