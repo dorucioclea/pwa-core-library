@@ -15,8 +15,8 @@ export const Markdown = (props: Props) => (
       blockquote: ({ node, ...props }) => (
         <blockquote className="my-4 border-l-4 border-primary-400 bg-gray-50 px-4 py-2 rounded-lg text-lg" {...props} />
       ),
-      ul: ({ node, ...props }) => <ul className="list-disc" {...props} />,
-      ol: ({ node, ...props }) => <ul className="list-decimal" {...props} />,
+      ul: ({ node, ...props }) => <ul className="list-disc pl-4" {...props} />,
+      ol: ({ node, ...props }) => <ol className="list-decimal pl-4" {...props} />,
     }}
     className={props.className}
   >
