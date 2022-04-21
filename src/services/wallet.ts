@@ -240,6 +240,7 @@ export class WalletService implements IWalletService {
   private ensureAccountHasSufficientBalanceFor = async (tx: Transaction, account: Account) => {
     const accountBalance = new BigNumber(account.balance.toString())
     const txValue = new BigNumber(tx.getValue().toString())
+    const isEgld = !txValue.isZero()
     const metadata = new TransactionDecoder().getTransactionMetadata({
       sender: tx.getSender().bech32(),
       receiver: tx.getReceiver().bech32(),
@@ -247,23 +248,22 @@ export class WalletService implements IWalletService {
       value: tx.getValue().toString(),
       type: '',
     })
-    const isEsdtTransfer = metadata.functionName === 'ESDTTransfer'
-    const isEgld = metadata.value.valueOf()
 
     if (isEgld && accountBalance.isLessThan(txValue)) {
-      const dislay = TokenPayment.egldFromBigInteger(txValue).toPrettyString()
-      throw new Error(`insufficient balance: ${dislay} EGLD needed`)
+      const dislayAmount = +parseFloat(TokenPayment.egldFromBigInteger(txValue).toPrettyString())
+      throw new Error(`insufficient balance: ${dislayAmount} EGLD needed`)
     }
 
-    if (isEsdtTransfer && metadata.transfers && metadata.transfers[0]) {
+    if (metadata.transfers && metadata.transfers.length > 0) {
       const transfer = metadata.transfers[0]
       const transferTokenId = transfer.properties?.identifier!
       const transferTokenAmount = new BigNumber(transfer.value.toString())
       const accountToken = await this.networkProvider!.getFungibleTokenOfAccount(new Address(this.address!), transferTokenId)
 
       if (accountToken.balance.isLessThan(transferTokenAmount)) {
-        const dislay = TokenPayment.fungibleFromBigInteger(transferTokenId, transferTokenAmount, 18).toPrettyString()
-        throw new Error(`insufficient balance: ${dislay} needed`)
+        const dislayAmount = +parseFloat(TokenPayment.fungibleFromBigInteger(transferTokenId, transferTokenAmount, 18).toPrettyString())
+        const displayToken = transferTokenId.split('-')[0]
+        throw new Error(`insufficient balance: ${dislayAmount} ${displayToken} needed`)
       }
     }
   }
