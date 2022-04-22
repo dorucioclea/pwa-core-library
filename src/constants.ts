@@ -6,4 +6,7 @@ export const Constants = {
   NetworkCosts: {
     IssueEsdt: 0.05, // in EGLD
   },
+  SystemSc: {
+    Esdt: 'erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u',
+  },
 }
