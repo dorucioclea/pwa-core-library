@@ -97,6 +97,10 @@ export { SuperTrustLogo } from './features/Logos/SuperTrustLogo'
 // modals
 export { StickyModal } from './features/Modals/StickyModal'
 
+// patterns
+export { PatternDots } from './features/Patterns/PatternDots'
+export { PatternDropinEdges } from './features/Patterns/PatternDropinEdges'
+
 // progress
 export { Steps } from './features/Progress/Steps'
 
