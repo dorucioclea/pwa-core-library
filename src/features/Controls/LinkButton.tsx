@@ -20,6 +20,7 @@ type Props = {
 }
 
 export const LinkButton = (props: Props) => {
+  const linkHref = props.disabled ? '#' : props.href
   const baseClassNames = 'relative inline-flex justify-center items-center transition duration-300'
   const stateClassNames = 'hover:shadow-lg focus:outline-none focus:shadow-outline focus:shadow-none'
   const sizingClassNames = props.large ? 'text-2xl px-8 py-4 rounded-3xl' : 'text-xl px-6 py-2 rounded-xl'
@@ -30,6 +31,7 @@ export const LinkButton = (props: Props) => {
     stateClassNames,
     sizingClassNames,
     props.inverted ? '' : 'shadow',
+    props.disabled ? 'cursor-default' : '',
     props.className
   )
 
@@ -41,12 +43,12 @@ export const LinkButton = (props: Props) => {
   )
 
   return props.href.startsWith('http') ? (
-    <a href={props.href} target="_blank" className={className}>
+    <a href={linkHref} target="_blank" className={className} role="link" aria-disabled={props.disabled}>
       <Content />
     </a>
   ) : (
-    <Link href={props.href} as={props.as}>
-      <a className={className}>
+    <Link href={linkHref} as={props.as}>
+      <a className={className} role="link" aria-disabled={props.disabled}>
         <Content />
       </a>
     </Link>
