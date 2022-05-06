@@ -3,14 +3,15 @@ export { ScyRoot } from './ScyRoot'
 export { Constants } from './constants'
 export {
   trimHash,
+  isValidElrondAddress,
   classNames,
-  sanitizeAlphanumeric,
   sanitizeNumeric,
-  capitalizeFirstLetter,
   abbreviateNumber,
   isFileFormatImage,
   isFileFormatVideo,
   isFileFormatAudio,
+  sanitizeAlphanumeric,
+  capitalizeFirstLetter,
 } from './helpers'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

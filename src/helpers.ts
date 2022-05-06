@@ -4,6 +4,8 @@ export const trimHash = (hash: string, keep = 10) => {
   return `${start}...${end}`
 }
 
+export const isValidElrondAddress = (val: string) => /erd1[a-z0-9]{58}/g.test(val)
+
 export const sanitizeAlphanumeric = (val: string) => val.replace(/[^a-z0-9]/gi, '')
 
 export const sanitizeNumeric = (val: string): string => {
