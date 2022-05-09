@@ -2,10 +2,10 @@ import platform from 'platform'
 import BigNumber from 'bignumber.js'
 import { HWProvider } from '@elrondnetwork/erdjs-hw-provider'
 import { TransactionDecoder } from '@elrondnetwork/transaction-decoder'
+import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider'
 import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers'
 import { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider'
 import { Transaction, Address, Account, TransactionWatcher, ITransactionOnNetwork, TokenPayment } from '@elrondnetwork/erdjs'
-import { ExtensionProvider, SignableMessageFactoryLocator, TransactionFactoryLocator } from '@elrondnetwork/erdjs-extension-provider'
 
 const WalletAuthStorageKey = 'wallet_user'
 
@@ -99,9 +99,6 @@ export class WalletService implements IWalletService {
     this.config = config
     this.networkProvider = networkProvider
     this.address = !!storedWallet ? storedWallet.address : null
-
-    TransactionFactoryLocator.setTransactionFactory({ fromPlainObject: (obj: any) => Transaction.fromPlainObject(obj) })
-    SignableMessageFactoryLocator.setMessageFactory({ fromPlainObject: (obj: any) => Transaction.fromPlainObject(obj) })
 
     return await this.provider?.init()
   }
