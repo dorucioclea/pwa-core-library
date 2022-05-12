@@ -22,6 +22,13 @@ export const Input = forwardRef((props: IntersectProps<InputHtmlElement, Props>,
   const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
     props.type === 'number' ? props.onChange(e.target.value.substring(0, props.maxLength || 20)) : props.onChange(e.target.value)
 
+  const CharLimit = () =>
+    showCharLimit ? (
+      <small className="absolute right-2 -bottom-6 text-gray-500 text-sm">
+        ({(props.value as string).length} / {props.maxLength})
+      </small>
+    ) : null
+
   return !!props.icon || !!props.pre ? (
     <div className={props.className}>
       <div className="relative">
@@ -34,17 +41,15 @@ export const Input = forwardRef((props: IntersectProps<InputHtmlElement, Props>,
           ref={ref}
           onChange={handleChange}
           className={classNames(DefaultClassNames, props.className, props.pre ? 'pl-16' : 'pl-10')}
+          style={{ paddingLeft: !!props.pre ? props.pre.length * 11 + 12 + 'px' : '2.5rem' }}
         />
       </div>
+      <CharLimit />
     </div>
   ) : (
     <div className={classNames('relative w-full', props.className)}>
       <input {...props} ref={ref} onChange={handleChange} className={DefaultClassNames} />
-      {showCharLimit && (
-        <small className="absolute right-2 -bottom-6 text-gray-500 text-sm">
-          ({(props.value as string).length} / {props.maxLength})
-        </small>
-      )}
+      <CharLimit />
     </div>
   )
 })
