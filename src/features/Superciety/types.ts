@@ -23,6 +23,7 @@ export type Identity = {
   follow: boolean | null
   followers: number
   followings: number
+  boosterUntil: string | null
 }
 
 export type SocialAccount = {
