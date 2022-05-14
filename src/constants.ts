@@ -1,4 +1,5 @@
 export const Constants = {
+  EgldDecimals: 18,
   GasLimit: {
     EgldTransfer: 50_000,
     EsdtTransfer: 500_000,
