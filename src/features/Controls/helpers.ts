@@ -11,6 +11,6 @@ export const getButtonColorClassNames = (color?: AppSystemColor, disabled?: bool
   if (color === 'yellow') return inverted ? 'text-yellow-500 bg-white' : 'bg-yellow-300 text-white'
   if (color === 'green') return inverted ? 'text-green-500 bg-white' : 'bg-green-500 text-white'
   if (color === 'purple') return inverted ? 'text-purple-500 bg-white' : 'bg-purple-500 text-white'
-  // add more colors as needed ...
+  if (color === 'pink') return inverted ? 'text-pink-500 bg-white' : 'bg-pink-500 text-white'
   return inverted ? 'text-primary-400 bg-white' : 'bg-primary-400 text-white'
 }
