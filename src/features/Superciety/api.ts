@@ -1,7 +1,7 @@
 import { IHttpService } from '../../services/http'
 import { Identity, Profession } from './types'
 
-export const getIdentityRequest = async (http: IHttpService, id: string) => await http.get<Identity | null>(`identity/${id}`)
+export const getIdentityRequest = async (http: IHttpService, id: string) => await http.get<Identity | null>(`identities/${id}`)
 
 export const getProfessionsRequest = async (http: IHttpService) => await http.get<Profession[]>('professions')
 
