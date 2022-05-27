@@ -255,14 +255,17 @@ export class WalletService implements IWalletService {
       const transfer = metadata.transfers[0]
       const transferTokenId = transfer.properties?.identifier!
       const transferTokenAmount = new BigNumber(transfer.value.toString())
-      // parsing the results is currently broken because of bignumber: https://github.com/rollup/plugins/issues/1130
-      // const accountToken = await this.networkProvider!.getFungibleTokenOfAccount(new Address(this.address!), transferTokenId)
 
-      // workaround:
-      const networkTokenRes = await this.networkProvider!.doGetGeneric(`accounts/${this.address!}/tokens/${transferTokenId}`)
-      const balance = new BigNumber(networkTokenRes.balance || '0')
+      let networkTokenRes = null
 
-      // before workaround: accountToken.balance.isLessThan(transferTokenAmount)
+      try {
+        networkTokenRes = await this.networkProvider!.doGetGeneric(`accounts/${this.address!}/tokens/${transferTokenId}`)
+      } catch (e) {
+        throw new Error(`did not find ${transferTokenId} in your wallet`)
+      }
+
+      const balance = new BigNumber(networkTokenRes?.balance || '0')
+
       if (balance.isLessThan(transferTokenAmount)) {
         const dislayAmount = +parseFloat(TokenPayment.fungibleFromBigInteger(transferTokenId, transferTokenAmount, 18).toPrettyString())
         const displayToken = transferTokenId.split('-')[0]
