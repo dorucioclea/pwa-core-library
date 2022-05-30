@@ -108,7 +108,7 @@ export { Steps } from './features/Progress/Steps'
 export { StatsTile } from './features/Stats/StatsTile'
 
 // superciety
-export type { Identity, SocialAccount, SocialAccountPlatform, SocialAccountProvider, Profession } from './features/Superciety/types'
+export type { Identity, SocialAccount, SocialPlatform, SocialPlatformProvider, Profession } from './features/Superciety/types'
 export { getIdentityRequest, getProfessionsRequest, storeProfessionsRequest } from './features/Superciety/api'
 
 // tokens

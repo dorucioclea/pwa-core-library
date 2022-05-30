@@ -14,7 +14,7 @@ export type Identity = {
   rank: string
   shard: number
   txs: string
-  connections: Record<SocialAccountPlatform, SocialAccount>
+  connections: Record<SocialPlatform, SocialAccount>
   professions: Profession[]
   balances: Record<'egld' | 'super', string>
   joined: string
@@ -31,10 +31,10 @@ export type SocialAccount = {
   link: string
 }
 
-export type SocialAccountPlatform = 'freeiam' | 'twitter' | 'github'
+export type SocialPlatform = 'website' | 'freeiam' | 'twitter' | 'github' | 'discord' | 'telegram' | 'youtube'
 
-export type SocialAccountProvider = {
-  id: SocialAccountPlatform
+export type SocialPlatformProvider = {
+  id: SocialPlatform
   label: string
   icon: IconProp
   colorCode: string
