@@ -17,6 +17,7 @@ import {
   SmartContract,
   SmartContractAbi,
   ContractFunction,
+  TransactionWatcher,
   TransactionPayload,
   ITransactionOnNetwork,
 } from '@elrondnetwork/erdjs'
@@ -161,10 +162,12 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
 
   const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction, meta?: M) =>
     _withUIErrorHandling(signedTx, async () => {
+      await wallet.sendTransaction(signedTx)
+
       _handleSentEvent(signedTx, scInteraction, meta)
 
-      const sentTx = await wallet.sendTransaction(signedTx)
-      const txOnNetwork = await wallet.getNetworkProvider().getTransaction(sentTx.hash)
+      const watcher = new TransactionWatcher(wallet.getNetworkProvider())
+      const txOnNetwork = await watcher.awaitCompleted(signedTx)
 
       const contractErrorResults = txOnNetwork.contractResults.items.filter(
         (result) => result.returnMessage && !result.returnMessage.includes('too much gas provided')

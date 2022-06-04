@@ -38,7 +38,7 @@ export type SocialPlatformProvider = {
   label: string
   icon: IconProp
   colorCode: string
-  connectUrl: string
+  connectUrl?: string
   disabled?: boolean
 }
 

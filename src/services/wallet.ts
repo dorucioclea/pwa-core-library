@@ -4,8 +4,8 @@ import { HWProvider } from '@elrondnetwork/erdjs-hw-provider'
 import { TransactionDecoder } from '@elrondnetwork/transaction-decoder'
 import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider'
 import { ApiNetworkProvider } from '@elrondnetwork/erdjs-network-providers'
+import { Transaction, Address, Account, TokenPayment } from '@elrondnetwork/erdjs'
 import { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider'
-import { Transaction, Address, Account, TransactionWatcher, ITransactionOnNetwork, TokenPayment } from '@elrondnetwork/erdjs'
 
 const WalletAuthStorageKey = 'wallet_user'
 
@@ -41,7 +41,7 @@ export interface IWalletService {
   logout: () => Promise<void>
   isLoggedIn: () => boolean
   signTransaction: (transaction: Transaction) => Promise<Transaction>
-  sendTransaction: (transaction: Transaction) => Promise<ITransactionOnNetwork>
+  sendTransaction: (transaction: Transaction) => Promise<void>
   getAddress: () => string
   getProviderId: () => WalletProviderId
   getNetworkProvider: () => ApiNetworkProvider
@@ -171,11 +171,6 @@ export class WalletService implements IWalletService {
     this.ensureInitialized()
 
     await this.networkProvider!.sendTransaction(tx)
-
-    let watcher = new TransactionWatcher(this.networkProvider!)
-    let transactionOnNetwork = await watcher.awaitCompleted(tx)
-
-    return transactionOnNetwork
   }
 
   getAddress = () => {
