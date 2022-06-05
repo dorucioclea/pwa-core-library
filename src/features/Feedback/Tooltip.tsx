@@ -18,7 +18,7 @@ export const Tooltip = (props: Props) => {
   }, [hasTip])
 
   return hasTip ? (
-    <span data-tip={props.tip} data-place={props.place}>
+    <span data-tip={props.tip} data-place={props.place} className={props.className}>
       {props.children}
     </span>
   ) : (
