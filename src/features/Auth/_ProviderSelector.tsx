@@ -1,12 +1,13 @@
 import React from 'react'
-import { _ProviderButton } from './_ProviderButton'
-import { ElrondWebWalletLogo } from '../Logos/ElrondWebWalletLogo'
-import { MaiarAppWalletLogo } from '../Logos/MaiarAppWalletLogo'
-import { MaiarDefiWalletLogo } from '../Logos/MaiarDefiWalletLogo'
+import { MaiarLogo } from '../Logos/MaiarLogo'
 import { LedgerLogo } from '../Logos/LedgerLogo'
+import { _ProviderButton } from './_ProviderButton'
 import { WalletProviderId } from '../../services/wallet'
+import { MaiarAppWalletLogo } from '../Logos/MaiarAppWalletLogo'
+import { ElrondWebWalletLogo } from '../Logos/ElrondWebWalletLogo'
+import { MaiarDefiWalletLogo } from '../Logos/MaiarDefiWalletLogo'
 
-const ElrondWalletSetupLinkUrl = 'https://testnet-wallet.elrond.com/create'
+const ElrondWalletSetupLinkUrl = 'https://maiar.com'
 
 type Props = {
   onLoginRequest: (provider: WalletProviderId) => void
@@ -44,8 +45,11 @@ export const _ProviderSelector = (props: Props) => {
       )}
       <p className="text-xl text-gray-500 text-center leading-tight mt-8">
         <strong className="block">New to Elrond Blockchain?</strong>
-        <a href={ElrondWalletSetupLinkUrl} target="_blank" className="text-base">
-          Learn How to setup a wallet
+        <a href={ElrondWalletSetupLinkUrl} target="_blank" className="flex justify-center items-center text-xl text-blue-500" style={{ border: 0 }}>
+          Easily create your own Elrond wallet using Maiar
+          <span className="inline-block ml-2">
+            <MaiarLogo className="w-6" />
+          </span>
         </a>
       </p>
     </div>
