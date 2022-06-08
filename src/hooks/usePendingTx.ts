@@ -13,6 +13,7 @@ import {
   Transaction,
   AbiRegistry,
   Interaction,
+  GasEstimator,
   TokenPayment,
   SmartContract,
   SmartContractAbi,
@@ -25,7 +26,8 @@ import {
 export type ScInfo = {
   address: string
   endpoint: string
-  gasLimit: number
+  gasLimit?: number
+  gasLimitCallExtra?: number
   abiUrl?: string
   abiName?: string
 }
@@ -110,7 +112,11 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   const callSc = async (payment: TokenPayment, args: any[]) => {
     if (!scInfo) return null
     const interaction = await _getScInteraction(scInfo, args)
-    interaction.withValue(payment).withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit)
+    interaction.withValue(payment).withChainID(wallet.getConfig().ChainId)
+
+    const txData = interaction.buildTransaction().getData()
+    const estimatedGasLimit = new GasEstimator().forEGLDTransfer(txData.length()) + (scInfo.gasLimitCallExtra || 0)
+    interaction.withGasLimit(scInfo.gasLimit || estimatedGasLimit)
 
     await send(interaction.buildTransaction(), interaction)
     return interaction
@@ -119,7 +125,11 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   const callScWithEsdt = async (esdtPayment: TokenPayment, args: any[]) => {
     if (!scInfo) return null
     const interaction = await _getScInteraction(scInfo, args)
-    interaction.withSingleESDTTransfer(esdtPayment).withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit)
+    interaction.withSingleESDTTransfer(esdtPayment).withChainID(wallet.getConfig().ChainId)
+
+    const txData = interaction.buildTransaction().getData()
+    const estimatedGasLimit = new GasEstimator().forESDTTransfer(txData.length()) + (scInfo.gasLimitCallExtra || 0)
+    interaction.withGasLimit(scInfo.gasLimit || estimatedGasLimit)
 
     await send(interaction.buildTransaction(), interaction)
     return interaction
@@ -128,7 +138,7 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: any[]) => {
     if (!scInfo) return null
     const interaction = await _getScInteraction(scInfo, args)
-    interaction.withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit)
+    interaction.withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit || 0)
 
     builder(interaction)
 
