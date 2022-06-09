@@ -33,12 +33,14 @@ export class HttpService implements IHttpService {
   onUnauthorized: (response: IAppResponse<any>) => any
   onSuccessfulResponse: (response: IAppResponse<any>) => any
   onMaintenanceMode: (response: IAppResponse<any>) => any
+  onTooManyRequests: (response: IAppResponse<any>) => any
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl
     this.onSuccessfulResponse = () => {}
     this.onUnauthorized = () => {}
     this.onMaintenanceMode = () => {}
+    this.onTooManyRequests = () => {}
   }
 
   public get = async <T>(url: string, options?: IRequestOptions) => await this.request<T>('GET', url, undefined, options)
@@ -55,6 +57,7 @@ export class HttpService implements IHttpService {
     const response = await this.convertResponse<T>(fetch(requestUrl, requestInfo))
 
     if (response.original.status === 401) this.onUnauthorized(response)
+    if (response.original.status === 429) this.onTooManyRequests(response)
     if (response.original.status === 503) this.onMaintenanceMode(response)
     if (response.ok) this.onSuccessfulResponse(response)
 
