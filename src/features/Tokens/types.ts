@@ -28,12 +28,11 @@ export type NftCollectionAccount = {
   type: TokenType
   name: string
   ticker: string
+  owner: string
   canFreeze: boolean
   canWipe: boolean
   canPause: boolean
-  canTransferRole: boolean
-  canCreate: boolean
-  canBurn: boolean
+  canTransferNftCreateRole: boolean
 }
 
 export type IssuableCollection = {

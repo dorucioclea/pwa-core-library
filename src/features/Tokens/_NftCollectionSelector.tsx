@@ -45,7 +45,7 @@ export const _NftCollectionSelector = (props: Props) => {
     )
   }
 
-  if (props.collection && !props.collection.canCreate) {
+  if (props.collection) {
     return (
       <NftCollectionRoleSetter
         collection={props.collection}

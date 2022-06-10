@@ -26,7 +26,7 @@ export const NftCreator = (props: Props) => (
     <header className="absolute md:relative flex justify-end md:justify-center w-full">
       <Steps total={3} active={props.collection ? 2 : 1} />
     </header>
-    {props.collection && props.collection.canCreate ? (
+    {props.collection ? (
       <NftMinter
         collection={props.collection}
         onCreateRequest={props.onNftCreateRequest}
