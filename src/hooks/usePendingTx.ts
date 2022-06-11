@@ -47,6 +47,7 @@ export type TxHooks<M> = {
   onSent?: ({ tx, meta }: SentHookParams<M>) => void
   onFailed?: ({ tx }: ErrorHookParams) => void
   onSuccess?: ({ tx, txOnNetwork, meta }: SuccessHookParams<M>) => void
+  beforeSend?: (signedTx: Transaction) => Promise<Transaction>
 }
 
 const WebWalletProviderSignedStatus = ['transactionSigned', 'transactionsSigned']
@@ -96,13 +97,17 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
       showToast('Please confirm on Ledger', 'vibe', { icon: faHourglassStart })
     }
 
-    const signedTx = await _withUIErrorHandling(tx, async () => {
+    let signedTx = await _withUIErrorHandling(tx, async () => {
       const _signedTx = await wallet.signTransaction(tx)
       if (wallet.getProviderId() !== 'web') {
         _handleSignedEvent(_signedTx, scInteraction)
       }
       return _signedTx
     })
+
+    if (signedTx && hooks?.beforeSend) {
+      signedTx = await hooks.beforeSend(signedTx)
+    }
 
     if (!!signedTx && wallet.getProviderId() !== 'web') {
       await _sendTxWithFeedback(signedTx, scInteraction, meta)
