@@ -116,7 +116,7 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
 
   const callSc = async (payment: TokenPayment, args: any[]) => {
     if (!scInfo) return null
-    const interaction = await _getScInteraction(scInfo, args)
+    const interaction = await createScInteraction(args)
     interaction.withValue(payment).withChainID(wallet.getConfig().ChainId)
 
     const txData = interaction.buildTransaction().getData()
@@ -129,7 +129,7 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
 
   const callScWithEsdt = async (esdtPayment: TokenPayment, args: any[]) => {
     if (!scInfo) return null
-    const interaction = await _getScInteraction(scInfo, args)
+    const interaction = await createScInteraction(args)
     interaction.withSingleESDTTransfer(esdtPayment).withChainID(wallet.getConfig().ChainId)
 
     const txData = interaction.buildTransaction().getData()
@@ -142,7 +142,7 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
 
   const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: any[]) => {
     if (!scInfo) return null
-    const interaction = await _getScInteraction(scInfo, args)
+    const interaction = await createScInteraction(args)
     interaction.withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit || 0)
 
     builder(interaction)
@@ -156,23 +156,23 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     // const txs = (wallet.getProvider() as WebWalletProvider).getTransactionsFromWalletUrl()
     // if (txs.length < 1) return
     // router.push(router.asPath.split('?')[0])
-    // const scInteraction = !!scInfo ? await _getScInteraction(scInfo, []) : undefined
+    // const scInteraction = !!scInfo ? await _getScInteraction([]) : undefined
     // _handleSignedEvent(txs[0], scInteraction)
     // await _sendTxWithFeedback(txs[0], scInteraction)
   }
 
-  const _getScInteraction = async (info: ScInfo, args: any[]) => {
-    if (!info.abiUrl || !info.abiName) {
-      const sc = new SmartContract({ address: new Address(info.address) })
-      return new Interaction(sc, new ContractFunction(info.endpoint), args)
+  const createScInteraction = async (args: any[]) => {
+    if (!scInfo?.abiUrl || !scInfo?.abiName) {
+      const sc = new SmartContract({ address: new Address(scInfo?.address) })
+      return new Interaction(sc, new ContractFunction(scInfo?.endpoint || ''), args)
     }
 
-    const abiRes = await fetch(info.abiUrl!)
+    const abiRes = await fetch(scInfo.abiUrl!)
     const registry = AbiRegistry.create(await abiRes.json())
-    const abi = new SmartContractAbi(registry, [info.abiName!])
-    const sc = new SmartContract({ address: new Address(info.address), abi })
+    const abi = new SmartContractAbi(registry, [scInfo.abiName!])
+    const sc = new SmartContract({ address: new Address(scInfo.address), abi })
 
-    return sc.methods[info.endpoint](args)
+    return sc.methods[scInfo.endpoint](args)
   }
 
   const _sendTxWithFeedback = async (signedTx: Transaction, scInteraction?: Interaction, meta?: M) =>
@@ -224,5 +224,5 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
   const _handleErrorEvent = (tx: Transaction) =>
     hooks?.onFailed ? hooks.onFailed({ tx }) : showToast('Transaction failed', 'error', { icon: faHourglassEnd, href: getTxExplorerUrl(tx) })
 
-  return { send, sendWithPayload, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt, callScCustom }
+  return { send, sendWithPayload, sendPrepared, fetchAndSendPrepared, callSc, callScWithEsdt, callScCustom, createScInteraction }
 }
