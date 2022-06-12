@@ -47,7 +47,6 @@ export type TxHooks<M> = {
   onSent?: ({ tx, meta }: SentHookParams<M>) => void
   onFailed?: ({ tx }: ErrorHookParams) => void
   onSuccess?: ({ tx, txOnNetwork, meta }: SuccessHookParams<M>) => void
-  beforeSend?: (signedTx: Transaction) => Promise<Transaction>
 }
 
 const WebWalletProviderSignedStatus = ['transactionSigned', 'transactionsSigned']
@@ -105,16 +104,12 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
       return _signedTx
     })
 
-    if (signedTx && hooks?.beforeSend) {
-      signedTx = await hooks.beforeSend(signedTx)
-    }
-
     if (!!signedTx && wallet.getProviderId() !== 'web') {
       await _sendTxWithFeedback(signedTx, scInteraction, meta)
     }
   }
 
-  const callSc = async (payment: TokenPayment, args: any[]) => {
+  const callSc = async (payment: TokenPayment, args: any[], meta?: M) => {
     if (!scInfo) return null
     const interaction = await createScInteraction(args)
     interaction.withValue(payment).withChainID(wallet.getConfig().ChainId)
@@ -123,11 +118,11 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     const estimatedGasLimit = new GasEstimator().forEGLDTransfer(txData.length()) + (scInfo.gasLimitCallExtra || 0)
     interaction.withGasLimit(scInfo.gasLimit || estimatedGasLimit)
 
-    await send(interaction.buildTransaction(), interaction)
+    await send(interaction.buildTransaction(), interaction, meta)
     return interaction
   }
 
-  const callScWithEsdt = async (esdtPayment: TokenPayment, args: any[]) => {
+  const callScWithEsdt = async (esdtPayment: TokenPayment, args: any[], meta?: M) => {
     if (!scInfo) return null
     const interaction = await createScInteraction(args)
     interaction.withSingleESDTTransfer(esdtPayment).withChainID(wallet.getConfig().ChainId)
@@ -136,18 +131,18 @@ export const usePendingTx = <M = any>(http: IHttpService, wallet: IWalletService
     const estimatedGasLimit = new GasEstimator().forESDTTransfer(txData.length()) + (scInfo.gasLimitCallExtra || 0)
     interaction.withGasLimit(scInfo.gasLimit || estimatedGasLimit)
 
-    await send(interaction.buildTransaction(), interaction)
+    await send(interaction.buildTransaction(), interaction, meta)
     return interaction
   }
 
-  const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: any[]) => {
+  const callScCustom = async (builder: (interaction: Interaction) => Interaction, args: any[], meta?: M) => {
     if (!scInfo) return null
     const interaction = await createScInteraction(args)
     interaction.withChainID(wallet.getConfig().ChainId).withGasLimit(scInfo.gasLimit || 0)
 
     builder(interaction)
 
-    await send(interaction.buildTransaction(), interaction)
+    await send(interaction.buildTransaction(), interaction, meta)
     return interaction
   }
 
