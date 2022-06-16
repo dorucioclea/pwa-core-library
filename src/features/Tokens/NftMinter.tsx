@@ -1,7 +1,7 @@
 import React, { SyntheticEvent, useState } from 'react'
 import { faAngleLeft, faPercentage, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MintableNft, NftCollectionAccount } from './types'
+import { MintableNft, NftCollectionRole } from './types'
 import { FileSelector } from '../Controls/FileSelector'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
@@ -13,7 +13,7 @@ import { _NftMinterTagAdder } from './_NftMinterTagAdder'
 const RoyaltiesDefaultPercent = 10
 
 type Props = {
-  collection: NftCollectionAccount
+  collection: NftCollectionRole
   onCreateRequest: (mintableNft: MintableNft) => void
   onGoBackRequest: () => void
   notice: any

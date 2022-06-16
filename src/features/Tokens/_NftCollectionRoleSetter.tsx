@@ -2,14 +2,14 @@ import React from 'react'
 import { faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SyntheticEvent, useState } from 'react'
-import { NftCollectionAccount, SettableCollectionRoles, TokenType } from './types'
+import { NftCollectionRole, SettableCollectionRoles, TokenType } from './types'
 import { showToast } from '../Feedback/Toast'
 import { Input } from '../Controls/Input'
 import { Switch } from '../Controls/Switch'
 import { Button } from '../Controls/Button'
 
 type Props = {
-  collection: NftCollectionAccount
+  collection: NftCollectionRole
   presetAddress: string
   onSetRoles: (settableCollectionRoles: SettableCollectionRoles) => void
   onGoBackRequest: () => void

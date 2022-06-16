@@ -3,7 +3,7 @@ import _NftCollectionCreator from './_NftCollectionCreator'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { NftCollectionRoleSetter } from './_NftCollectionRoleSetter'
-import { IssuableCollection, NftCollectionAccount, CollectionSettableProperty, SettableCollectionRoles } from './types'
+import { IssuableCollection, NftCollectionRole, CollectionSettableProperty, SettableCollectionRoles } from './types'
 import { Select, SelectOption } from '../Controls/Select'
 import { Button } from '../Controls/Button'
 import { getTokenTypeDisplayName } from './helper'
@@ -11,9 +11,9 @@ import { EllipsisLoader } from '../Loaders/EllipsisLoader'
 
 type Props = {
   address: string
-  collection: NftCollectionAccount | null
-  availableCollections: NftCollectionAccount[]
-  onSelected: (NftCollectionAccount: NftCollectionAccount) => void
+  collection: NftCollectionRole | null
+  availableCollections: NftCollectionRole[]
+  onSelected: (NftCollectionRole: NftCollectionRole) => void
   onCreateRequest: (issuableCollection: IssuableCollection) => void
   onSetRolesRequest: (settableRoles: SettableCollectionRoles) => void
   onResetRequest: () => void
@@ -30,7 +30,7 @@ export const _NftCollectionSelector = (props: Props) => {
     setIsCreating(false)
   }
 
-  const toSelectOptions = (col: NftCollectionAccount[]) =>
+  const toSelectOptions = (col: NftCollectionRole[]) =>
     col.map((c) => ({ name: `(${getTokenTypeDisplayName(c.type)}) ${c.name} (${c.ticker})`, value: c.ticker } as SelectOption))
 
   const findCollectionBy = (ticker: string) => props.availableCollections.find((c) => c.ticker === ticker)!
@@ -45,7 +45,7 @@ export const _NftCollectionSelector = (props: Props) => {
     )
   }
 
-  if (props.collection) {
+  if (props.collection && !props.collection.canCreate) {
     return (
       <NftCollectionRoleSetter
         collection={props.collection}

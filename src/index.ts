@@ -117,6 +117,7 @@ export type {
   NftCollection,
   NftCollectionList,
   NftCollectionAccount,
+  NftCollectionRole,
   IssuableCollection,
   SettableCollectionRoles,
   MintableNft,

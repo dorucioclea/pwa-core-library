@@ -3,13 +3,13 @@ import { NftMinter } from './NftMinter'
 import { Steps } from '../Progress/Steps'
 import { _NftCollectionSelector } from './_NftCollectionSelector'
 import { TxProcessingIndicatorOverlay } from '../Transactions/TxProcessingIndicatorOverlay'
-import { IssuableCollection, MintableNft, NftCollectionAccount, CollectionSettableProperty, SettableCollectionRoles } from './types'
+import { IssuableCollection, MintableNft, NftCollectionRole, CollectionSettableProperty, SettableCollectionRoles } from './types'
 
 type Props = {
   address: string
-  collection: NftCollectionAccount | null
-  availableCollections: NftCollectionAccount[]
-  onCollectionSelected: (collection: NftCollectionAccount | null) => void
+  collection: NftCollectionRole | null
+  availableCollections: NftCollectionRole[]
+  onCollectionSelected: (collection: NftCollectionRole | null) => void
   onCollectionCreateRequest: (issuableCollection: IssuableCollection) => void
   onCollectionSetRolesRequest: (settableCollectionRoles: SettableCollectionRoles) => void
   onNftCreateRequest: (mintableNft: MintableNft) => void
@@ -26,7 +26,7 @@ export const NftCreator = (props: Props) => (
     <header className="absolute md:relative flex justify-end md:justify-center w-full">
       <Steps total={3} active={props.collection ? 2 : 1} />
     </header>
-    {props.collection ? (
+    {props.collection && props.collection.canCreate ? (
       <NftMinter
         collection={props.collection}
         onCreateRequest={props.onNftCreateRequest}
