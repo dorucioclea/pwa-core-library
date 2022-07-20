@@ -1,11 +1,12 @@
-import type { IHttpService } from '../services/http'
-import type { IWalletService } from '../services/wallet'
-import type { PreparedTx } from '../features/Transactions/types'
+import { ScInfo } from '../types'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { capitalizeFirstLetter } from '../helpers'
+import type { IHttpService } from '../services/http'
 import { handleAppResponse } from '../services/http'
 import { showToast } from '../features/Feedback/Toast'
+import type { IWalletService } from '../services/wallet'
+import type { PreparedTx } from '../features/Transactions/types'
 import { getPreparedTxRequest } from '../features/Transactions/api'
 import { faHourglassEnd, faHourglassHalf, faHourglassStart } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -22,15 +23,6 @@ import {
   TransactionPayload,
   ITransactionOnNetwork,
 } from '@elrondnetwork/erdjs'
-
-export type ScInfo = {
-  address: string
-  endpoint: string
-  gasLimit?: number
-  gasLimitCallExtra?: number
-  abiUrl?: string
-  abiName?: string
-}
 
 type SignedHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: M }
 type SentHookParams<M> = { tx: Transaction; scInteraction?: Interaction; meta?: M }

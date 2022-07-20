@@ -1,15 +1,15 @@
-export type { AppSystemColor } from './types'
+export type { AppSystemColor, ScInfo } from './types'
 export { ScyRoot } from './ScyRoot'
 export { Constants } from './constants'
 export {
   trimHash,
-  isValidElrondAddress,
   classNames,
   sanitizeNumeric,
   abbreviateNumber,
   isFileFormatImage,
   isFileFormatVideo,
   isFileFormatAudio,
+  isValidElrondAddress,
   sanitizeAlphanumeric,
   capitalizeFirstLetter,
 } from './helpers'
@@ -17,10 +17,11 @@ export {
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // H O O K S
 // * * * * * * * *
-export type { ScInfo, TxHooks } from './hooks/usePendingTx'
+export type { TxHooks } from './hooks/usePendingTx'
 export { useDidMountEffect } from './hooks/useDidMountEffect'
 export { useDebounce } from './hooks/useDebounce'
 export { usePendingTx } from './hooks/usePendingTx'
+export { useScQuery } from './hooks/useScQuery'
 export { useArrowKeys } from './hooks/useArrowKeys'
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
