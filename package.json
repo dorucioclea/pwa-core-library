@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/superciety/pwa-core-library#readme",
   "dependencies": {
-    "@elrondnetwork/erdjs-extension-provider": "^2.0.4",
+    "@elrondnetwork/erdjs-extension-provider": "^2.0.5",
     "@elrondnetwork/erdjs-hw-provider": "^2.0.4",
     "@elrondnetwork/erdjs-wallet-connect-provider": "^2.0.3",
     "@elrondnetwork/erdjs-web-wallet-provider": "^2.1.1",
@@ -58,7 +58,7 @@
   },
   "peerDependencies": {
     "@elrondnetwork/erdjs": "10.2.6",
-    "@elrondnetwork/erdjs-network-providers": "^0.1.6",
+    "@elrondnetwork/erdjs-network-providers": "^0.1.7",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -67,9 +67,9 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.6",
+    "@babel/core": "^7.18.9",
     "@elrondnetwork/erdjs": "10.2.7",
-    "@elrondnetwork/erdjs-network-providers": "^0.1.6",
+    "@elrondnetwork/erdjs-network-providers": "^0.1.7",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
