@@ -246,26 +246,24 @@ export class WalletService implements IWalletService {
       throw new Error(`insufficient balance: ${dislayAmount} EGLD needed`)
     }
 
-    if (metadata.transfers && metadata.transfers.length > 0) {
-      const transfer = metadata.transfers[0]
-      const transferTokenId = transfer.properties?.identifier!
-      const transferTokenAmount = new BigNumber(transfer.value.toString())
+    if (!metadata.transfers || metadata.transfers.length < 1) {
+      return
+    }
 
-      let networkTokenRes = null
+    const firstArg = tx.getData().toString().split('@')[0]
 
-      try {
-        networkTokenRes = await this.networkProvider!.doGetGeneric(`accounts/${this.address!}/tokens/${transferTokenId}`)
-      } catch (e) {
-        throw new Error(`did not find ${transferTokenId} in your wallet`)
-      }
-
-      const balance = new BigNumber(networkTokenRes?.balance || '0')
-
-      if (balance.isLessThan(transferTokenAmount)) {
-        const dislayAmount = +parseFloat(TokenPayment.fungibleFromBigInteger(transferTokenId, transferTokenAmount, 18).toPrettyString())
-        const displayToken = transferTokenId.split('-')[0]
-        throw new Error(`insufficient balance: ${dislayAmount} ${displayToken} needed`)
+    if (firstArg === 'ESDTTransfer') {
+      const accountTokens = await this.networkProvider!.getFungibleTokensOfAccount(new Address(this.address!), { from: 0, size: 10_000 })
+      for (let payment of metadata.transfers) {
+        const transferTokenAmount = new BigNumber(payment.value.toString())
+        const accountToken = accountTokens.find((t) => t.identifier === payment.properties?.identifier)
+        const accountTokenBalance = accountToken?.balance || new BigNumber(0)
+        if (accountTokenBalance.isLessThan(transferTokenAmount)) {
+          throw new Error(`insufficient balance for ${payment.properties?.identifier}`)
+        }
       }
     }
+
+    // further checks ...
   }
 }
